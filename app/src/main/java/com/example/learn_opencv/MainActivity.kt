@@ -2,17 +2,21 @@ package com.example.learn_opencv
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.snackbar.Snackbar
 import org.opencv.android.OpenCVLoader
+import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.imgproc.Imgproc
 
 
 class MainActivity : AppCompatActivity() {
@@ -46,6 +50,18 @@ class MainActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+
+        val image = findViewById<ImageView>(R.id.image)
+
+        val bMap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.lena)
+
+        val img = Mat()
+        Utils.bitmapToMat(bMap, img);
+        Imgproc.cvtColor(img,img,Imgproc.COLOR_RGB2GRAY)
+        val bMap_out = bMap
+        Utils.matToBitmap(img,bMap_out)
+
+        image.setImageBitmap(bMap_out)
 
     }
 
