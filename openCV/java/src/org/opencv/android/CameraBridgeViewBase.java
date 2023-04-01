@@ -401,6 +401,12 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
      * then displayed on the screen.
      * @param frame - the current frame to be delivered
      */
+    int userRotation= 90;
+
+    public void setUserRotation(int userRotation) {
+        this.userRotation = userRotation;
+    }
+
     protected void deliverAndDrawFrame(CvCameraViewFrame frame) {
         Mat modified;
 
@@ -426,6 +432,9 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
             Canvas canvas = getHolder().lockCanvas();
             if (canvas != null) {
                 canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+                canvas.save();
+                canvas.rotate(userRotation,  (canvas.getWidth()/ 2),(canvas.getHeight()/ 2));
+
                 if (BuildConfig.DEBUG)
                     Log.d(TAG, "mStretch value: " + mScale);
 

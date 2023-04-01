@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.SurfaceView
 import android.view.View
@@ -11,14 +12,22 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.opencv.android.*
+import org.opencv.android.CameraBridgeViewBase.CAMERA_ID_BACK
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2
 import org.opencv.core.Mat
+import org.opencv.core.Size
 
 
 class MainActivity : CameraActivity(), CvCameraViewListener2 {
     private val TAG = "openCV test app"
 
     private lateinit var mOpenCvCameraView: CameraBridgeViewBase
+
+    private val crosswordDetector = CrosswordDetector()
+
+    val displayMetrics = DisplayMetrics()
+
+    val size_for_display = Size(500.0,500.0)
 
     private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
         override fun onManagerConnected(status: Int) {
@@ -66,10 +75,16 @@ class MainActivity : CameraActivity(), CvCameraViewListener2 {
         }
         Log.i(TAG,"Making Camera View")
 
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+        Log.i(TAG,"setting height as $height and width as $width")
+
         mOpenCvCameraView =
             findViewById<View>(R.id.camera) as CameraBridgeViewBase
-        mOpenCvCameraView!!.visibility = SurfaceView.VISIBLE
-        mOpenCvCameraView!!.setCvCameraViewListener(this)
+        mOpenCvCameraView.setUserRotation(90)
+        mOpenCvCameraView.setCameraIndex(CAMERA_ID_BACK)
+        mOpenCvCameraView.visibility = SurfaceView.VISIBLE
+        mOpenCvCameraView.setCvCameraViewListener(this)
 
 //        val image = findViewById<ImageView>(R.id.image)
 //
@@ -135,12 +150,16 @@ class MainActivity : CameraActivity(), CvCameraViewListener2 {
     }
 
     override fun onCameraViewStopped() {
-        
+
     }
 
     override fun onCameraFrame(inputFrame: CameraBridgeViewBase.CvCameraViewFrame?): Mat {
-        Log.i(TAG,"Captured Frame!")
-        return inputFrame!!.rgba()
+
+        val mRgba = inputFrame!!.rgba()
+        crosswordDetector.process(mRgba)
+        return mRgba
+
     }
+
 
 }
