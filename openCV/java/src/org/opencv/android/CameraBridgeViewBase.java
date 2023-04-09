@@ -91,6 +91,10 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         this.mCameraIndex = cameraIndex;
     }
 
+    public void setMScale(float scale) {
+        this.mScale = scale;
+    }
+
     public interface CvCameraViewListener {
         /**
          * This method is invoked when camera preview has started. After this method is invoked
