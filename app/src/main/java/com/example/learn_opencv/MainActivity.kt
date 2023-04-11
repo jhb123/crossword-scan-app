@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //temporary navigation
         val scanFragment = GridScanFragment()
         val previewFragment = GridScanPreviewFragment()
 
