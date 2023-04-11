@@ -15,8 +15,6 @@ import com.example.learn_opencv.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    // private val viewModel : CrosswordScanViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
