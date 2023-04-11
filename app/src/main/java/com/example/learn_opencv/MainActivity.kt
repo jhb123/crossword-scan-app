@@ -6,44 +6,23 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.util.DisplayMetrics
-import android.util.Log
-import android.view.Display
-import android.view.SurfaceView
-import android.view.View
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat.getRotation
 import com.example.learn_opencv.databinding.ActivityMainBinding
-import com.google.common.util.concurrent.ListenableFuture
-import kotlinx.coroutines.*
-import org.opencv.android.*
-import org.opencv.android.CameraBridgeViewBase.*
-import org.opencv.core.Mat
-import org.opencv.core.MatOfPoint
-import org.opencv.core.Rect
-import org.opencv.core.Size
-import org.opencv.imgproc.Imgproc
-import java.math.BigInteger
+
 
 class MainActivity : AppCompatActivity() {
+
+    // private val viewModel : CrosswordScanViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
     }
 
 

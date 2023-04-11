@@ -2,11 +2,7 @@ package com.example.learn_opencv
 
 import android.util.Log
 import org.opencv.core.*
-import org.opencv.core.CvType.CV_32F
 import org.opencv.imgproc.Imgproc
-import org.opencv.imgproc.Imgproc.LINE_AA
-import org.opencv.imgproc.Imgproc.line
-import java.lang.Long
 import kotlin.math.abs
 
 
