@@ -23,6 +23,26 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val scanFragment = GridScanFragment()
+        val previewFragment = GridScanPreviewFragment()
+
+        binding.scanGridFragmentBtn.setOnClickListener {
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.flScanFragment, scanFragment)
+                addToBackStack(null)
+                commit()
+            }
+        }
+
+        binding.previewGridFragmentBtn.setOnClickListener {
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.flScanFragment, previewFragment)
+                addToBackStack(null)
+                commit()
+            }
+        }
+
+
     }
 
 
