@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.activityViewModels
 import com.example.learn_opencv.databinding.FragmentGridScanBinding
 import com.example.learn_opencv.databinding.FragmentGridScanPreviewBinding
 
@@ -16,6 +18,9 @@ class GridScanPreviewFragment : Fragment() {
     private var _binding: FragmentGridScanPreviewBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: CrosswordScanViewModel by activityViewModels()
+
+    private lateinit var cropPreview : ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +31,18 @@ class GridScanPreviewFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentGridScanPreviewBinding.inflate(inflater, container, false)
         return binding.root
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        cropPreview = binding.cropPreview
+
+        viewModel.getGridImg().observe(viewLifecycleOwner) {
+            cropPreview.setImageBitmap(it)
+        }
 
     }
 

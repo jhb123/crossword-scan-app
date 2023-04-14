@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.learn_opencv.databinding.FragmentGridScanBinding
 import org.opencv.android.*
@@ -29,7 +30,7 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
     private lateinit var scanButton : Button
     private lateinit var cropPreview : ImageView
 
-    private val viewModel: CrosswordScanViewModel by viewModels()
+    private val viewModel: CrosswordScanViewModel by activityViewModels()
 
 
     override fun onCreateView(

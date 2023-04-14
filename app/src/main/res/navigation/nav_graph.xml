@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/gridScanFragment">
+
+
+    <fragment
+        android:id="@+id/clueScanFragment"
+        android:name="com.example.learn_opencv.ClueScanFragment"
+        android:label="fragment_clue_scan"
+        tools:layout="@layout/fragment_clue_scan" >
+        <action
+            android:id="@+id/action_clueScanFragment_to_gridScanFragment3"
+            app:destination="@id/gridScanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gridScanPreviewFragment"
+        android:name="com.example.learn_opencv.GridScanPreviewFragment"
+        android:label="fragment_grid_scan_preview"
+        tools:layout="@layout/fragment_grid_scan_preview" >
+        <action
+            android:id="@+id/action_gridScanPreviewFragment_to_gridScanFragment3"
+            app:destination="@id/gridScanFragment" />
+        <action
+            android:id="@+id/action_gridScanPreviewFragment_to_clueScanFragment3"
+            app:destination="@id/clueScanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gridScanFragment"
+        android:name="com.example.learn_opencv.GridScanFragment"
+        android:label="fragment_grid_scan"
+        tools:layout="@layout/fragment_grid_scan" >
+        <action
+            android:id="@+id/action_gridScanFragment_to_clueScanFragment3"
+            app:destination="@id/clueScanFragment" />
+        <action
+            android:id="@+id/action_gridScanFragment_to_gridScanPreviewFragment3"
+            app:destination="@id/gridScanPreviewFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.learn_opencv.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+</navigation>

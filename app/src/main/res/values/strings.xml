@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">learn_opencv</string>
     <string name="scan_button">Scan</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="gridScan">Capture grid</string>
     <string name="previewGridScan">Preview scanned grid</string>
+    <string name="clueScan">Scan clues</string>
+    <string name="reviewScan">Review scan</string>
+    <string name="puzzleScanMenuItem">Scanner</string>
+    <string name="solveMenuItem">Solve</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>
