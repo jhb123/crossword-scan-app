@@ -40,7 +40,7 @@ class GridScanPreviewFragment : Fragment() {
 
         cropPreview = binding.cropPreview
 
-        viewModel.getGridImg().observe(viewLifecycleOwner) {
+        viewModel.getGridImgResize().observe(viewLifecycleOwner) {
             cropPreview.setImageBitmap(it)
         }
 

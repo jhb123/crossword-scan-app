@@ -18,9 +18,9 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.example.learn_opencv.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
-
-
+import org.opencv.android.BaseLoaderCallback
+import org.opencv.android.LoaderCallbackInterface
+import org.opencv.android.OpenCVLoader
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,17 +37,52 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        startOpenCV()
+
+        Log.i(TAG,"inflating layout")
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        Log.i(TAG,"Finding Nav controller")
         navController = Navigation.findNavController(this,R.id.mainFrame)
         //navController = Navigation.findNavController(view)
+        Log.i(TAG,"setting bottom navbar up")
         setupWithNavController(binding.bottomNav, navController)
 
 
     }
 
+        override fun onResume() {
+            super.onResume()
+            Log.i(TAG,"in on resume")
+            startOpenCV()
+    }
+
+    private fun startOpenCV() {
+        Log.i(TAG, "Starting OpenCV")
+        if (!OpenCVLoader.initDebug()) {
+            Log.i(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization")
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback)
+        } else {
+            Log.i(TAG, "OpenCV library found inside package. Using it!")
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS)
+        }
+    }
+
+    private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
+        override fun onManagerConnected(status: Int) {
+            Log.i(TAG, "using baseloarder callback")
+            when (status) {
+                SUCCESS -> {
+                    Log.i(TAG, "OpenCV loaded successfully")
+
+                }
+                else -> {
+                    super.onManagerConnected(status)
+                }
+            }
+        }
+    }
 //        drawerLayout = findViewById(R.id.mainDrawerLayout)
 //        //programmatically add the toggle
 //        actionBarDrawerToggle = ActionBarDrawerToggle(

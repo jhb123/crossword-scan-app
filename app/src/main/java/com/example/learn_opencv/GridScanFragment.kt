@@ -74,6 +74,7 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
 
     private fun startCamera() {
         Log.i(TAG, "Starting camera")
+        mOpenCvCameraView.enableView()
         mOpenCvCameraView.setCameraPermissionGranted() // this is essential!!!
         mOpenCvCameraView.setUserRotation(90)
         mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK)
@@ -84,13 +85,7 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
     override fun onResume() {
         super.onResume()
         Log.i(TAG,"in on resume")
-        if (!OpenCVLoader.initDebug()) {
-            Log.i(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization")
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, activity, mLoaderCallback)
-        } else {
-            Log.i(TAG, "OpenCV library found inside package. Using it!")
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS)
-        }
+        mOpenCvCameraView.enableView()
     }
 
     override fun onPause() {
@@ -117,31 +112,13 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
     override fun onCameraFrame(inputFrame: CameraBridgeViewBase.CvCameraViewFrame?): Mat {
         Log.d(TAG,"Got frame!")
         //val mRgba = inputFrame!!.rgba()
-        viewModel.viewFinderImg = inputFrame!!.rgba()
-        viewModel.processPreview()
-        return viewModel.viewFinderImg
+        //viewModel.viewFinderImg = inputFrame!!.rgba()
+        viewModel.processPreview(inputFrame!!.rgba())
+        return viewModel.viewFinderImgWithContour
     }
 
     private fun setSnapToTrue(){
         viewModel.takeSnapshot = true
-    }
-
-    // boring boiler plate stuff down here... Set up permissions and set up opencv for preview.
-
-    private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(activity) {
-        override fun onManagerConnected(status: Int) {
-            when (status) {
-                SUCCESS -> {
-                    Log.i(TAG, "OpenCV loaded successfully")
-                    mOpenCvCameraView.enableView()
-                    Log.i(TAG, "enabled view successfully")
-
-                }
-                else -> {
-                    super.onManagerConnected(status)
-                }
-            }
-        }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
