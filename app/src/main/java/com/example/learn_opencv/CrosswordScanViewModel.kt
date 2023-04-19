@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
-import org.opencv.core.Rect
+import org.opencv.imgproc.Imgproc
 import kotlin.properties.Delegates
 
 class CrosswordScanViewModel: ViewModel() {
@@ -48,8 +48,12 @@ class CrosswordScanViewModel: ViewModel() {
         if (takeSnapshot && contours.isNotEmpty()) {
             Log.d(TAG,"Contours size ${contours.size}, Contours index $cwContourIndex")
             takeSnapshot = false
-            setPreprocessed()
-
+            val imArea = Imgproc.contourArea(contours[cwContourIndex])
+            Log.d(TAG,"Contour area $imArea")
+            // if the area is bigger than 100x100 pixels, then set the preprocessed images
+            if( imArea > 100*100 ) {
+                setPreprocessed()
+            }
             // GlobalScope.launch {  }
 
         }
@@ -58,7 +62,7 @@ class CrosswordScanViewModel: ViewModel() {
     fun setPreprocessed() {
 
         Log.d(TAG, "Setting snapshot preview image")
-        crosswordDetector.crop_to_crossword(contours[cwContourIndex], viewFinderImg)
+        crosswordDetector.cropToCrossword(contours[cwContourIndex], viewFinderImg)
 //        val rectToCrop = Rect(0, 0, 500, 500)
 //        val cropped = inputWarp.submat(rectToCrop)
         Log.d(TAG, "Making bitmap")
@@ -74,30 +78,18 @@ class CrosswordScanViewModel: ViewModel() {
 
         crosswordDetector.makeBinaryCrosswordImg()
 
-        val gridBitmap =
+        var gridBitmap =
             Bitmap.createBitmap(crosswordDetector.binaryCrosswordImg.cols(),
                 crosswordDetector.binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888)
 
 
         Utils.matToBitmap(crosswordDetector.binaryCrosswordImg, gridBitmap);
-
+        gridBitmap = Bitmap.createScaledBitmap(gridBitmap,500,500,false)
         gridImgResize.postValue(
             Bitmap.createBitmap(gridBitmap, 0, 0, gridBitmap.width, gridBitmap.height, matrix, true)
         )
-
-        //Log.d(TAG, "Displaying bitmap")
         }
 
-//        GlobalScope.launch {
-//            processed_preview.updateBitmap(bitmap_rot)
-//        }
-
-//    val viewFinderImg : Mat
-//        get() = _viewFinderImg
-//
-//    fun setViewFinderImg(img: Mat) {
-//        _viewFinderImg =  img
-//    }
 
 
 }

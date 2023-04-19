@@ -70,6 +70,11 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
             cropPreview.setImageBitmap(it)
         }
 
+        viewModel.getGridImgResize().observe(viewLifecycleOwner) {
+            binding.gridProcessed.setImageBitmap(it)
+        }
+
+
     }
 
     private fun startCamera() {

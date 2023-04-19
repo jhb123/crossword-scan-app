@@ -2,14 +2,11 @@ package com.example.learn_opencv
 
 import android.util.Log
 import org.opencv.core.*
-import org.opencv.core.Core.add
-import org.opencv.core.Core.bitwise_not
+import org.opencv.core.Core.*
 import org.opencv.core.CvType.CV_32F
 import org.opencv.core.CvType.CV_8UC3
-import org.opencv.core.Mat.zeros
 import org.opencv.imgproc.Imgproc
 import kotlin.math.abs
-import kotlin.math.floor
 
 
 class CrosswordDetector {
@@ -22,6 +19,8 @@ class CrosswordDetector {
     var binaryCrosswordImg = Mat(480, 640, CV_8UC3, Scalar(0.0,255.0,255.0));
     var edgeImg = Mat(480, 640, CV_8UC3, Scalar(0.0,255.0,255.0));
 
+
+    val cropSize = 500.0 //px
 
     fun process(input_image: Mat?) {
         val (contours,cw_contour) = get_crossword_contour(input_image)
@@ -72,7 +71,7 @@ class CrosswordDetector {
         return Pair(contours,cw_contour)
     }
 
-    fun crop_to_crossword(contour: MatOfPoint, image :Mat)  {
+    fun cropToCrossword(contour: MatOfPoint, image :Mat)  {
         // finding the minimum rectangle doesnt work since the crossword's edges
         // are curved.
 //        val contour2f = MatOfPoint2f()
@@ -117,9 +116,9 @@ class CrosswordDetector {
         Log.i(TAG,"approx dp $approxDP")
 
         val warp_coords = MatOfPoint2f(
-            Point(500.0, 0.0),
-            Point(500.0, 500.0),
-            Point(0.0, 500.0),
+            Point(cropSize, 0.0),
+            Point(cropSize, cropSize),
+            Point(0.0, cropSize),
             Point(0.0, 0.0)
         )
 
@@ -130,7 +129,7 @@ class CrosswordDetector {
             Log.i(TAG, "warping")
             Imgproc.warpPerspective(image, image_warp, warp_mat, image.size())
 
-            val rectToCrop = Rect(0, 0, 500, 500)
+            val rectToCrop = Rect(0, 0, cropSize.toInt(), cropSize.toInt())
             Log.i(TAG, "assiging cropped image ")
             croppedToCrosswordImg = image_warp.submat(rectToCrop)
 
@@ -201,25 +200,31 @@ class CrosswordDetector {
         }
 //        Log.i(TAG, "calculating the median size")
 //        sides.sort()
+        var boxSize : Double
         Log.i(TAG, "found ${sides.size} boxes")
-        val boxSize = sides.average()//sides[floor((sides.size).toDouble()/2).toInt()]
-        Log.i(TAG, "calculating the median size $boxSize")
+        if (sides.size >0) {
+            boxSize = med(sides) //.average()//sides[floor((sides.size).toDouble()/2).toInt()]
+            Log.i(TAG, "calculating the median size $boxSize")
+        }
+        else{
+            boxSize = 10.0 // what should this default to?
+        }
         return boxSize
 
 
     }
 
-    private fun getClueBoxMask(): Mat? {
+    private fun getClueBoxMask(): Mat {
 
         Log.i(TAG, "cloning cropped image for clue box mask")
-        val image = croppedToCrosswordImg?.clone()
+        val image = croppedToCrosswordImg!!.clone()
 
         Log.i(TAG, "pre processing")
 
         Imgproc.cvtColor(image,image,Imgproc.COLOR_BGR2GRAY)
         Imgproc.adaptiveThreshold(image,image,255.0,
             Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY_INV,101,0.0)
-        val kernel = Mat.ones(9,9,CV_32F)
+        val kernel = Mat.ones(3,3,CV_32F)
         Imgproc.morphologyEx(image,image,Imgproc.MORPH_CLOSE,kernel)
 
         bitwise_not(image,image)
@@ -237,15 +242,27 @@ class CrosswordDetector {
         val clueBoxes = getClueBoxMask()
 
         Log.i(TAG, "calculating resize constants")
-        Log.i(TAG, "binary mask has size ${clueBoxes!!.rows()} x ${clueBoxes!!.cols()}")
-        val rowsD = clueBoxes!!.rows().div(boxSize)
-        val colsD = clueBoxes!!.cols().div(boxSize)
+        Log.i(TAG, "binary mask has size ${clueBoxes.rows()} x ${clueBoxes.cols()}")
+        val rowsD = boxSize.div(clueBoxes.rows())
+        val colsD = boxSize.div(clueBoxes.cols())
         Log.i(TAG, "determined these to be $rowsD and $colsD")
 
-        //Log.i(TAG, "resizing")
-        //Imgproc.resize(clueBoxes,binaryCrosswordImg,Size(),1/rowsD,1/colsD, Imgproc.INTER_LINEAR )
-        //Log.i(TAG, "resizing finished")
+        Log.i(TAG, "resizing")
+        //Imgproc.resize(clueBoxes,binaryCrosswordImg,Size(), rowsD/2, colsD/2, Imgproc.INTER_LINEAR )
+        Imgproc.resize(clueBoxes,binaryCrosswordImg,Size(1/rowsD,1/colsD), 0.0, 0.0, Imgproc.INTER_AREA  )
+        Imgproc.threshold(binaryCrosswordImg,binaryCrosswordImg,0.0,255.0,Imgproc.THRESH_BINARY+Imgproc.THRESH_OTSU)
+        Log.i(TAG, "resizing finished")
+        Log.d(TAG, "grid shape ${binaryCrosswordImg.rows()}x${binaryCrosswordImg.cols()}:\n${binaryCrosswordImg.dump()}")
 
+
+
+    }
+
+    fun med(list: List<Double>) = list.sorted().let {
+        if (it.size % 2 == 0)
+            (it[it.size / 2] + it[(it.size - 1) / 2]) / 2
+        else
+            it[it.size / 2]
     }
 
 }

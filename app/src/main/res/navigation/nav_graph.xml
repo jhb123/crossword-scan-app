@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_clueScanFragment_to_gridScanFragment3"
             app:destination="@id/gridScanFragment" />
+        <action
+            android:id="@+id/action_clueScanFragment_to_solveFragment"
+            app:destination="@id/solveFragment" />
     </fragment>
     <fragment
         android:id="@+id/gridScanPreviewFragment"
@@ -26,6 +29,9 @@
         <action
             android:id="@+id/action_gridScanPreviewFragment_to_clueScanFragment3"
             app:destination="@id/clueScanFragment" />
+        <action
+            android:id="@+id/action_gridScanPreviewFragment_to_solveFragment"
+            app:destination="@id/solveFragment" />
     </fragment>
     <fragment
         android:id="@+id/gridScanFragment"
@@ -38,10 +44,28 @@
         <action
             android:id="@+id/action_gridScanFragment_to_gridScanPreviewFragment3"
             app:destination="@id/gridScanPreviewFragment" />
+        <action
+            android:id="@+id/action_gridScanFragment_to_solveFragment"
+            app:destination="@id/solveFragment" />
     </fragment>
     <activity
         android:id="@+id/mainActivity"
         android:name="com.example.learn_opencv.MainActivity"
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
+    <fragment
+        android:id="@+id/solveFragment"
+        android:name="com.example.learn_opencv.SolveFragment"
+        android:label="fragment_solve"
+        tools:layout="@layout/fragment_solve" >
+        <action
+            android:id="@+id/action_solveFragment_to_clueScanFragment"
+            app:destination="@id/clueScanFragment" />
+        <action
+            android:id="@+id/action_solveFragment_to_gridScanPreviewFragment"
+            app:destination="@id/gridScanPreviewFragment" />
+        <action
+            android:id="@+id/action_solveFragment_to_gridScanFragment"
+            app:destination="@id/gridScanFragment" />
+    </fragment>
 </navigation>
