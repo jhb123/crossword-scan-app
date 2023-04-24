@@ -1,17 +1,12 @@
 package com.example.learn_opencv
 
-import android.graphics.Bitmap
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class clue(clueName : String, clueBoxes : List<Pair<Int,Int>> ){
-    val clueName = clueName
-    val clueBoxes = clueBoxes
-}
 
 class puzzleViewModel: ViewModel() {
+
+
 
     var dimension = 0  //the grids are always square, e.g. 15x15 black and white square
 
@@ -21,16 +16,16 @@ class puzzleViewModel: ViewModel() {
         get() = _activeClue
 
     // I imagine this could be stored in a json fairly easily. For now we have this dummy data.
-    private val _clue1 = clue("1d", listOf( Pair(0,0),Pair(1,0),Pair(2,0),Pair(3,0) ))
-    private val _clue2 = clue("1a", listOf( Pair(0,0),Pair(0,1),Pair(0,2),Pair(0,3) ))
-    private val _clue3 = clue("3a", listOf( Pair(2,0),Pair(2,1),Pair(2,2) ))
-    private val _clue4 = clue("2d", listOf( Pair(0,2),Pair(1,2),Pair(2,2) ))
-    private val _clue5 = clue("4a", listOf( Pair(4,1),Pair(4,2),Pair(4,3) ))
+    private val _clue1 = Clue("1d", listOf( Pair(0,0),Pair(1,0),Pair(2,0),Pair(3,0) ))
+    private val _clue2 = Clue("1a", listOf( Pair(0,0),Pair(0,1),Pair(0,2),Pair(0,3) ))
+    private val _clue3 = Clue("3a", listOf( Pair(2,0),Pair(2,1),Pair(2,2) ))
+    private val _clue4 = Clue("2d", listOf( Pair(0,2),Pair(1,2),Pair(2,2) ))
+    private val _clue5 = Clue("4a", listOf( Pair(4,1),Pair(4,2),Pair(4,3) ))
 
-    private val _clue6 = clue("5a", listOf( Pair(6,0),Pair(6,1),Pair(6,2) ))
+    private val _clue6 = Clue("5a", listOf( Pair(6,0),Pair(6,1),Pair(6,2) ))
 
 
-    //for getting cells by clue. This is a map of clues, the key is the clue's name and the
+    //for getting cells by Clue. This is a map of clues, the key is the Clue's name and the
     //value is a list of coordinates
     private val _clues = mapOf(_clue1.clueName to _clue1,
         _clue2.clueName to _clue2,
@@ -39,7 +34,7 @@ class puzzleViewModel: ViewModel() {
         _clue5.clueName to _clue5,
         _clue6.clueName to _clue6)
 
-    val clues: Map<String, clue>
+    val clues: Map<String, Clue>
         get() = _clues
 
     //this is a set of the coordinates in the grid.
@@ -54,7 +49,7 @@ class puzzleViewModel: ViewModel() {
 
 
     // this is a map where the keys are coordinates and the values are a list strings of the names
-    // of the clues associated with the coordinate. this gets clue by cell
+    // of the clues associated with the coordinate. this gets Clue by cell
     private val _coordClueNamesMap = createCoordClueNamesMap(_clues)
     val coordClueNamesMap: MutableMap< Pair<Int, Int>, MutableList<String>>
         get() = _coordClueNamesMap
@@ -68,7 +63,7 @@ class puzzleViewModel: ViewModel() {
             get() = _coordClueLabels
 
 
-    private fun createCoordClueNamesMap(clues : Map<String, clue>) : MutableMap< Pair<Int, Int>, MutableList<String>> {
+    private fun createCoordClueNamesMap(clues : Map<String, Clue>) : MutableMap< Pair<Int, Int>, MutableList<String>> {
         val clueMap = mutableMapOf<Pair<Int,Int>, MutableList< String >>()
 
         clues.forEach{entry->
@@ -85,7 +80,7 @@ class puzzleViewModel: ViewModel() {
         return clueMap
     }
 
-    private fun createCoordSet(clues : Map<String, clue>): Set<Pair<Int, Int>>{
+    private fun createCoordSet(clues : Map<String, Clue>): Set<Pair<Int, Int>>{
         val clueSet = mutableSetOf<Pair<Int,Int>>()
         clues.forEach { (s, clue) ->
             clue.clueBoxes.forEach{
@@ -95,7 +90,7 @@ class puzzleViewModel: ViewModel() {
         return clueSet
     }
 
-    private fun createCoordTextMap(clues : Map<String, clue>) : MutableMap< Pair<Int, Int>, MutableLiveData<String> > {
+    private fun createCoordTextMap(clues : Map<String, Clue>) : MutableMap< Pair<Int, Int>, MutableLiveData<String> > {
         val coordTextMap = mutableMapOf<Pair<Int,Int>, MutableLiveData<String> >()
         _coordSet.forEach{
             coordTextMap[it] = MutableLiveData<String>("") //start each blank?

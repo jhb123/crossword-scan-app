@@ -9,4 +9,6 @@
     <string name="solveMenuItem">Solve</string>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

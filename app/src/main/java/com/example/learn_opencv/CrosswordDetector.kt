@@ -1,10 +1,17 @@
 package com.example.learn_opencv
 
+import android.graphics.Bitmap
+import android.graphics.ColorSpace.match
+import android.nfc.Tag
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.core.Core.*
-import org.opencv.core.CvType.CV_32F
-import org.opencv.core.CvType.CV_8UC3
+import org.opencv.core.CvType.*
 import org.opencv.imgproc.Imgproc
 import kotlin.math.abs
 
@@ -216,7 +223,7 @@ class CrosswordDetector {
 
     private fun getClueBoxMask(): Mat {
 
-        Log.i(TAG, "cloning cropped image for clue box mask")
+        Log.i(TAG, "cloning cropped image for Clue box mask")
         val image = croppedToCrosswordImg!!.clone()
 
         Log.i(TAG, "pre processing")
@@ -236,9 +243,9 @@ class CrosswordDetector {
 
     fun makeBinaryCrosswordImg() {
 
-        Log.i(TAG, "estimatating clue box size")
+        Log.i(TAG, "estimatating Clue box size")
         val boxSize = estimateClueBoxSize()
-        Log.i(TAG, "getting clue box binary image")
+        Log.i(TAG, "getting Clue box binary image")
         val clueBoxes = getClueBoxMask()
 
         Log.i(TAG, "calculating resize constants")
@@ -265,4 +272,222 @@ class CrosswordDetector {
             it[it.size / 2]
     }
 
+    fun assembleClues() : Puzzle {
+            val clueMarks = getGridWithClueMarks()
+
+            var cellValue = 0.0
+            val acrosses = mutableMapOf<Pair<Int, Int>, String>()
+            val downs = mutableMapOf<Pair<Int, Int>, String>()
+
+            var clueIdx = 1
+            for (col_idx in 0..clueMarks.cols() - 1) {
+                for (row_idx in (clueMarks.rows() - 1) downTo 0) {
+                    //var row = newGrid.row(row_idx)
+                    cellValue = clueMarks.get(row_idx, col_idx).toList()[0]
+                    //Log.v(TAG, "cell (${row_idx} ${col_idx}) value: ${cellValue}")
+                    when (cellValue) {
+                        2.0 -> {
+                            acrosses[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}a"
+                            clueIdx += 1
+                        }
+                        3.0 -> {
+                            downs[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}d"
+                            clueIdx += 1
+                        }
+                        4.0 -> {
+                            downs[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}d"
+                            acrosses[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}a"
+                            clueIdx += 1
+                        }
+                    }
+                }
+            }
+
+            acrosses.forEach {
+                Log.i(TAG, "${it.key}: ${it.value} ")
+            }
+            downs.forEach {
+                Log.i(TAG, "${it.key}: ${it.value} ")
+            }
+
+            val acrossClueCells = getAcrossClues()
+            val downClueCells = getDownClues()
+
+            val puzzle = Puzzle()
+
+//
+        acrossClueCells.forEach { clueCells->
+            val clue = Clue(acrosses[clueCells[0]]!!,clueCells)
+            puzzle.addClue(acrosses[clueCells[0]]!!,clue)
+        }
+        downClueCells.forEach { clueCells->
+            val clue = Clue(downs[clueCells[0]]!!,clueCells)
+            puzzle.addClue(downs[clueCells[0]]!!,clue)
+        }
+
+        puzzle.clues.forEach { (name, clue) ->
+            Log.d(TAG,"$name: ${clue.clueBoxes}")
+        }
+
+        val gridBitmap = Bitmap.createBitmap(binaryCrosswordImg.cols(),
+            binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(binaryCrosswordImg, gridBitmap);
+
+        //puzzle.image = gridBitmap
+
+        return puzzle
+    }
+
+    fun getGridWithClueMarks() : Mat{
+        val binaryGrid = Mat()
+        binaryCrosswordImg.convertTo(binaryGrid, CV_8UC1, 1.0/255)
+
+        var kernel = Mat.zeros(3,3, CV_32F)
+        kernel.put(1,0,-1.0)
+        kernel.put(1,2,1.0)
+
+        val downStarts = convolveGrid(binaryGrid,kernel)
+
+        kernel = Mat.zeros(3,3, CV_32F)
+        kernel.put(0,1,1.0)
+        kernel.put(2,1,-1.0)
+        val acrossStarts = convolveGrid(binaryGrid,kernel)
+
+
+        add(binaryGrid,acrossStarts,binaryGrid)
+        //add it twice.
+        add(binaryGrid,downStarts,binaryGrid)
+        add(binaryGrid,downStarts,binaryGrid)
+
+        //binaryGrid.convertTo(binaryCrosswordImg,-1,50.0,0.0)
+        return binaryGrid
+    }
+
+    fun getAcrossClues() : List<List<Pair<Int,Int>>> {
+        var kernel = Mat.zeros(3,3, CV_32F)
+        kernel.put(0,1,1.0)
+        kernel.put(1,1,1.0)
+
+        val anchor = Point(-1.0, -1.0)
+        val newGrid = Mat()
+        val binaryGrid = Mat()
+        binaryCrosswordImg.convertTo(binaryGrid,-1,1.0/250)
+
+        Imgproc.filter2D(binaryGrid, newGrid, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+
+        kernel = Mat.zeros(3,3, CV_32F)
+        kernel.put(0,1,-1.0)
+        kernel.put(2,1,1.0)
+        val newGrid_ends = Mat()
+        Imgproc.filter2D(binaryGrid, newGrid_ends, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+
+
+        add(newGrid,newGrid_ends,newGrid)
+        newGrid.convertTo(newGrid,-1,1.0,-1.0)
+
+
+
+        val clue_coords = mutableListOf< MutableList< Pair<Int,Int>>>()
+        var cellValue = 0.0
+        var clue = mutableListOf< Pair<Int,Int>>()
+
+        //val row = Mat()
+        for( col_idx in 0..newGrid.cols()-1){
+            //var row = newGrid.row(row_idx)
+            for( row_idx in (newGrid.rows()-1) downTo 0 ){
+                cellValue = newGrid.get(row_idx, col_idx).toList()[0]
+                //Log.v(TAG,"cell (${row_idx} ${col_idx}) value: ${cellValue}")
+                if(cellValue > 0){
+                  //  Log.v(TAG,"Adding cell to current Clue")
+                    clue.add(Pair(newGrid.rows() - row_idx - 1, col_idx))
+                    //Log.v(TAG,clue.toString())
+                }
+                else{
+                    if(clue.size > 0) {
+                      //  Log.v(TAG,"Adding Clue to Clue list and resetting current Clue")
+                        clue_coords.add(clue)
+                        clue = mutableListOf< Pair<Int,Int>>()
+                    }
+                }
+            }
+            if(clue.size > 0){
+                clue_coords.add(clue)
+                clue = mutableListOf< Pair<Int,Int>>()
+            }
+        }
+
+        clue_coords.forEach {
+            Log.i(TAG,"across clue size ${it.size}")
+        }
+        // uncomment for debug only!
+        // newGrid.convertTo(binaryCrosswordImg,-1,255.0,-1.0)
+        return clue_coords
+    }
+
+    fun getDownClues() : List<List<Pair<Int,Int>>> {
+        var kernel = Mat.zeros(3,3, CV_32F)
+        kernel.put(1,0,1.0)
+        kernel.put(1,1,1.0)
+
+        val anchor = Point(-1.0, -1.0)
+        val newGrid = Mat()
+        val binaryGrid = Mat()
+        binaryCrosswordImg.convertTo(binaryGrid,-1,1.0/250)
+
+        Imgproc.filter2D(binaryGrid, newGrid, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+
+        kernel = Mat.zeros(3,3, CV_32F)
+        kernel.put(1,0,-1.0)
+        kernel.put(1,2,1.0)
+        val newGrid_ends = Mat()
+        Imgproc.filter2D(binaryGrid, newGrid_ends, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+
+        add(newGrid,newGrid_ends,newGrid)
+        newGrid.convertTo(newGrid,-1,1.0,-1.0)
+        //newGrid.convertTo(binaryCrosswordImg,-1,255.0,-1.0)
+
+        //Log.i(TAG,"grid:\n${binaryCrosswordImg.dump()}")
+
+        val clue_coords = mutableListOf< MutableList< Pair<Int,Int>>>()
+        var cellValue = 0.0
+        var clue = mutableListOf< Pair<Int,Int>>()
+
+        //val row = Mat()
+        for( row_idx in (newGrid.rows()-1) downTo 0 ){
+            for( col_idx in 0..newGrid.cols()-1){
+                cellValue = newGrid.get(row_idx, col_idx).toList()[0]
+                Log.v(TAG,"cell (${row_idx} ${col_idx}) value: ${cellValue}")
+                if(cellValue > 0){
+                    Log.v(TAG,"Adding cell to current Clue")
+                    clue.add(Pair(newGrid.rows() - row_idx - 1, col_idx))
+                    Log.v(TAG,clue.toString())
+                }
+                else{
+                    if(clue.size > 0) {
+                        Log.v(TAG,"Adding Clue to Clue list and resetting current Clue")
+                        clue_coords.add(clue)
+                        clue = mutableListOf< Pair<Int,Int>>()
+                    }
+                }
+            }
+            if(clue.size > 0){
+                clue_coords.add(clue)
+                clue = mutableListOf< Pair<Int,Int>>()
+            }
+        }
+
+        // uncomment for debug only!
+        // newGrid.convertTo(binaryCrosswordImg,-1,255.0,-1.0)
+
+        return clue_coords
+    }
+
+
+    fun convolveGrid(grid : Mat, kernel : Mat) : Mat {
+        val anchor = Point(-1.0, -1.0)
+        val newGrid = Mat()
+        Imgproc.filter2D(grid, newGrid, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+        bitwise_and(grid,newGrid,newGrid)
+        return newGrid
+    }
 }

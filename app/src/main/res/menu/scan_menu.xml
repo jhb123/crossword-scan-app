@@ -16,7 +16,7 @@
         android:icon="@drawable/ic_baseline_preview_24"/>
 
     <item
-        android:id="@+id/solveFragment"
+        android:id="@+id/puzzleSelectFragment"
         android:title="@string/solveMenuItem"
         android:icon="@drawable/ic_baseline_edit_24"/>
 </menu>

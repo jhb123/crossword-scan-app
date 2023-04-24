@@ -115,9 +115,6 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
     }
 
     override fun onCameraFrame(inputFrame: CameraBridgeViewBase.CvCameraViewFrame?): Mat {
-        Log.d(TAG,"Got frame!")
-        //val mRgba = inputFrame!!.rgba()
-        //viewModel.viewFinderImg = inputFrame!!.rgba()
         viewModel.processPreview(inputFrame!!.rgba())
         return viewModel.viewFinderImgWithContour
     }

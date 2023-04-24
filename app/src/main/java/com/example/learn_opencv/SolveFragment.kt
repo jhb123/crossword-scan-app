@@ -1,13 +1,11 @@
 package com.example.learn_opencv
 
 import android.R
-import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
@@ -16,8 +14,6 @@ import android.widget.FrameLayout
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -32,7 +28,7 @@ class SolveFragment : Fragment() {
     private val TAG = "SolveFragment"
     private val viewModel: puzzleViewModel by activityViewModels()
     private val clueBoxes = mutableMapOf<Pair<Int, Int>, toggleEditText >()
-    lateinit private var activeClue : clue
+    lateinit private var activeClue : Clue
     lateinit private var ansGrid : GridLayout
 
     private var screenWidth by Delegates.notNull<Int>()

@@ -2,7 +2,9 @@ package com.example.learn_opencv
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.opencv.android.Utils
@@ -59,6 +61,7 @@ class CrosswordScanViewModel: ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun setPreprocessed() {
 
         Log.d(TAG, "Setting snapshot preview image")
@@ -77,6 +80,10 @@ class CrosswordScanViewModel: ViewModel() {
         )
 
         crosswordDetector.makeBinaryCrosswordImg()
+//        crosswordDetector.getGridWithClueMarks()
+//        crosswordDetector.getAcrossClues()
+//        crosswordDetector.getDownClues()
+        crosswordDetector.assembleClues()
 
         var gridBitmap =
             Bitmap.createBitmap(crosswordDetector.binaryCrosswordImg.cols(),
