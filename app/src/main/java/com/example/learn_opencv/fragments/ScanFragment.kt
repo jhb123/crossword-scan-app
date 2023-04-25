@@ -1,4 +1,4 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -6,16 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 //import androidx.navigation.Navigation
 //import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.example.learn_opencv.databinding.FragmentScanBinding
+import com.example.learn_opencv.fragments.GridScanFragment
+import com.example.learn_opencv.fragments.GridScanPreviewFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 

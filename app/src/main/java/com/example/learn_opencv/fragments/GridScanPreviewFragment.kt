@@ -1,6 +1,7 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.fragments
 
 import android.os.Bundle
+import android.provider.SyncStateContract.Helpers.insert
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
-import com.example.learn_opencv.databinding.FragmentGridScanBinding
+import com.example.learn_opencv.PuzzleApplication
 import com.example.learn_opencv.databinding.FragmentGridScanPreviewBinding
+import com.example.learn_opencv.viewModels.CrosswordScanViewModel
+import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
 
 
 class GridScanPreviewFragment : Fragment() {
@@ -18,7 +21,9 @@ class GridScanPreviewFragment : Fragment() {
     private var _binding: FragmentGridScanPreviewBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: CrosswordScanViewModel by activityViewModels()
+    private val viewModel: CrosswordScanViewModel by activityViewModels{
+        CrosswordScanViewModelFactory((requireActivity().application as PuzzleApplication).repository)
+    }
 
     private lateinit var cropPreview : ImageView
 
@@ -42,6 +47,10 @@ class GridScanPreviewFragment : Fragment() {
 
         viewModel.getGridImgResize().observe(viewLifecycleOwner) {
             cropPreview.setImageBitmap(it)
+        }
+
+        binding.saveButton.setOnClickListener{
+            viewModel.insert()
         }
 
     }

@@ -1,4 +1,4 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.fragments
 
 import android.R
 import android.graphics.Point
@@ -17,7 +17,11 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.example.learn_opencv.Clue
 import com.example.learn_opencv.databinding.FragmentSolveBinding
+import com.example.learn_opencv.toggleEditText
+import com.example.learn_opencv.toggleState
+import com.example.learn_opencv.viewModels.PuzzleSolveViewModel
 import kotlin.properties.Delegates
 
 
@@ -26,8 +30,8 @@ class SolveFragment : Fragment() {
     private var _binding: FragmentSolveBinding? = null
     private val binding get() = _binding!!
     private val TAG = "SolveFragment"
-    private val viewModel: puzzleViewModel by activityViewModels()
-    private val clueBoxes = mutableMapOf<Pair<Int, Int>, toggleEditText >()
+    private val viewModel: PuzzleSolveViewModel by activityViewModels()
+    private val clueBoxes = mutableMapOf<Pair<Int, Int>, toggleEditText>()
     lateinit private var activeClue : Clue
     lateinit private var ansGrid : GridLayout
 
@@ -65,6 +69,8 @@ class SolveFragment : Fragment() {
         viewModel.coordClueNamesMap.forEach { coord, clueList ->
             val letterBox = letterBoxFactory(coord, clueList, ansGrid)
             clueBoxes[coord] = letterBox!!
+
+
         }
 
         //apply listeners to each cluebox
@@ -230,7 +236,10 @@ class SolveFragment : Fragment() {
 
         binding.root.addView(ansGrid)
 
-        }
+        //activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+    }
 
 
     fun letterBoxFactory(coord : Pair<Int,Int>, clueList : List<String>, ansGrid : GridLayout) : toggleEditText? {

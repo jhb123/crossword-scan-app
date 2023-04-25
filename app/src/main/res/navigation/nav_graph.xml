@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/clueScanFragment"
-        android:name="com.example.learn_opencv.ClueScanFragment"
+        android:name="com.example.learn_opencv.fragments.ClueScanFragment"
         android:label="fragment_clue_scan"
         tools:layout="@layout/fragment_clue_scan" >
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/gridScanPreviewFragment"
-        android:name="com.example.learn_opencv.GridScanPreviewFragment"
+        android:name="com.example.learn_opencv.fragments.GridScanPreviewFragment"
         android:label="fragment_grid_scan_preview"
         tools:layout="@layout/fragment_grid_scan_preview" >
         <action
@@ -35,7 +35,7 @@
     </fragment>
     <fragment
         android:id="@+id/gridScanFragment"
-        android:name="com.example.learn_opencv.GridScanFragment"
+        android:name="com.example.learn_opencv.fragments.GridScanFragment"
         android:label="fragment_grid_scan"
         tools:layout="@layout/fragment_grid_scan" >
         <action
@@ -73,7 +73,7 @@
     </fragment>
     <fragment
         android:id="@+id/solveFragment"
-        android:name="com.example.learn_opencv.SolveFragment"
+        android:name="com.example.learn_opencv.fragments.SolveFragment"
         android:label="fragment_solve"
         tools:layout="@layout/fragment_solve" >
         <action

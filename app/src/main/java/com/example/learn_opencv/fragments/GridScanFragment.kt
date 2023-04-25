@@ -1,4 +1,4 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -16,7 +16,10 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.example.learn_opencv.PuzzleApplication
 import com.example.learn_opencv.databinding.FragmentGridScanBinding
+import com.example.learn_opencv.viewModels.CrosswordScanViewModel
+import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
 import org.opencv.android.*
 import org.opencv.core.Mat
 
@@ -30,8 +33,10 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
     private lateinit var scanButton : Button
     private lateinit var cropPreview : ImageView
 
-    private val viewModel: CrosswordScanViewModel by activityViewModels()
-
+    //private val viewModel: CrosswordScanViewModel by activityViewModels()
+    private val viewModel: CrosswordScanViewModel by activityViewModels{
+        CrosswordScanViewModelFactory((requireActivity().application as PuzzleApplication).repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +70,8 @@ class GridScanFragment : Fragment() , CameraBridgeViewBase.CvCameraViewListener2
         scanButton.setOnClickListener{ setSnapToTrue() }
 
         cropPreview = binding.cropPreview
+
+        Log.i(TAG,"Getting view model observers")
 
         viewModel.getGridImg().observe(viewLifecycleOwner) {
             cropPreview.setImageBitmap(it)

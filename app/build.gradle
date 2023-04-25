@@ -10,10 +10,12 @@ plugins {
 android {
     namespace 'com.example.learn_opencv'
     compileSdk 33
+    //buildToolsVersion '23.0.1'
 
     defaultConfig {
         applicationId "com.example.learn_opencv"
         minSdk 24
+        //multiDexEnabled true
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -87,5 +89,7 @@ dependencies {
     // UI
     //implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     //implementation "com.google.android.material:material:$rootProject.materialVersion"
+    //data storage
+    implementation 'com.google.code.gson:gson:2.10.1'
 
 }

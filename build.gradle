@@ -20,5 +20,5 @@ plugins {
 ext{
     lifecycleVersion = '2.4.0'
     materialVersion = '1.4.0'
-    roomVersion = '2.3.0'
+    roomVersion = "2.5.1"
 }

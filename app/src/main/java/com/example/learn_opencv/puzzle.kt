@@ -1,6 +1,8 @@
 package com.example.learn_opencv
 
 import android.graphics.Bitmap
+import androidx.room.TypeConverter
+import com.google.gson.Gson
 
 class Puzzle() {
 
@@ -18,6 +20,5 @@ class Puzzle() {
         }
 
     }
-
 
 }

@@ -1,27 +1,24 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.learn_opencv.Clue
+import com.example.learn_opencv.Puzzle
 
-
-class puzzleViewModel: ViewModel() {
-
-
+class PuzzleSolveViewModel(): ViewModel() {
 
     var dimension = 0  //the grids are always square, e.g. 15x15 black and white square
-
 
     private var _activeClue = "dfh"
     var activeClue: String = "afaa"
         get() = _activeClue
 
-    // I imagine this could be stored in a json fairly easily. For now we have this dummy data.
+    //I imagine this could be stored in a json fairly easily. For now we have this dummy data.
     private val _clue1 = Clue("1d", listOf( Pair(0,0),Pair(1,0),Pair(2,0),Pair(3,0) ))
     private val _clue2 = Clue("1a", listOf( Pair(0,0),Pair(0,1),Pair(0,2),Pair(0,3) ))
     private val _clue3 = Clue("3a", listOf( Pair(2,0),Pair(2,1),Pair(2,2) ))
     private val _clue4 = Clue("2d", listOf( Pair(0,2),Pair(1,2),Pair(2,2) ))
     private val _clue5 = Clue("4a", listOf( Pair(4,1),Pair(4,2),Pair(4,3) ))
-
     private val _clue6 = Clue("5a", listOf( Pair(6,0),Pair(6,1),Pair(6,2) ))
 
 
@@ -45,7 +42,7 @@ class puzzleViewModel: ViewModel() {
     //this is a map of the coordinates in the grid and the text at that coordinate
     private val _coordTextMap = createCoordTextMap(_clues)
     val coordTextMap : MutableMap< Pair<Int, Int>, MutableLiveData<String>>
-            get() = _coordTextMap
+        get() = _coordTextMap
 
 
     // this is a map where the keys are coordinates and the values are a list strings of the names
@@ -53,14 +50,14 @@ class puzzleViewModel: ViewModel() {
     private val _coordClueNamesMap = createCoordClueNamesMap(_clues)
     val coordClueNamesMap: MutableMap< Pair<Int, Int>, MutableList<String>>
         get() = _coordClueNamesMap
-        //set(value) {_coordClueNamesMap[value.first] = value.second}
+    //set(value) {_coordClueNamesMap[value.first] = value.second}
 
     //
     private val _coordClueLabels = mapOf<Pair<Int,Int>, String>(
         Pair(0,0) to "1" , Pair(0,2) to "3" , Pair(2,0) to "2"
     )
     val coordClueLabels : Map< Pair<Int,Int>, String >
-            get() = _coordClueLabels
+        get() = _coordClueLabels
 
 
     private fun createCoordClueNamesMap(clues : Map<String, Clue>) : MutableMap< Pair<Int, Int>, MutableList<String>> {
@@ -90,13 +87,11 @@ class puzzleViewModel: ViewModel() {
         return clueSet
     }
 
-    private fun createCoordTextMap(clues : Map<String, Clue>) : MutableMap< Pair<Int, Int>, MutableLiveData<String> > {
-        val coordTextMap = mutableMapOf<Pair<Int,Int>, MutableLiveData<String> >()
+    private fun createCoordTextMap(clues : Map<String, Clue>) : MutableMap< Pair<Int, Int>, MutableLiveData<String>> {
+        val coordTextMap = mutableMapOf<Pair<Int,Int>, MutableLiveData<String>>()
         _coordSet.forEach{
             coordTextMap[it] = MutableLiveData<String>("") //start each blank?
         }
         return coordTextMap
     }
-
-
 }
