@@ -9,12 +9,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.learn_opencv.adapters.PuzzleCardAdapter
-import com.example.learn_opencv.databinding.FragmentGridScanPreviewBinding
 import com.example.learn_opencv.databinding.FragmentPuzzleSelectBinding
-import com.example.learn_opencv.viewModels.puzzleViewModel
-import com.example.learn_opencv.viewModels.puzzleViewModelFactory
+import com.example.learn_opencv.viewModels.*
 
 
 class puzzleSelectFragment : Fragment() {
@@ -23,8 +20,8 @@ class puzzleSelectFragment : Fragment() {
     private var _binding: FragmentPuzzleSelectBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: puzzleViewModel by activityViewModels{
-        puzzleViewModelFactory((requireActivity().application as PuzzleApplication).repository)
+    private val viewModel: PuzzleSelectViewModel by activityViewModels{
+        PuzzleSelectViewModelFactory((requireActivity().application as PuzzleApplication).repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +49,8 @@ class puzzleSelectFragment : Fragment() {
         val adapter = PuzzleCardAdapter(context)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
+
+        //recyclerView.addOnItemTouchListener
 
         viewModel.allPuzzles.observe(viewLifecycleOwner, Observer{puzzles ->
             Log.i(TAG,"adding puzzle to recycler view")

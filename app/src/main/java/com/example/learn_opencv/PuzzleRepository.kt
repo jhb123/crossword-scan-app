@@ -10,6 +10,10 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
 
     val allPuzzles: Flow<List<PuzzleData>> = puzzleDao.getPuzzles()
 
+
+     val getPuzzle : Flow<PuzzleData> = puzzleDao.getPuzzleByID("25/4/2023 05:41:30")
+
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(puzzle: PuzzleData) {

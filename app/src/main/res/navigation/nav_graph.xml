@@ -60,7 +60,8 @@
         tools:layout="@layout/fragment_puzzle_select" >
         <action
             android:id="@+id/action_puzzleSelectFragment2_to_solveFragment2"
-            app:destination="@id/solveFragment" />
+            app:destination="@id/solveFragment"
+            />
         <action
             android:id="@+id/action_puzzleSelectFragment2_to_gridScanPreviewFragment"
             app:destination="@id/gridScanPreviewFragment" />
@@ -79,5 +80,8 @@
         <action
             android:id="@+id/action_solveFragment2_to_puzzleSelectFragment2"
             app:destination="@id/puzzleSelectFragment" />
+        <argument
+            android:name="puzzle"
+            app:argType="string" />
     </fragment>
 </navigation>

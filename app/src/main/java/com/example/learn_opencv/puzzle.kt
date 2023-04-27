@@ -7,7 +7,7 @@ import com.google.gson.Gson
 class Puzzle() {
 
     //should be a way of stopping external object changing this?
-    val clues = mutableMapOf<String, Clue>()
+    var clues = mutableMapOf<String, Clue>()
 
     //var image = Bitmap()
 

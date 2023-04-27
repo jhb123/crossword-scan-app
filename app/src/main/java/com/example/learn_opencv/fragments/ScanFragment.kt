@@ -36,6 +36,7 @@ class ScanFragment : Fragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         Log.i(TAG, "In onCreateView")
+
         // Inflate the layout for this fragment
         _binding = FragmentScanBinding.inflate(inflater, container, false)
 

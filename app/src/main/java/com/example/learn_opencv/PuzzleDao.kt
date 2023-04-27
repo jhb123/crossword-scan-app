@@ -11,6 +11,9 @@ interface PuzzleDao {
     @Query("SELECT * FROM puzzle_table")
     fun getPuzzles(): Flow<List<PuzzleData>>
 
+    @Query("SELECT * FROM puzzle_table WHERE id=:uid")
+    fun getPuzzleByID(uid: String):Flow<PuzzleData>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(puzzle: PuzzleData)
 
