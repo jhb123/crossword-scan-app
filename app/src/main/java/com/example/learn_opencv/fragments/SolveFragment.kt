@@ -4,24 +4,20 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.learn_opencv.*
 import com.example.learn_opencv.ui.Teal200
 import com.example.learn_opencv.viewModels.PuzzleSolveViewModel
-import com.example.learn_opencv.viewModels.PuzzleSolveViewModelFactory
-import kotlinx.coroutines.flow.collect
 
 
 private val TAG = "SolveFragment"
@@ -46,10 +42,9 @@ class SolveFragment : Fragment () {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White)
+                        .background(Color.Black)
                 ) {
-                    //Text(text = "Hello, World!")
-                    MessageCard("test",viewModel)
+                    clueGrid(viewModel)
                 }
             }
         }
@@ -59,7 +54,7 @@ class SolveFragment : Fragment () {
 @Composable
 fun MessageCard(name: String, viewModel : PuzzleSolveViewModel) {
     //val UiState by viewModel.uiState.collectAsState()
-    val puzzleData by viewModel.puzzleData.collectAsState()
+    val puzzleData by viewModel.uiState.collectAsState()
     Log.i(TAG,"Puzzle Name: ${puzzleData.name}")
     Log.i(TAG,"Puzzle size: ${puzzleData.currentPuzzle.clues.size}")
 //    Log.i(TAG,"clues: ${puzzleData?.puzzle?.clues}")
@@ -67,6 +62,45 @@ fun MessageCard(name: String, viewModel : PuzzleSolveViewModel) {
     Log.i(TAG,"Setting composable text")
     Text(text = "Hello, $name!",color = Teal200)
 }
+
+@Composable
+fun clueGrid(viewModel : PuzzleSolveViewModel){
+    val uiState by viewModel.uiState.collectAsState()
+    Log.i(TAG,"Drawing grid")
+    //val clues = viewModel.clues
+    for( clue in uiState.currentPuzzle.clues){
+        for(cell in clue.value.clueBoxes){
+            clueBox(viewModel, cell)
+        }
+    }
+}
+
+@Composable
+fun clueBox(viewModel : PuzzleSolveViewModel, coord : Pair<Int,Int>) {
+    val active = viewModel.getActiveClue().observeAsState()
+    //val uiState by viewModel.uiState.collectAsState()
+    Log.i(TAG, "updating box")
+
+    Box(modifier = Modifier
+        .size(width = 25.dp, height = 25.dp)
+        .offset(x = (coord.first * 25).dp)
+        .offset(y = (coord.second * 25).dp)
+        .padding(1.dp)
+        .background( if(active.value?.clueBoxes?.contains(coord) == true){Color.Red}
+        else{Color.White}
+        )
+        .clickable {
+            viewModel.setActiveClue(coord)
+        }
+    ) {
+        //stuff inside box
+    }
+}
+
+//when(coord){
+//    active.value -> Color.Red
+//    else -> Color.White
+//}
 
 
 //class SolveFragment : Fragment() {

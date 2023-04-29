@@ -7,6 +7,12 @@ buildscript {
         kotlin_version = "1.7.10"
         material_version = "1.7.0-alpha2"
         nav_version = "2.5.2"
+        lifecycleVersion = '2.4.0'
+        materialVersion = '1.4.0'
+        roomVersion = "2.5.1"
+        composeMaterialVersion = "1.0.0-beta01"
+        composeVersion = "1.4.2"
+
     }
     dependencies {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
@@ -20,7 +26,7 @@ plugins {
 
 }
 ext{
-    lifecycleVersion = '2.4.0'
-    materialVersion = '1.4.0'
-    roomVersion = "2.5.1"
+    //lifecycleVersion = '2.4.0'
+    //materialVersion = '1.4.0'
+    //roomVersion = "2.5.1"
 }
