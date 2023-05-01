@@ -3,27 +3,33 @@ package com.example.learn_opencv.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.example.learn_opencv.*
-import com.example.learn_opencv.ui.Teal200
+import com.example.learn_opencv.R
+import com.example.learn_opencv.ui.PuzzleUiState
 import com.example.learn_opencv.viewModels.PuzzleSolveViewModel
 
-
 private val TAG = "SolveFragment"
-class SolveFragment : Fragment () {
 
-    lateinit private var viewModel : PuzzleSolveViewModel //by activityViewModels{
+class SolveFragment : Fragment() {
+
+    lateinit private var viewModel: PuzzleSolveViewModel //by activityViewModels{
 //        PuzzleSolveViewModelFactory((requireActivity().application as PuzzleApplication).repository)
 //    }
 
@@ -34,7 +40,8 @@ class SolveFragment : Fragment () {
     ): View {
         val puzzleIdx = arguments?.getInt("puzzle_id")
         viewModel = PuzzleSolveViewModel(
-            (requireActivity().application as PuzzleApplication).repository,puzzleIdx!!)
+            (requireActivity().application as PuzzleApplication).repository, puzzleIdx!!
+        )
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -44,376 +51,149 @@ class SolveFragment : Fragment () {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    clueGrid(viewModel)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+
+                        ) {
+                        clueGrid(viewModel)
+                        keyBoard(viewModel)
+                    }
                 }
             }
         }
     }
 }
-//
-@Composable
-fun MessageCard(name: String, viewModel : PuzzleSolveViewModel) {
-    //val UiState by viewModel.uiState.collectAsState()
-    val puzzleData by viewModel.uiState.collectAsState()
-    Log.i(TAG,"Puzzle Name: ${puzzleData.name}")
-    Log.i(TAG,"Puzzle size: ${puzzleData.currentPuzzle.clues.size}")
-//    Log.i(TAG,"clues: ${puzzleData?.puzzle?.clues}")
 
-    Log.i(TAG,"Setting composable text")
-    Text(text = "Hello, $name!",color = Teal200)
-}
 
 @Composable
-fun clueGrid(viewModel : PuzzleSolveViewModel){
-    val uiState by viewModel.uiState.collectAsState()
-    Log.i(TAG,"Drawing grid")
-    //val clues = viewModel.clues
-    for( clue in uiState.currentPuzzle.clues){
-        for(cell in clue.value.clueBoxes){
-            clueBox(viewModel, cell)
+fun keyBoard(viewModel: PuzzleSolveViewModel){
+    Log.i(TAG,"Composing button ")
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+
+    Column() {
+        Row (
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ){
+            "QWERTYUIOP".forEach {
+                Button(onClick = { viewModel.setLetter(it.toString()) },
+                        modifier = Modifier
+                            .width(screenWidth / 10)
+                            .padding(2.dp)
+                ) {
+                    Text(text = it.toString(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+            "ASDFGHJKL".forEach {
+                Button(onClick = { viewModel.setLetter(it.toString()) },
+                    modifier = Modifier
+                        .width(screenWidth / 9)
+                        .padding(2.dp)
+                ) {
+                    Text(text = it.toString(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+        Row (
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ){
+            "ZXCVBNM".forEach {
+                Button(onClick = { viewModel.setLetter(it.toString()) },
+                    modifier = Modifier
+                        .width(screenWidth / 8)
+                        .padding(2.dp)
+                ) {
+                    Text(text = it.toString(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            Button(onClick = { viewModel.delLetter() },
+                modifier = Modifier
+                    .width(screenWidth / 8)
+                    .padding(2.dp)
+            ) {
+                Image(painter = painterResource(R.drawable.ic_baseline_keyboard_backspace_24),
+                    contentDescription = "delete",
+                    colorFilter = ColorFilter.tint(Color.White))
+            }
         }
     }
+
 }
 
 @Composable
-fun clueBox(viewModel : PuzzleSolveViewModel, coord : Pair<Int,Int>) {
-    val active = viewModel.getActiveClue().observeAsState()
-    //val uiState by viewModel.uiState.collectAsState()
-    Log.i(TAG, "updating box")
+fun clueGrid(viewModel: PuzzleSolveViewModel) {
+    val uiState = viewModel.uiState.collectAsState()
+    val grid = viewModel.convertPuzzleToCellSet(uiState.value.currentPuzzle)
 
-    Box(modifier = Modifier
-        .size(width = 25.dp, height = 25.dp)
-        .offset(x = (coord.first * 25).dp)
-        .offset(y = (coord.second * 25).dp)
-        .padding(1.dp)
-        .background( if(active.value?.clueBoxes?.contains(coord) == true){Color.Red}
-        else{Color.White}
-        )
-        .clickable {
-            viewModel.setActiveClue(coord)
-        }
-    ) {
-        //stuff inside box
+    val gridSize = viewModel.getPuzzleDim()
+    Log.i(TAG, "calling puzzle layout")
+        Box(modifier = Modifier
+            .size(width = (gridSize * 25).dp, height = (gridSize * 25).dp)
+            .background(Color.DarkGray)
+        ) {
+            val puzzleLayout = PuzzleLayout(
+                onClueSelect = {
+                    Log.i(TAG,"$it selected")
+                    //viewModel.updateSelection(it)
+                    viewModel.updateCurrentCell(it)
+                    viewModel.updateactiveClue2(it)
+                },
+                uiState = uiState.value,
+                grid = grid
+            )
     }
+
 }
 
-//when(coord){
-//    active.value -> Color.Red
-//    else -> Color.White
-//}
+@Composable
+fun PuzzleLayout(
+    onClueSelect: (Triple<Int, Int, String>) -> Unit,
+    uiState: PuzzleUiState,
+    grid :  MutableSet<Triple<Int, Int, String>>
+) {
+    Log.i(TAG, "Drawing grid")
+    grid.forEach { coord ->
+        Log.i(TAG, "Creating box $coord from scratch?")
+        //cellLetterMap[coord]
+        Box(contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(width = 25.dp, height = 25.dp)
+                .offset(x = (coord.first * 25).dp)
+                .offset(y = (coord.second * 25).dp)
+                .padding(1.dp)
+                .background(
+                    if (coord == uiState.currentCell) {
+                        Color.Green
+                    } else if (uiState.currentClue.clueBoxes.contains(coord)) {
+                        Color.Yellow
+                    } else {
+                        Color.White
+                    }
+                )
+                .pointerInput(coord) {
+                    detectTapGestures {
+                        onClueSelect(coord)
+                    }
+                }
 
-
-//class SolveFragment : Fragment() {
-//
-//    private var _binding: FragmentSolveBinding? = null
-//    private val binding get() = _binding!!
-//    private val TAG = "SolveFragment"
-////    private var _viewModel: PuzzleSolveViewModel? = null
-////    private val viewModel get() = _viewModel!!
-//
-//    private val viewModel: PuzzleSolveViewModel by activityViewModels{
-//        PuzzleSolveViewModelFactory((requireActivity().application as PuzzleApplication).repository)
-//    }
-//
-//    private val clueBoxes = mutableMapOf<Pair<Int, Int>, toggleEditText>()
-//    lateinit private var activeClue : Clue
-//    lateinit private var ansGrid : GridLayout
-//    lateinit private var id : String
-//
-//    private var screenWidth by Delegates.notNull<Int>()
-//
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        Log.i(TAG,"onCreateView")
-//        val puzzle = getArguments()
-//        if (puzzle != null) {
-//            Log.i(TAG,"puzzle ${puzzle.getString("puzzle_id")}")
-//            id=puzzle.getString("puzzle_id").toString()
-//        }
-//
-//        // Inflate the layout for this fragment
-//        _binding = FragmentSolveBinding.inflate(inflater, container, false)
-//        return binding.root
-//
-//    }
-//
-//
-//    @RequiresApi(Build.VERSION_CODES.N)
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//    }
-//
-//    fun setUpGrid() {
-//
-//            viewModel.puzzleData.observe(viewLifecycleOwner, Observer{puzzleData ->
-//                Log.i(TAG,"adding puzzle to recycler view")
-//                puzzleData.puzzle.clues = viewModel.clues as MutableMap<String, Clue>
-//
-//            })
-//            viewModel.setUpData()
-//
-//            val size = Point()
-//            requireActivity().getWindowManager().getDefaultDisplay().getSize(size)
-//            screenWidth = size.x
-//
-//            viewModel.dimension = 15
-//
-//            ansGrid = GridLayout(context)
-//            ansGrid.columnCount = viewModel.dimension
-//            ansGrid.rowCount = viewModel.dimension
-//            ansGrid.setBackgroundColor(getColor("gridBlack"))
-//
-//            //activity.supportFragmentManager.fragments.add()
-//
-//            //make all the boxes
-//            viewModel.coordClueNamesMap.forEach { coord, clueList ->
-//                val letterBox = letterBoxFactory(coord, clueList, ansGrid)
-//                clueBoxes[coord] = letterBox!!
-//
-//
-//            }
-//
-//            //apply listeners to each cluebox
-//            viewModel.coordClueNamesMap.forEach { coord, clueList ->
-//                clueBoxes[coord]!!.apply {
-//                    //set the highlighter up
-//                    this.setOnTouchListener{ view, event ->
-//                        //this.setSelection(this.text!!.lastIndex+1)
-//                        if (event.getAction() == MotionEvent.ACTION_DOWN){
-//
-//                            Log.d(TAG,"number of clues associated with (${coord.first},${coord.second})" +
-//                                    " ${viewModel.coordClueNamesMap[coord]!!.size}")
-//                            Log.d(TAG,"current select state: ${clueBoxes[coord]!!.toggled}")
-//
-//                            if(clueList.size > 1) {
-//                                when (clueBoxes[coord]!!.toggled) {
-//                                    toggleState.SELECT_A ->{
-//                                        var clueName = viewModel.coordClueNamesMap[coord]!![1]
-//                                        activeClue = viewModel.clues[clueName]!!
-//                                        clueBoxes[coord]!!.toggled = toggleState.SELECT_B
-//                                    }
-//                                    toggleState.SELECT_B -> {
-//                                        var clueName = viewModel.coordClueNamesMap[coord]!![0]
-//                                        activeClue = viewModel.clues[clueName]!!
-//                                        clueBoxes[coord]!!.toggled = toggleState.SELECT_A
-//                                    }
-//                                    toggleState.NOT_SELECT -> {
-//                                        var clueName = viewModel.coordClueNamesMap[coord]!![0]
-//                                        activeClue = viewModel.clues[clueName]!!
-//                                        clueBoxes[coord]!!.toggled = toggleState.SELECT_A
-//                                    }
-//                                }
-//                            }
-//                            else {
-//                                var clueName = viewModel.coordClueNamesMap[coord]!![0]
-//                                activeClue = viewModel.clues[clueName]!!
-//                                clueBoxes[coord]!!.toggled = toggleState.SELECT_A
-//                            }
-//                            Log.d(TAG,"new select state: ${clueBoxes[coord]!!.toggled}")
-//                            Log.i(TAG,"selected: ${activeClue.clueName} , ${activeClue.clueBoxes}")
-//                            clueBoxes[coord]!!.activeClueName = activeClue.clueName
-//                            viewModel.activeClue = activeClue.clueName
-//                            Log.i(TAG,"set ${coord}: ${clueBoxes[coord]!!.activeClueName}")
-//
-//
-//                            //deselect all
-//                            clueBoxes.forEach { pair, toggleEditText ->
-//                                if(pair != coord ) {
-//                                    toggleEditText.toggled = toggleState.NOT_SELECT
-//                                    toggleEditText.setBackgroundColor(getColor("nonHighlighted"))
-//                                }
-//                            }
-//
-//                            when (clueBoxes[coord]!!.toggled) {
-//                                toggleState.SELECT_A -> {
-//                                    val relatedBoxes = viewModel.clues[clueList[0]]!!.clueBoxes
-//                                    relatedBoxes!!.forEach { it ->
-//                                        clueBoxes[it]!!.setBackgroundColor(getColor("highlighted"))
-//                                        clueBoxes[it]!!.toggled = toggleState.SELECT_A
-//                                    }
-//                                }
-//                                else -> {
-//                                    val relatedBoxes = viewModel.clues[clueList[1]]!!.clueBoxes
-//                                    relatedBoxes!!.forEach { it ->
-//                                        clueBoxes[it]!!.setBackgroundColor(getColor("highlighted"))
-//                                        clueBoxes[it]!!.toggled = toggleState.SELECT_B
-//                                    }
-//                                }
-//                            }
-//
-//                            //view.performClick()
-//                            return@setOnTouchListener false
-//                        }
-//                        //view.performClick()
-//                        return@setOnTouchListener false
-//                    }
-//
-//                    //set the text wathcher
-//                    this.addTextChangedListener( object : TextWatcher {
-//                        fun getNextEditCoord() : Pair<Int,Int>{
-//                            var clueCoords = activeClue.clueBoxes
-//                            val nextBoxIdx = clueCoords.indexOf(coord)+1
-//                            Log.i(TAG,"curr idx ${nextBoxIdx-1}, next idx ${nextBoxIdx}")
-//
-//                            if( nextBoxIdx < activeClue.clueBoxes.size){
-//                                Log.i(TAG,"setting next edit box")
-//                                return clueCoords[nextBoxIdx]
-//                            }
-//                            else{
-//                                return coord
-//                            }
-//                        }
-//
-//                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                            Log.i(TAG, "before text changed for ${coord}: ${listOf(p0,p1,p2,p3)}")
-//                        }
-//
-//                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                            Log.i(TAG, "on text changed for ${coord}: ${listOf(p0,p1,p2,p3)}")
-//                            if(clueBoxes[coord]!!.hasFocus()) {
-//                                if (!p0.isNullOrEmpty()) {
-//                                    if (p0.length <= 2) {
-//                                        Log.i(TAG, "requesting focus of next idx")
-//                                        val nextEditCoord = getNextEditCoord()
-//                                        if (nextEditCoord != coord) {
-//                                            val idx = clueBoxes[nextEditCoord]!!.text?.lastIndex
-//                                            //Log.i(TAG, "next text edit contains: ${nextEdit.text}")
-//                                            Log.i(TAG, "next text edit last idx: ${idx}")
-//                                            clueBoxes[nextEditCoord]!!.requestFocus()
-//                                            //clueBoxes[nextEditCoord]!!.setSelection(idx!!+1)
-//                                        } else {
-//                                            binding.root.requestFocus()
-//                                        }
-//                                    }
-//                                    Log.i(TAG, "text at p1 ${p0!!.toString()[p1].uppercase()}")
-//                                    Log.i(TAG, "text at p2 ${p0!!.toString()[p2].uppercase()}")
-//
-//                                    Log.i(TAG, "setting text to ${p0!!.toString()[p1].uppercase()}")
-//                                    viewModel.coordTextMap[coord]!!.postValue(p0!!.toString()[p1].uppercase())
-//                                    clueBoxes[coord]!!.setTextColor(getColor("gridBlack"))
-//
-//                                }
-//                            }
-//                        }
-//
-//                        override fun afterTextChanged(p0: Editable?) {
-//                        }
-//                    })
-//
-//
-//                    this.setOnFocusChangeListener { view, isFocussed ->
-//                        if(isFocussed) {
-//                            Log.i(TAG,"Focussed ${coord}")
-//                            this.setSelection(0)
-//                        }
-//                    }
-//
-//                    this.setOnKeyListener( View.OnKeyListener { view, keyCode, keyEvent ->
-//                        if (keyCode == KeyEvent.KEYCODE_DEL && keyEvent.action == KeyEvent.ACTION_DOWN) {
-//                            if(clueBoxes[coord]!!.text.toString() == "") {
-//                                var clueCoords = activeClue.clueBoxes
-//                                val prevBoxIdx = clueCoords.indexOf(coord) - 1
-//                                if (prevBoxIdx >= 0) {
-//                                    val prevClueBox = clueBoxes[clueCoords[prevBoxIdx]]!!
-//                                    prevClueBox.requestFocus()
-//                                    prevClueBox.setSelection(prevClueBox.text!!.lastIndex+1 )
-//
-//                                }
-//                            }
-//                            return@OnKeyListener true
-//                        }
-//                        false
-//                    })
-//
-//
-////                this.setOnClickListener{
-////                    Log.i(TAG,"Clicked ${coord}")
-////                    this.setSelection(0)
-////                }
-//
-//                }
-//            }
-//
-//            binding.root.addView(ansGrid)
-//
-//        }
-//    }
-//
-//
-//    fun letterBoxFactory(coord : Pair<Int,Int>, clueList : List<String>, ansGrid : GridLayout) : toggleEditText? {
-//
-//        val row = GridLayout.spec(coord.first)
-//        val col = GridLayout.spec(coord.second)
-//        val cell = GridLayout.LayoutParams(row, col)
-//        cell.width = screenWidth/15
-//        cell.height = screenWidth/15
-//
-//        val clueBox = FrameLayout(requireContext())
-//        clueBox.setPadding(1,1,1,1)
-//        val textEditParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-//            FrameLayout.LayoutParams.MATCH_PARENT,Gravity.CENTER)
-//
-//        val labelParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-//            FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.NO_GRAVITY)
-////        val editLayoutParams = FrameLayout.LayoutParams(FrameLayout.CENTER_HORIZONTAL, FrameLayout.CENTER_VERTICAL,
-////        RelativeLayout.W)
-//
-//        val tv = context?.let { toggleEditText(it) }
-//        if (tv != null) {
-//            Log.d(TAG,"setting up editText(${coord.first},${coord.second})")
-//            val textObserver = Observer< String> { text ->
-//                tv.setText(text)
-//                tv.setTextColor(getColor("gridBlack"))
-//            }
-//            viewModel.coordTextMap[coord]!!.observe(viewLifecycleOwner,textObserver)
-//            //viewModel.getCoordTextMap().observe(viewLifecycleOwner, textObserver )
-//            //tv.setText(viewModel.coordTextMap[coord])
-//            tv.row = coord.first
-//            tv.col = coord.second
-//            tv.id = View.generateViewId()
-//            tv.setLayoutParams(textEditParams)
-//            tv.setGravity(Gravity.CENTER);
-//            tv.setBackgroundColor(getColor("nonHighlighted"))
-//            tv.setPadding(0 , 0,0,0)
-//            tv.setTextSize(0.5f)
-//            tv.inputType = EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-//            tv.setTextAppearance(context, R.style.TextAppearance_Large);
-//            tv.toggled = toggleState.NOT_SELECT
-//            tv.setFilters(arrayOf(InputFilter.LengthFilter(2)))
-//            when(clueList.size){
-//                1->tv.isCheckLetter = false
-//                2->tv.isCheckLetter = true
-//            }
-//
-//            val label = context?.let { TextView(it) }
-//            if (label != null && coord in viewModel.coordClueLabels) {
-//                label.text = viewModel.coordClueLabels[coord]
-//                label.setPadding(0,-10,0,0)
-//                label.setGravity(Gravity.TOP)
-//                label.setLayoutParams(labelParams)
-//                label.setTextColor(getColor("gridBlack"))
-//
-//            }
-//
-//            //boxLayout.width = screenWidth/6
-//            clueBox.addView(tv,textEditParams)
-//            clueBox.addView(label,labelParams)
-//            //ansGrid.addView(label, cell);
-//            ansGrid.addView(clueBox, cell);
-//
-//
-//        }
-//        return tv
-//    }
-//
-//    fun getColor(name: String) : Int {
-//        return resources.getColor(resources.getIdentifier(name, "color", activity?.packageName),activity?.theme)
-//    }
-//}
-//
-//
-//
+        ){
+            Text(text = coord.third,textAlign = TextAlign.Center)
+        }
+    
+    }
+}

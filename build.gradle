@@ -10,7 +10,7 @@ buildscript {
         lifecycleVersion = '2.4.0'
         materialVersion = '1.4.0'
         roomVersion = "2.5.1"
-        composeMaterialVersion = "1.0.0-beta01"
+        composeMaterial3Version = "1.0.1"
         composeVersion = "1.4.2"
 
     }

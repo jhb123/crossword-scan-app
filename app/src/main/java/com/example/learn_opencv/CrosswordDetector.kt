@@ -276,8 +276,8 @@ class CrosswordDetector {
             val clueMarks = getGridWithClueMarks()
 
             var cellValue = 0.0
-            val acrosses = mutableMapOf<Pair<Int, Int>, String>()
-            val downs = mutableMapOf<Pair<Int, Int>, String>()
+            val acrosses = mutableMapOf<Triple<Int, Int, String>, String>()
+            val downs = mutableMapOf<Triple<Int, Int, String>, String>()
 
             var clueIdx = 1
             for (col_idx in 0..clueMarks.cols() - 1) {
@@ -287,16 +287,16 @@ class CrosswordDetector {
                     //Log.v(TAG, "cell (${row_idx} ${col_idx}) value: ${cellValue}")
                     when (cellValue) {
                         2.0 -> {
-                            acrosses[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}a"
+                            acrosses[Triple(clueMarks.rows() - row_idx - 1, col_idx,"")] = "${clueIdx}a"
                             clueIdx += 1
                         }
                         3.0 -> {
-                            downs[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}d"
+                            downs[Triple(clueMarks.rows() - row_idx - 1, col_idx,"")] = "${clueIdx}d"
                             clueIdx += 1
                         }
                         4.0 -> {
-                            downs[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}d"
-                            acrosses[Pair(clueMarks.rows() - row_idx - 1, col_idx)] = "${clueIdx}a"
+                            downs[Triple(clueMarks.rows() - row_idx - 1, col_idx,"")] = "${clueIdx}d"
+                            acrosses[Triple(clueMarks.rows() - row_idx - 1, col_idx,"")] = "${clueIdx}a"
                             clueIdx += 1
                         }
                     }
@@ -363,7 +363,7 @@ class CrosswordDetector {
         return binaryGrid
     }
 
-    fun getAcrossClues() : List<List<Pair<Int,Int>>> {
+    fun getAcrossClues() : List<MutableList<Triple<Int,Int,String>>> {
         var kernel = Mat.zeros(3,3, CV_32F)
         kernel.put(0,1,1.0)
         kernel.put(1,1,1.0)
@@ -387,9 +387,9 @@ class CrosswordDetector {
 
 
 
-        val clue_coords = mutableListOf< MutableList< Pair<Int,Int>>>()
+        val clue_coords = mutableListOf< MutableList< Triple<Int, Int, String>>>()
         var cellValue = 0.0
-        var clue = mutableListOf< Pair<Int,Int>>()
+        var clue = mutableListOf< Triple<Int, Int, String>>()
 
         //val row = Mat()
         for( col_idx in 0..newGrid.cols()-1){
@@ -399,20 +399,20 @@ class CrosswordDetector {
                 //Log.v(TAG,"cell (${row_idx} ${col_idx}) value: ${cellValue}")
                 if(cellValue > 0){
                   //  Log.v(TAG,"Adding cell to current Clue")
-                    clue.add(Pair(newGrid.rows() - row_idx - 1, col_idx))
+                    clue.add(Triple(newGrid.rows() - row_idx - 1, col_idx,""))
                     //Log.v(TAG,clue.toString())
                 }
                 else{
                     if(clue.size > 0) {
                       //  Log.v(TAG,"Adding Clue to Clue list and resetting current Clue")
                         clue_coords.add(clue)
-                        clue = mutableListOf< Pair<Int,Int>>()
+                        clue = mutableListOf< Triple<Int, Int, String>>()
                     }
                 }
             }
             if(clue.size > 0){
                 clue_coords.add(clue)
-                clue = mutableListOf< Pair<Int,Int>>()
+                clue = mutableListOf< Triple<Int, Int, String>>()
             }
         }
 
@@ -424,7 +424,7 @@ class CrosswordDetector {
         return clue_coords
     }
 
-    fun getDownClues() : List<List<Pair<Int,Int>>> {
+    fun getDownClues() : List<MutableList<Triple<Int, Int, String>>> {
         var kernel = Mat.zeros(3,3, CV_32F)
         kernel.put(1,0,1.0)
         kernel.put(1,1,1.0)
@@ -448,9 +448,9 @@ class CrosswordDetector {
 
         //Log.i(TAG,"grid:\n${binaryCrosswordImg.dump()}")
 
-        val clue_coords = mutableListOf< MutableList< Pair<Int,Int>>>()
+        val clue_coords = mutableListOf< MutableList< Triple<Int, Int, String>>>()
         var cellValue = 0.0
-        var clue = mutableListOf< Pair<Int,Int>>()
+        var clue = mutableListOf< Triple<Int, Int, String>>()
 
         //val row = Mat()
         for( row_idx in (newGrid.rows()-1) downTo 0 ){
@@ -459,20 +459,20 @@ class CrosswordDetector {
                 Log.v(TAG,"cell (${row_idx} ${col_idx}) value: ${cellValue}")
                 if(cellValue > 0){
                     Log.v(TAG,"Adding cell to current Clue")
-                    clue.add(Pair(newGrid.rows() - row_idx - 1, col_idx))
+                    clue.add(Triple(newGrid.rows() - row_idx - 1, col_idx,""))
                     Log.v(TAG,clue.toString())
                 }
                 else{
                     if(clue.size > 0) {
                         Log.v(TAG,"Adding Clue to Clue list and resetting current Clue")
                         clue_coords.add(clue)
-                        clue = mutableListOf< Pair<Int,Int>>()
+                        clue = mutableListOf< Triple<Int, Int, String>>()
                     }
                 }
             }
             if(clue.size > 0){
                 clue_coords.add(clue)
-                clue = mutableListOf< Pair<Int,Int>>()
+                clue = mutableListOf< Triple<Int, Int, String>>()
             }
         }
 
