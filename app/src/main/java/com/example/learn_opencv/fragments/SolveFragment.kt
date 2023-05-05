@@ -11,9 +11,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -24,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.example.learn_opencv.*
 import com.example.learn_opencv.R
+import com.example.learn_opencv.ui.PuzzleUiState
 import com.example.learn_opencv.viewModels.PuzzleSolveViewModel
-import kotlinx.coroutines.launch
 
 private val TAG = "SolveFragment"
 
@@ -139,7 +137,8 @@ fun keyBoard(viewModel: PuzzleSolveViewModel){
 
 @Composable
 fun clueGrid(viewModel: PuzzleSolveViewModel) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
+    val grid = viewModel.convertPuzzleToCellSet(uiState.value.currentPuzzle)
 
     val gridSize = viewModel.getPuzzleDim()
     Log.i(TAG, "calling puzzle layout")
@@ -149,38 +148,26 @@ fun clueGrid(viewModel: PuzzleSolveViewModel) {
         ) {
             val puzzleLayout = PuzzleLayout(
                 onClueSelect = {
-                    viewModel.updateactiveClue2(it)
+                    Log.i(TAG,"$it selected")
+                    //viewModel.updateSelection(it)
                     viewModel.updateCurrentCell(it)
+                    viewModel.updateactiveClue2(it)
                 },
-                currentClue = viewModel.activeClue2, grid = uiState.currentPuzzle,
-                currentCell = viewModel.currentCell,
-                cellLetterMap = viewModel.cellLetterMap
+                uiState = uiState.value,
+                grid = grid
             )
-
     }
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PuzzleLayout(
-    onClueSelect: (Pair<Int, Int>) -> Unit,
-    currentClue: Clue,
-    currentCell: Pair<Int, Int>,
-    grid: Puzzle,
-    cellLetterMap : MutableMap<Pair<Int,Int> , String>,
+    onClueSelect: (Triple<Int, Int, String>) -> Unit,
+    uiState: PuzzleUiState,
+    grid :  MutableSet<Triple<Int, Int, String>>
 ) {
-
-    val cellSet = mutableSetOf<Pair<Int, Int>>()
-    grid.clues.forEach { s, clue ->
-        clue.clueBoxes.forEach {
-            cellSet.add(it)
-        }
-    }
-
-
     Log.i(TAG, "Drawing grid")
-    cellSet.forEach { coord ->
+    grid.forEach { coord ->
         Log.i(TAG, "Creating box $coord from scratch?")
         //cellLetterMap[coord]
         Box(contentAlignment = Alignment.Center,
@@ -190,25 +177,22 @@ fun PuzzleLayout(
                 .offset(y = (coord.second * 25).dp)
                 .padding(1.dp)
                 .background(
-                    if (coord == currentCell) {
+                    if (coord == uiState.currentCell) {
                         Color.Green
-                    } else if (currentClue.clueBoxes.contains(coord)) {
+                    } else if (uiState.currentClue.clueBoxes.contains(coord)) {
                         Color.Yellow
                     } else {
                         Color.White
                     }
                 )
-                .pointerInput(Unit) {
+                .pointerInput(coord) {
                     detectTapGestures {
-                        Log.i(TAG, "Tapped $coord")
                         onClueSelect(coord)
                     }
                 }
 
         ){
-             cellLetterMap[coord]?.let { Text(text = it,
-                 textAlign = TextAlign.Center,
-             )}
+            Text(text = coord.third,textAlign = TextAlign.Center)
         }
     
     }

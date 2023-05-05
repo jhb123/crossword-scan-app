@@ -1,6 +1,6 @@
 package com.example.learn_opencv
 
-class Clue(clueName : String, clueBoxes : List<Pair<Int,Int>> ){
+class Clue(clueName : String, clueBoxes : MutableList<Triple<Int,Int,String>> ){
     val clueName = clueName
     val clueBoxes = clueBoxes
 }
