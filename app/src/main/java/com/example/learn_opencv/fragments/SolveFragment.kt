@@ -137,8 +137,9 @@ fun keyBoard(viewModel: PuzzleSolveViewModel){
 
 @Composable
 fun clueGrid(viewModel: PuzzleSolveViewModel) {
-    val uiState = viewModel.uiState.collectAsState()
-    val grid = viewModel.convertPuzzleToCellSet(uiState.value.currentPuzzle)
+    val uiState by viewModel.uiState.collectAsState()
+
+    val grid = viewModel.convertPuzzleToCellSet(uiState.currentPuzzle)
 
     val gridSize = viewModel.getPuzzleDim()
     Log.i(TAG, "calling puzzle layout")
@@ -153,7 +154,7 @@ fun clueGrid(viewModel: PuzzleSolveViewModel) {
                     viewModel.updateCurrentCell(it)
                     viewModel.updateactiveClue2(it)
                 },
-                uiState = uiState.value,
+                uiState = uiState,
                 grid = grid
             )
     }
@@ -168,7 +169,7 @@ fun PuzzleLayout(
 ) {
     Log.i(TAG, "Drawing grid")
     grid.forEach { coord ->
-        Log.i(TAG, "Creating box $coord from scratch?")
+        Log.d(TAG, "Creating box $coord from scratch?")
         //cellLetterMap[coord]
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier

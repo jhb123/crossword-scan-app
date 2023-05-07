@@ -1,9 +1,6 @@
 package com.example.learn_opencv
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,4 +16,8 @@ interface PuzzleDao {
 
     @Query("DELETE FROM puzzle_table")
     suspend fun deleteAll()
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    fun updatePuzzle(puzzle: PuzzleData)
+
 }

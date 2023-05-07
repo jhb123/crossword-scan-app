@@ -21,4 +21,11 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
         puzzleDao.insert(puzzle)
     }
 
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+     fun update(puzzle: PuzzleData){
+        Log.i(TAG, "updating database")
+        puzzleDao.updatePuzzle(puzzle)
+    }
+
 }
