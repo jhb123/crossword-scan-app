@@ -7,10 +7,12 @@ import android.graphics.Matrix
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.*
 import com.example.learn_opencv.CrosswordDetector
 import com.example.learn_opencv.PuzzleData
 import com.example.learn_opencv.PuzzleRepository
+import com.google.mlkit.vision.text.Text
 import kotlinx.coroutines.launch
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -28,6 +30,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     //val allPuzzles: LiveData<List<PuzzleData>> = repository.allPuzzles.asLiveData()
 
     var takeSnapshot = false
+
     //private lateinit var gridImg : Bitmap
     private lateinit var _viewFinderImg : Mat // we want this to be set by the camera input
     private lateinit var _viewFinderImgWithContour : Mat // we want this to be set by the camera input
@@ -39,6 +42,9 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         get() = _viewFinderImg
     val viewFinderImgWithContour: Mat
         get() = _viewFinderImgWithContour
+
+    //val clueText = mutableStateListOf<List<Text.TextBlock>>()
+    //val clueText : LiveData<List<Text.TextBlock>> = _clueText
 
 //    val gridImg: MutableLiveData<Bitmap> by lazy {
 //        MutableLiveData<Bitmap>()
