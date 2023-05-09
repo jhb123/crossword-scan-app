@@ -68,6 +68,11 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private val gridImg = MutableLiveData<Bitmap>()
     fun getGridImg() = gridImg
 
+    val cluePicDebug = MutableLiveData<Bitmap>()
+    fun getcluePicDebug() = cluePicDebug
+
+    val clueTextDebug = MutableLiveData<String>()
+
     fun processPreview(inputImg : Mat) {
         _viewFinderImg = inputImg
         _viewFinderImgWithContour = _viewFinderImg.clone()
