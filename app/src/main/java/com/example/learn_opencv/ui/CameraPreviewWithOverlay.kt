@@ -85,7 +85,7 @@ fun CameraPreviewWithOverlay(
         val heightScaleFactor = 0.3
         val layoutWidth = (widthScaleFactor*displayMetrics.widthPixels).toInt()
         val layoutHeight = (heightScaleFactor*displayMetrics.heightPixels).toInt()
-        val cameraTargetResolution = Size(900,1200)
+        val cameraTargetResolution = Size(1200,1600)
 
         val roiHeight = 70 //The amount to crop away.
         val roiWidth = 10
@@ -160,6 +160,10 @@ fun CameraPreviewWithOverlay(
                 Log.i(TAG,"rotated  by $rotationDegrees")
                 if (mediaImage != null) {
 
+                    // this sets up some constants for determining the translation from whats seen in
+                    // the preview to the correct crop for the OCR. These depend on the orientation
+                    // of the captured image.
+
                     //default case for 0deg
                     var imageHeight = mediaImage.height
                     var imageWidth = mediaImage.width
@@ -175,24 +179,18 @@ fun CameraPreviewWithOverlay(
                         }
                     }
 
-                    //assumes the image is cropped vertically, which I think it always will be.
-                    //maybe put this as a check?
-
-                    //find the width and height of the outline in the coordinates of the image.
+                    // This naming convention assumes 0deg rotation
                     val previewHeightPixels = imageWidth * ( layoutHeight.toDouble()/layoutWidth.toDouble() )
                     val cropRoiHeight = previewHeightPixels*((100-roiHeight)/100.0)
                     val cropRoiWidth = imageWidth*((100-roiWidth)/100.0)
                     val cropRoiStart = imageWidth*(roiWidth/200.0) //leave equal space, need factor of 2
                     val cropRoiTop = previewHeightPixels*(roiHeight/200.0)
 
-                    //val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
                     val convertImageToBitmap = ImageUtils.convertYuv420888ImageToBitmap(mediaImage)
-
-                    Log.i(TAG,"shape: $cropRoiStart, $cropRoiTop, $cropRoiWidth, $cropRoiHeight")
 
                     val matrix = Matrix().apply { postRotate(rotationDegrees.toFloat()) }
 
-
+                    // if the image is rotated, the crop needs to be rotated.
                     val croppedBitmap = when(imageProxy.imageInfo.rotationDegrees){
                         0-> {
                             Bitmap.createBitmap(convertImageToBitmap,
@@ -214,9 +212,9 @@ fun CameraPreviewWithOverlay(
                         }
                     }
 
+
                     val image = InputImage.fromBitmap(croppedBitmap, 0)
 
-                    Log.i(TAG,"Cropped image ${image.height}x${image.width}")
                     val result = recognizer.process(image)
                         .addOnSuccessListener { visionText ->
                             val textBlocks = visionText.text

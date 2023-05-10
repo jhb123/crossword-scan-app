@@ -7,9 +7,13 @@ import android.graphics.Matrix
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.example.learn_opencv.CrosswordDetector
+import com.example.learn_opencv.Puzzle
 import com.example.learn_opencv.PuzzleData
 import com.example.learn_opencv.PuzzleRepository
 import com.google.mlkit.vision.text.Text
@@ -28,6 +32,9 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private var TAG = "CrosswordScanViewModel"
 
     //val allPuzzles: LiveData<List<PuzzleData>> = repository.allPuzzles.asLiveData()
+
+    private val _puzzle = mutableStateOf(Puzzle())
+    val puzzle : State<Puzzle> = _puzzle
 
     var takeSnapshot = false
 
@@ -58,7 +65,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 //            it.write(fileContents.toByteArray())
 //       }
 
-        val puzzleData = PuzzleData(currentDate, crosswordDetector.assembleClues())
+        val puzzleData = PuzzleData(currentDate, puzzle.value)
         repository.insert(puzzleData)
     }
 
@@ -129,7 +136,9 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         gridImgResize.postValue(
             Bitmap.createBitmap(gridBitmap, 0, 0, gridBitmap.width, gridBitmap.height, matrix, true)
         )
-        }
+        _puzzle.value = crosswordDetector.assembleClues()
+
+    }
 }
 
 class CrosswordScanViewModelFactory(private val repository: PuzzleRepository) : ViewModelProvider.Factory {

@@ -64,12 +64,12 @@ class ClueScanFragment : Fragment() {
 
                 Column() {
                     CameraPreviewWithOverlay(viewModel = viewModel)
-                    debugText.value?.let {
-                        Text(text = it,
-                            textAlign = TextAlign.Center,
-                            color = Color.Green,
-                            fontSize = 30.sp, modifier = Modifier.padding(50.dp))
-                    }
+//                    debugText.value?.let {
+//                        Text(text = it,
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Green,
+//                            fontSize = 30.sp, modifier = Modifier.padding(50.dp))
+//                    }
                 }
             }
         }
