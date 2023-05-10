@@ -11,24 +11,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.*
+import androidx.compose.foundation.background
 import androidx.compose.material.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import com.example.learn_opencv.PuzzleApplication
 import com.example.learn_opencv.ui.CameraPreviewWithOverlay
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
 
 private const val TAG = "ClueScanFragment"
 
@@ -50,6 +59,7 @@ class ClueScanFragment : Fragment() {
 
 
                 val debugText = viewModel.clueTextDebug.observeAsState()
+                //val puzzle = viewModel.puzzle.observeAsState()
 
                 if (allPermissionsGranted()) {
                     //startCamera()
@@ -62,14 +72,14 @@ class ClueScanFragment : Fragment() {
 
                 //val clues = viewModel.clueText.coll
 
-                Column() {
+                Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
                     CameraPreviewWithOverlay(viewModel = viewModel)
-//                    debugText.value?.let {
-//                        Text(text = it,
-//                            textAlign = TextAlign.Center,
-//                            color = Color.Green,
-//                            fontSize = 30.sp, modifier = Modifier.padding(50.dp))
-//                    }
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = PaddingValues(15.dp),){
+                        items(viewModel.puzzle.value.clues.toList()){ item ->
+                            clueTextScanList(item.first)
+                        }
+                    }
                 }
             }
         }
@@ -108,4 +118,28 @@ class ClueScanFragment : Fragment() {
                 }
             }.toTypedArray()
     }
+}
+
+
+@Composable
+fun clueTextScanList(clueName : String){
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .background(color = MaterialTheme.colorScheme.primaryContainer ,
+                shape = RoundedCornerShape(10.dp))
+    ) {
+        Text(clueName,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(50.dp)
+                .height(100.dp)
+        )
+    }
+
+
 }
