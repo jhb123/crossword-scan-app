@@ -85,7 +85,7 @@ fun CameraPreviewWithOverlay(
         val heightScaleFactor = 0.3
         val layoutWidth = (widthScaleFactor*displayMetrics.widthPixels).toInt()
         val layoutHeight = (heightScaleFactor*displayMetrics.heightPixels).toInt()
-        val cameraTargetResolution = Size(1200,1600)
+        val cameraTargetResolution = Size(1600,2400)
 
         val roiHeight = 70 //The amount to crop away.
         val roiWidth = 10
@@ -217,10 +217,15 @@ fun CameraPreviewWithOverlay(
 
                     val result = recognizer.process(image)
                         .addOnSuccessListener { visionText ->
-                            val textBlocks = visionText.text
-                            viewModel.clueTextDebug.postValue(textBlocks)
+                            val text = visionText.text
+                            //split around things that look like (4) or (4,3] etc.
+                            val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
+                            val matchResult = regex.split(text)
 
+                            viewModel.clueTextDebug.postValue(matchResult[0])
                         }
+
+
                         .addOnFailureListener { e ->
                             // Task failed with an exception
                             // ...

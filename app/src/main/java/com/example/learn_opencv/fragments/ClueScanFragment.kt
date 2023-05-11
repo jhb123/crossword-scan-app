@@ -38,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 private const val TAG = "ClueScanFragment"
 
@@ -74,6 +75,11 @@ class ClueScanFragment : Fragment() {
 
                 Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
                     CameraPreviewWithOverlay(viewModel = viewModel)
+                    Box(modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth()){
+                        debugText.value?.let { Text(it, fontSize = 20.sp) }
+                    }
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp),
                         contentPadding = PaddingValues(15.dp),){
                         items(viewModel.puzzle.value.clues.toList()){ item ->
@@ -128,8 +134,10 @@ fun clueTextScanList(clueName : String){
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .background(color = MaterialTheme.colorScheme.primaryContainer ,
-                shape = RoundedCornerShape(10.dp))
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(10.dp)
+            )
     ) {
         Text(clueName,
             color = MaterialTheme.colorScheme.primary,
