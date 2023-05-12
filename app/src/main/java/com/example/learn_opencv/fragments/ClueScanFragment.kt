@@ -12,18 +12,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.material.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -31,14 +32,13 @@ import com.example.learn_opencv.PuzzleApplication
 import com.example.learn_opencv.ui.CameraPreviewWithOverlay
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.shadow
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.learn_opencv.Clue
 
 private const val TAG = "ClueScanFragment"
 
@@ -60,6 +60,9 @@ class ClueScanFragment : Fragment() {
 
 
                 val debugText = viewModel.clueTextDebug.observeAsState()
+                val currentClue = viewModel.currentClue
+                val puzzle = viewModel.puzzle
+
                 //val puzzle = viewModel.puzzle.observeAsState()
 
                 if (allPermissionsGranted()) {
@@ -75,15 +78,13 @@ class ClueScanFragment : Fragment() {
 
                 Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
                     CameraPreviewWithOverlay(viewModel = viewModel)
-                    Box(modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth()){
-                        debugText.value?.let { Text(it, fontSize = 20.sp) }
-                    }
+                    clueScanPreview(debugText.value,puzzle.value.clues,currentClue)
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp),
                         contentPadding = PaddingValues(15.dp),){
                         items(viewModel.puzzle.value.clues.toList()){ item ->
-                            clueTextScanList(item.first)
+                            clueTextScanList(item.first, currentClue.value, setActive = {
+                                viewModel.setActiveClue(it)
+                            })
                         }
                     }
                 }
@@ -128,16 +129,25 @@ class ClueScanFragment : Fragment() {
 
 
 @Composable
-fun clueTextScanList(clueName : String){
+fun clueTextScanList(clueName : String, currentClueName: String, setActive: (String) -> Unit ){
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                if (clueName == currentClueName) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.secondaryContainer
+                },
                 shape = RoundedCornerShape(10.dp)
             )
+            .pointerInput(clueName) {
+                detectTapGestures {
+                    setActive(clueName)
+                }
+        }
     ) {
         Text(clueName,
             color = MaterialTheme.colorScheme.primary,
@@ -148,6 +158,25 @@ fun clueTextScanList(clueName : String){
                 .height(100.dp)
         )
     }
+}
 
+@Composable
+fun clueScanPreview(scannedText: String?, clues : Map<String , Clue>, currentClueName : State<String>){
 
+    Box(modifier = Modifier
+        .height(200.dp)
+        .fillMaxWidth()) {
+        Column {
+            Row(modifier = Modifier.height(160.dp)){
+                Text(currentClueName.value, fontSize = 40.sp, fontWeight =  FontWeight.Bold)
+                if (scannedText != null) {
+                    Text(scannedText, fontSize = 20.sp)
+                }
+            }
+            Row(){
+                Button(onClick = { /**/ }){Text("left")}
+                Button(onClick = { /**/ }){Text("right")}
+            }
+        }
+    }
 }

@@ -36,6 +36,13 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private val _puzzle = mutableStateOf(Puzzle())
     val puzzle : State<Puzzle> = _puzzle
 
+    private val _currentClue = mutableStateOf("")
+    val currentClue : State<String> = _currentClue
+
+    fun setActiveClue(newClue: String){
+        _currentClue.value = newClue
+    }
+
     var takeSnapshot = false
 
     //private lateinit var gridImg : Bitmap

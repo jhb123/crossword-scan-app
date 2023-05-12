@@ -1,22 +1,19 @@
 package com.example.learn_opencv
 
-import android.graphics.Bitmap
-import androidx.room.TypeConverter
-import com.google.gson.Gson
-
 class Puzzle() {
 
     //should be a way of stopping external object changing this?
-    var clues = mutableMapOf<String, Clue>()
+    private val _clues = mutableMapOf<String, Clue>()
+    val clues : Map<String, Clue> = _clues
 
     //var image = Bitmap()
 
     fun addClue(name:String, clue: Clue){
-        if(name in clues){
+        if(name in _clues){
             throw Exception("A clue with this name already exists")
         }
         else{
-            clues[name]= clue
+            _clues[name]= clue
         }
 
     }
