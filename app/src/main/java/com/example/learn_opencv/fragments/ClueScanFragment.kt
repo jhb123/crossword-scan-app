@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,19 +34,20 @@ import com.example.learn_opencv.ui.CameraPreviewWithOverlay
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.learn_opencv.Clue
+import com.example.learn_opencv.Puzzle
 
 private const val TAG = "ClueScanFragment"
 
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
 class ClueScanFragment : Fragment() {
 
-    private val viewModel: CrosswordScanViewModel by activityViewModels{
+    private val viewModel: CrosswordScanViewModel by activityViewModels {
         CrosswordScanViewModelFactory((requireActivity().application as PuzzleApplication).repository)
     }
 
@@ -59,9 +61,10 @@ class ClueScanFragment : Fragment() {
             setContent {
 
 
-                val debugText = viewModel.clueTextDebug.observeAsState()
-                val currentClue = viewModel.currentClue
+                val clueText = viewModel.currentClueText
+                val currentClue = viewModel.currentClueName
                 val puzzle = viewModel.puzzle
+                val rawText = viewModel.clueTextRaw
 
                 //val puzzle = viewModel.puzzle.observeAsState()
 
@@ -78,11 +81,13 @@ class ClueScanFragment : Fragment() {
 
                 Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
                     CameraPreviewWithOverlay(viewModel = viewModel)
-                    clueScanPreview(debugText.value,puzzle.value.clues,currentClue)
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp),
-                        contentPadding = PaddingValues(15.dp),){
-                        items(viewModel.puzzle.value.clues.toList()){ item ->
-                            clueTextScanList(item.first, currentClue.value, setActive = {
+                    clueScanPreview(rawText.value,clueText.value, puzzle, currentClue)
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = PaddingValues(15.dp),
+                    ) {
+                        items(viewModel.puzzle.value.clues.toList()) { item ->
+                            clueTextScanList(item.first, item.second.clue, currentClue.value, setActive = {
                                 viewModel.setActiveClue(it)
                             })
                         }
@@ -94,15 +99,18 @@ class ClueScanFragment : Fragment() {
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray) {
+        IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 //startCamera()
             } else {
-                Toast.makeText(this.context,
+                Toast.makeText(
+                    this.context,
                     "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
                 activity?.finish()
             }
         }
@@ -110,14 +118,15 @@ class ClueScanFragment : Fragment() {
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            requireActivity().baseContext, it) == PackageManager.PERMISSION_GRANTED
+            requireActivity().baseContext, it
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     companion object {
 
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
-            mutableListOf (
+            mutableListOf(
                 Manifest.permission.CAMERA,
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
@@ -129,53 +138,80 @@ class ClueScanFragment : Fragment() {
 
 
 @Composable
-fun clueTextScanList(clueName : String, currentClueName: String, setActive: (String) -> Unit ){
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .background(
-                if (clueName == currentClueName) {
-                    MaterialTheme.colorScheme.primaryContainer
-                } else {
-                    MaterialTheme.colorScheme.secondaryContainer
-                },
-                shape = RoundedCornerShape(10.dp)
-            )
-            .pointerInput(clueName) {
-                detectTapGestures {
-                    setActive(clueName)
-                }
+fun clueTextScanList(clueName: String, clueText : String, currentClueName: String, setActive: (String) -> Unit) {
+    Log.i(TAG,"composing $clueName box")
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(40.dp)
+        .background(
+            if (clueName == currentClueName) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.secondaryContainer
+            },
+            shape = RoundedCornerShape(10.dp)
+        )
+        .pointerInput(clueName) {
+            detectTapGestures {
+                setActive(clueName)
+            }
         }
     ) {
-        Text(clueName,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .width(50.dp)
-                .height(100.dp)
-        )
+        Column() {
+            Row() {
+                Text(
+                    clueName,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    clueText,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun clueScanPreview(scannedText: String?, clues : Map<String , Clue>, currentClueName : State<String>){
+fun clueScanPreview(
+    rawText: String?,
+    scannedText: String?,
+    puzzle: State<Puzzle>,
+    currentClueName: State<String>
+) {
 
-    Box(modifier = Modifier
-        .height(200.dp)
-        .fillMaxWidth()) {
-        Column {
-            Row(modifier = Modifier.height(160.dp)){
-                Text(currentClueName.value, fontSize = 40.sp, fontWeight =  FontWeight.Bold)
+    Box(
+        modifier = Modifier
+            .height(200.dp)
+            .fillMaxWidth()
+    ) {
+        Column() {
+            Row(modifier = Modifier.height(20.dp)){
+                if (rawText != null) {
+                    Text(rawText)
+                }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.height(140.dp)) {
+                Text(currentClueName.value, fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(40.dp))
                 if (scannedText != null) {
+
                     Text(scannedText, fontSize = 20.sp)
                 }
             }
-            Row(){
-                Button(onClick = { /**/ }){Text("left")}
-                Button(onClick = { /**/ }){Text("right")}
+            Row() {
+                Button(onClick = { /**/ }) { Text("Previous") }
+                Button(onClick = {
+                    if (scannedText != null) {
+                        puzzle.value.clues[currentClueName.value]?.clue = scannedText
+                    }
+                }) { Text("Scan") }
+                Button(onClick = { /**/ }) { Text("Next") }
             }
         }
     }

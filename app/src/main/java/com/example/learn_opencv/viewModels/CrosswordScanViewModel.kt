@@ -1,22 +1,17 @@
 package com.example.learn_opencv.viewModels
 
-import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.example.learn_opencv.CrosswordDetector
 import com.example.learn_opencv.Puzzle
 import com.example.learn_opencv.PuzzleData
 import com.example.learn_opencv.PuzzleRepository
-import com.google.mlkit.vision.text.Text
 import kotlinx.coroutines.launch
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -36,11 +31,40 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private val _puzzle = mutableStateOf(Puzzle())
     val puzzle : State<Puzzle> = _puzzle
 
-    private val _currentClue = mutableStateOf("")
-    val currentClue : State<String> = _currentClue
+    private val _currentClueName = mutableStateOf("")
+    val currentClueName : State<String> = _currentClueName
 
     fun setActiveClue(newClue: String){
-        _currentClue.value = newClue
+        _currentClueName.value = newClue
+    }
+
+    private val _clueTextRaw = mutableStateOf("")
+    val clueTextRaw : State<String> = _clueTextRaw
+    fun updateRawClueText(rawText: String){
+        _clueTextRaw.value = rawText
+        Log.i(TAG,"Updated raw text: ${_clueTextRaw.value}  ")
+        updateCurrentClueText(rawText)
+
+    }
+
+    private val _currentClueText = mutableStateOf("")
+    val currentClueText : State<String> = _currentClueText
+
+    private fun updateCurrentClueText(rawText: String){
+        _currentClueText.value = extractClueText(rawText)
+        Log.i(TAG,"Updated currentClueText to ${_currentClueText.value}  ")
+
+    }
+
+    fun extractClueText(unprocessed : String):  String{
+        val regex = Regex("(?<=\\d)(?!\\d).+")
+        val processed = regex.find(unprocessed)
+        if (processed != null) {
+            return processed.value
+        }
+        else{
+            return "No clue found"
+        }
     }
 
     var takeSnapshot = false
@@ -85,7 +109,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     val cluePicDebug = MutableLiveData<Bitmap>()
     fun getcluePicDebug() = cluePicDebug
 
-    val clueTextDebug = MutableLiveData<String>()
+//    val clueTextRaw = MutableLiveData<String>()
 
     fun processPreview(inputImg : Mat) {
         _viewFinderImg = inputImg

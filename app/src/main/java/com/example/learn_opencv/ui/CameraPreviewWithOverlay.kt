@@ -2,7 +2,6 @@ package com.example.learn_opencv.ui
 
 import android.graphics.*
 import android.util.Log
-import android.util.Rational
 import android.util.Size
 import android.view.Surface.ROTATION_0
 import android.view.SurfaceHolder
@@ -10,6 +9,7 @@ import android.view.SurfaceView
 import android.view.ViewGroup
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -85,11 +85,10 @@ fun CameraPreviewWithOverlay(
         val heightScaleFactor = 0.3
         val layoutWidth = (widthScaleFactor*displayMetrics.widthPixels).toInt()
         val layoutHeight = (heightScaleFactor*displayMetrics.heightPixels).toInt()
-        val cameraTargetResolution = Size(1600,2400)
+        val cameraTargetResolution = Size(1200,1200)
 
-        val roiHeight = 70 //The amount to crop away.
-        val roiWidth = 10
-
+        val roiHeight = 80 //The amount to crop away.
+        val roiWidth = 2               
         //this will contain the preview and the overlay
         val constraintLayout = ConstraintLayout(context).apply{
             layoutParams = ViewGroup.LayoutParams(
@@ -129,11 +128,11 @@ fun CameraPreviewWithOverlay(
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }
 
-
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
+
 
             // Preview
             val preview = Preview.Builder()
@@ -156,7 +155,7 @@ fun CameraPreviewWithOverlay(
             imageAnalysis.setAnalyzer(executor, ImageAnalysis.Analyzer { imageProxy ->
                 val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                 val mediaImage = imageProxy.image
-
+                Log.i(TAG,"ocr full image: ${imageProxy.image?.width}x${imageProxy.image?.height}")
                 Log.i(TAG,"rotated  by $rotationDegrees")
                 if (mediaImage != null) {
 
@@ -217,12 +216,15 @@ fun CameraPreviewWithOverlay(
 
                     val result = recognizer.process(image)
                         .addOnSuccessListener { visionText ->
-                            val text = visionText.text
+                            val text = Regex("\n").replace(visionText.text," ")
+                            Log.i(TAG,"ocr text ${image.width}x${image.height} : $text")
                             //split around things that look like (4) or (4,3] etc.
                             val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
                             val matchResult = regex.split(text)
 
-                            viewModel.clueTextDebug.postValue(matchResult[0])
+                            viewModel.updateRawClueText(matchResult[0])
+
+
                         }
 
 
@@ -247,12 +249,14 @@ fun CameraPreviewWithOverlay(
                 .build()
 
             try {
+
                 // Must unbind the use-cases before rebinding them.
                 cameraProvider.unbindAll()
 
                 cameraProvider.bindToLifecycle(
                     lifecycleOwner, cameraSelector, useCaseGroup
                 )
+
 
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
