@@ -88,7 +88,7 @@ fun CameraPreviewWithOverlay(
         val cameraTargetResolution = Size(1200,1200)
 
         val roiHeight = 80 //The amount to crop away.
-        val roiWidth = 2               
+        val roiWidth = 2
         //this will contain the preview and the overlay
         val constraintLayout = ConstraintLayout(context).apply{
             layoutParams = ViewGroup.LayoutParams(

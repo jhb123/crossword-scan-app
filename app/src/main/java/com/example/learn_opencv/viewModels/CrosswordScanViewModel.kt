@@ -24,8 +24,17 @@ import kotlin.properties.Delegates
 class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewModel(
 ) {
 
+    val croppedCluePic = MutableLiveData<Bitmap>()
+
+    private val _cluePicDebug = MutableLiveData<Bitmap>()
+    val cluePicDebug : LiveData<Bitmap> = _cluePicDebug
+    fun updateCluePicDebug(bitmap: Bitmap){
+        _cluePicDebug.postValue(bitmap)
+    }
+
     private var TAG = "CrosswordScanViewModel"
 
+    //val allPuzzles: LiveData<List<PuzzleData>> = repository.allPuzzles.asLiveData()
     //val allPuzzles: LiveData<List<PuzzleData>> = repository.allPuzzles.asLiveData()
 
     private val _puzzle = mutableStateOf(Puzzle())
@@ -106,8 +115,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private val gridImg = MutableLiveData<Bitmap>()
     fun getGridImg() = gridImg
 
-    val cluePicDebug = MutableLiveData<Bitmap>()
-    fun getcluePicDebug() = cluePicDebug
 
 //    val clueTextRaw = MutableLiveData<String>()
 
