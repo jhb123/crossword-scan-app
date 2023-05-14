@@ -5,12 +5,10 @@ import android.content.ContentResolver
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.net.Uri
-import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.DisplayMetrics
-import android.util.Half.toFloat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +23,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -38,11 +37,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -56,9 +53,6 @@ import androidx.compose.ui.unit.roundToIntRect
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.rotationMatrix
-import androidx.core.graphics.scaleMatrix
-import androidx.core.graphics.times
-import androidx.core.graphics.translationMatrix
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -66,11 +60,13 @@ import androidx.lifecycle.lifecycleScope
 import com.example.learn_opencv.PuzzleApplication
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.io.File
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.core.content.ContentProviderCompat.requireContext
 
 
 private const val TAG = "ClueScanFragment"
@@ -97,15 +93,10 @@ class ClueScanFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
-
-                val clueText = viewModel.currentClueText
                 val currentClue = viewModel.currentClueName
                 val puzzle = viewModel.puzzle
-                val rawText = viewModel.clueTextRaw
                 val cluePicDebug = viewModel.cluePicDebug.observeAsState()
-                val croppedCluePic = viewModel.croppedCluePic.observeAsState()
 
-                //val puzzle = viewModel.puzzle.observeAsState()
 
                 if (allPermissionsGranted()) {
                     //startCamera()
@@ -217,7 +208,7 @@ class ClueScanFragment : Fragment() {
                                     drawRect(
                                         topLeft = Offset(x1, y1),
                                         size = Size((x2 - x1), (y2 - y1)),
-                                        style = Stroke(width = 6.dp.toPx()),
+                                        style = Stroke(width = 3.dp.toPx()),
                                         color = White,
 
                                     )
@@ -256,80 +247,116 @@ class ClueScanFragment : Fragment() {
                             Text("Take Picture")
                         }
                         Button(onClick = {
-                            viewModel.cluePicDebug.value?.let { originalImage ->
-                                Log.i(TAG,"maxDimension $maxDimension")
-
-                                var x1 = 0f
-                                var x2 = 0f//originalImage.width.toFloat()
-                                var y1 = 0f
-                                var y2 = 0f//originalImage.height.toFloat()
-
-                                val widthFactor = originalImage.width/maxDimension.width
-                                val heightFactor = originalImage.height/maxDimension.height
-                                Log.i(TAG,"widthFactor $widthFactor, heightFactor $heightFactor")
-
-                                if (points.toList().size > 1){
-                                    // this is overly complex because I thought I'd be able to zoom as well.
-                                    val leftDistance = (min(points.toList().first().x,points.toList().last().x) - imageOffset.value.x)*widthFactor
-                                    val rightDistance = (originalImage.width.toFloat() - (max(points.toList().first().x, points.toList().last().x) - imageOffset.value.x) * widthFactor)
-
-                                    val topDistance = (min(points.toList().first().y,points.toList().last().y) - imageOffset.value.y)*heightFactor
-                                    val bottomDistance = (originalImage.height.toFloat() - (max(points.toList().first().y, points.toList().last().y) - imageOffset.value.y) * heightFactor)
-
-                                    x1 = leftDistance
-                                    x2 = rightDistance
-                                    y1 = topDistance
-                                    y2 = bottomDistance
-
-                                }
-                                if(x1 < 0){
-                                    x1 = 0f
-                                }
-                                if(y1 < 0){
-                                    y1 = 0f
-                                }
-                                if(x2 < 0){
-                                    x2 = 0f
-                                }
-                                if(y2 < 0){
-                                    y2 = 0f
-                                }
-
-                                Log.i(TAG, "rectangle drawn using x1: $x1, x2: $x2, y1: $y1, y2: $y2")
-                                Log.i(TAG,"rectangle offset at ${Offset(x1, y1)}")
-                                Log.i(TAG,"rectangle size at ${Size(originalImage.width.toFloat() - x1 - x2,
-                                    originalImage.height.toFloat() - y1 - y2)}")
-
-                               
-                                val cropRect = Rect(
-                                    Offset(x1, y1),
-                                    Size(originalImage.width.toFloat() - x1 - x2,
-                                        originalImage.height.toFloat() - y1 - y2)
-                                ).roundToIntRect()
-
-
-                                viewModel.croppedCluePic.value = Bitmap.createBitmap(
-                                    originalImage, cropRect.left, cropRect.top, cropRect.width ,cropRect.height)
-                            }
-
+                            viewModel.isAcross.value = true
+                            scanClues(maxDimension,points,imageOffset)
                         }) {
-                            Text("Scan")
+                            Text("Across")
+                        }
+                        Button(onClick = {
+                            viewModel.isAcross.value = false
+                            scanClues(maxDimension,points,imageOffset)
+                        }) {
+                            Text("Down")
                         }
                     }
 
-                    croppedCluePic.value?.asImageBitmap()
-                        ?.let {
-                            Image(
-                                bitmap = it,
-                                contentDescription = "Image of cropped clues",
-                                modifier = Modifier
-                                    .width(400.dp)
-                                    .height(400.dp))
+//                    croppedCluePic.value?.asImageBitmap()
+//                        ?.let {
+//                            Image(
+//                                bitmap = it,
+//                                contentDescription = "Image of cropped clues",
+//                                modifier = Modifier
+//                                    .width(400.dp)
+//                                    .height(400.dp))
+//                        }
+                    Row(horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth(1f)){
+                        LazyColumn(
+                            modifier = Modifier
+                                .width(150.dp)
+                        ){
+                            items(viewModel.acrossClues.toList()){ clue->
+                                Text(clue, modifier = Modifier.padding(5.dp))
+                            }
                         }
+                        LazyColumn(
+                            modifier = Modifier
+                                .width(150.dp)
+                        ){
+                            items(viewModel.downClues.toList()){ clue->
+                                Text(clue, modifier = Modifier.padding(5.dp))
+                            }
+                        }
+
+                    }
                 }
             }
         }
     }
+
+    private fun scanClues( maxDimension: Size,points: SnapshotStateList<Offset>,imageOffset: MutableState<Offset>) {
+        viewModel.cluePicDebug.value?.let { originalImage ->
+            Log.i(TAG,"maxDimension $maxDimension")
+
+            var x1 = 0f
+            var x2 = 0f//originalImage.width.toFloat()
+            var y1 = 0f
+            var y2 = 0f//originalImage.height.toFloat()
+
+            val widthFactor = originalImage.width/maxDimension.width
+            val heightFactor = originalImage.height/maxDimension.height
+            Log.i(TAG,"widthFactor $widthFactor, heightFactor $heightFactor")
+
+            if (points.toList().size > 1){
+                // this is overly complex because I thought I'd be able to zoom as well.
+                val leftDistance = (min(points.toList().first().x,points.toList().last().x) - imageOffset.value.x)*widthFactor
+                val rightDistance = (originalImage.width.toFloat() - (max(points.toList().first().x, points.toList().last().x) - imageOffset.value.x) * widthFactor)
+
+                val topDistance = (min(points.toList().first().y,points.toList().last().y) - imageOffset.value.y)*heightFactor
+                val bottomDistance = (originalImage.height.toFloat() - (max(points.toList().first().y, points.toList().last().y) - imageOffset.value.y) * heightFactor)
+
+                x1 = leftDistance
+                x2 = rightDistance
+                y1 = topDistance
+                y2 = bottomDistance
+
+            }
+            if(x1 < 0){
+                x1 = 0f
+            }
+            if(y1 < 0){
+                y1 = 0f
+            }
+            if(x2 < 0){
+                x2 = 0f
+            }
+            if(y2 < 0){
+                y2 = 0f
+            }
+
+            Log.i(TAG, "rectangle drawn using x1: $x1, x2: $x2, y1: $y1, y2: $y2")
+            Log.i(TAG,"rectangle offset at ${Offset(x1, y1)}")
+            Log.i(TAG,"rectangle size at ${Size(originalImage.width.toFloat() - x1 - x2,
+                originalImage.height.toFloat() - y1 - y2)}")
+
+
+            val cropRect = Rect(
+                Offset(x1, y1),
+                Size(originalImage.width.toFloat() - x1 - x2,
+                    originalImage.height.toFloat() - y1 - y2)
+            ).roundToIntRect()
+
+
+            viewModel.croppedCluePic.value = Bitmap.createBitmap(
+                originalImage, cropRect.left, cropRect.top, cropRect.width ,cropRect.height)
+
+            viewModel.extractClues()
+
+        }
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
@@ -407,4 +434,5 @@ class ClueScanFragment : Fragment() {
         return FileProvider.getUriForFile(requireContext(), context?.applicationContext?.packageName +  ".provider", tmpFile)
     }
 }
+
 

@@ -222,8 +222,7 @@ fun CameraPreviewWithOverlay(
                             val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
                             val matchResult = regex.split(text)
 
-                            viewModel.updateRawClueText(matchResult[0])
-
+                            //viewModel.updateRawClueText(matchResult[0])
 
                         }
 
