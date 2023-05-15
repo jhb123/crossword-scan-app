@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.example.learn_opencv.CrosswordDetector
 import com.example.learn_opencv.Puzzle
@@ -30,51 +31,10 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
     val croppedCluePic = MutableLiveData<Bitmap>()
-    val acrossClues = mutableStateListOf(String())
-    val downClues = mutableStateListOf(String())
+    val acrossClues =  SnapshotStateList<Pair<String, String>>()
+    val downClues =  SnapshotStateList<Pair<String, String>>()
 
     val isAcross = mutableStateOf(true)
-
-    fun extractClues()  {
-        val imageForProcessing = croppedCluePic.value
-        if(imageForProcessing != null) {
-            val image = InputImage.fromBitmap(imageForProcessing, 0)
-            val result = recognizer.process(image)
-                .addOnSuccessListener { visionText ->
-                    val text = Regex("\n").replace(visionText.text," ")
-                    //split around things that look like (4) or (4,3] etc.
-                    val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
-                    val matchResult = regex.split(text)
-
-                    if(isAcross.value) {
-                        acrossClues.clear()
-                        matchResult.forEach {
-                            val cluetxt = extractClueText(it)
-                            val clueNum = extractClueNumber(it)
-                            if (cluetxt != null && clueNum != null) {
-                                acrossClues.add(clueNum + "a)" + cluetxt)
-                            }
-                        }
-                    }
-                    else{
-                        downClues.clear()
-                        matchResult.forEach {
-                            val cluetxt = extractClueText(it)
-                            val clueNum = extractClueNumber(it)
-                            if (cluetxt != null && clueNum != null) {
-                                downClues.add(clueNum + "d)" + cluetxt)
-                            }
-                        }
-                    }
-
-                }
-                .addOnFailureListener { e ->
-                    //hmmm
-                }
-        }
-    }
-
-
 
     private val _cluePicDebug = MutableLiveData<Bitmap>()
     val cluePicDebug : LiveData<Bitmap> = _cluePicDebug
@@ -89,28 +49,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
     private val _currentClueName = mutableStateOf("")
     val currentClueName : State<String> = _currentClueName
-
-    fun extractClueText(unprocessed : String):  String?{
-        val regex = Regex("(?<=\\d)(?!\\d).+")
-        val processed = regex.find(unprocessed)
-        if (processed != null) {
-            return processed.value
-        }
-        else{
-            return null
-        }
-    }
-
-    fun extractClueNumber(unprocessed : String):  String{
-        val regex = Regex("\\d+")
-        val processed = regex.find(unprocessed)
-        if (processed != null) {
-            return processed.value
-        }
-        else{
-            return "No clue found"
-        }
-    }
 
     var takeSnapshot = false
 
@@ -196,6 +134,72 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         _puzzle.value = crosswordDetector.assembleClues()
 
     }
+
+    fun ocrClues()  {
+        val imageForProcessing = croppedCluePic.value
+        if(imageForProcessing != null) {
+            val image = InputImage.fromBitmap(imageForProcessing, 0)
+            val result = recognizer.process(image)
+                .addOnSuccessListener { visionText ->
+                    val text = Regex("\n").replace(visionText.text," ")
+                    //split around things that look like (4) or (4,3] etc.
+                    val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
+                    val matchResult = regex.split(text)
+
+                    if(isAcross.value) {
+                        acrossClues.clear()
+                        matchResult.forEach {
+                            val cluetxt = extractClueText(it)
+                            val clueNum = extractClueNumber(it)
+                            if (cluetxt != null && clueNum != null) {
+                                val cluePair = Pair(clueNum + "a",cluetxt)
+                                acrossClues.add(cluePair)
+                                puzzle.value.updateClueTxt(clueNum + "a",cluetxt)
+                            }
+                        }
+                    }
+                    else{
+                        downClues.clear()
+                        matchResult.forEach {
+                            val cluetxt = extractClueText(it)
+                            val clueNum = extractClueNumber(it)
+                            if (cluetxt != null && clueNum != null) {
+                                val cluePair = Pair(clueNum + "d",cluetxt)
+                                downClues.add(cluePair)
+                                puzzle.value.updateClueTxt(clueNum + "d",cluetxt)
+                            }
+                        }
+                    }
+
+                }
+                .addOnFailureListener { e ->
+                    //hmmm
+                }
+        }
+    }
+
+    fun extractClueNumber(unprocessed : String):  String{
+        val regex = Regex("\\d+")
+        val processed = regex.find(unprocessed)
+        if (processed != null) {
+            return processed.value
+        }
+        else{
+            return "No clue found"
+        }
+    }
+
+    fun extractClueText(unprocessed : String):  String?{
+        val regex = Regex("(?<=\\d)(?!\\d).+")
+        val processed = regex.find(unprocessed)
+        if (processed != null) {
+            return processed.value
+        }
+        else{
+            return null
+        }
+    }
+
 }
 
 class CrosswordScanViewModelFactory(private val repository: PuzzleRepository) : ViewModelProvider.Factory {

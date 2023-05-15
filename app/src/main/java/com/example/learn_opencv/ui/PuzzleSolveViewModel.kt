@@ -64,6 +64,22 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         return cellSet
     }
 
+    fun getLabelledCells(puzzle : Puzzle) : Map<Triple<Int, Int, String>,String > {
+        val cellSetLabels = mutableMapOf< Triple<Int, Int, String>,String >()
+        puzzle.clues.forEach { s, clue ->
+
+            val regex = Regex("\\d+")
+            val processed = regex.find(s)
+            if (processed != null) {
+                cellSetLabels[clue.clueBoxes[0]] = processed.value
+            }
+            else{
+                Log.w(TAG,"Badly labelled clue: $s")
+            }
+        }
+        return cellSetLabels
+    }
+
 
     fun getPuzzleDim() : Int {
         var maxVal = 0
@@ -79,6 +95,15 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     fun updateCurrentCell(cell : Triple<Int,Int,String>){
         _uiState.update { ui ->
             ui.copy(currentCell = cell)
+        }
+    }
+
+    fun updateactiveClue(name : String){
+        _uiState.update { ui->
+            ui.copy(
+                currentClue = _uiState.value.currentPuzzle.clues[name]!!,
+                currentCell = _uiState.value.currentPuzzle.clues[name]!!.clueBoxes[0]
+            )
         }
     }
 

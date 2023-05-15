@@ -66,7 +66,6 @@ import kotlin.math.min
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.core.content.ContentProviderCompat.requireContext
 
 
 private const val TAG = "ClueScanFragment"
@@ -278,7 +277,7 @@ class ClueScanFragment : Fragment() {
                                 .width(150.dp)
                         ){
                             items(viewModel.acrossClues.toList()){ clue->
-                                Text(clue, modifier = Modifier.padding(5.dp))
+                                Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
                             }
                         }
                         LazyColumn(
@@ -286,7 +285,7 @@ class ClueScanFragment : Fragment() {
                                 .width(150.dp)
                         ){
                             items(viewModel.downClues.toList()){ clue->
-                                Text(clue, modifier = Modifier.padding(5.dp))
+                                Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
                             }
                         }
 
@@ -352,7 +351,7 @@ class ClueScanFragment : Fragment() {
             viewModel.croppedCluePic.value = Bitmap.createBitmap(
                 originalImage, cropRect.left, cropRect.top, cropRect.width ,cropRect.height)
 
-            viewModel.extractClues()
+            viewModel.ocrClues()
 
         }
     }
