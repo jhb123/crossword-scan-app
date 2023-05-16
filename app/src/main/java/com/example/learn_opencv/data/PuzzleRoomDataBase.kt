@@ -1,8 +1,7 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.data
 
 import android.content.Context
 import android.util.Log
-import androidx.camera.video.internal.compat.Api23Impl.build
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson

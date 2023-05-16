@@ -1,4 +1,4 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.data
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow

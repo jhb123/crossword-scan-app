@@ -1,4 +1,4 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.data
 
 import android.graphics.Bitmap
 import androidx.room.ColumnInfo

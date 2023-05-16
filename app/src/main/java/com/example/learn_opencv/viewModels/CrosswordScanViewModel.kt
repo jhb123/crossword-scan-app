@@ -6,14 +6,14 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.example.learn_opencv.CrosswordDetector
-import com.example.learn_opencv.Puzzle
-import com.example.learn_opencv.PuzzleData
-import com.example.learn_opencv.PuzzleRepository
+//import com.example.learn_opencv.Puzzle
+import com.example.learn_opencv.data.Puzzle
+import com.example.learn_opencv.data.PuzzleData
+import com.example.learn_opencv.data.PuzzleRepository
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -132,6 +132,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
             Bitmap.createBitmap(gridBitmap, 0, 0, gridBitmap.width, gridBitmap.height, matrix, true)
         )
         _puzzle.value = crosswordDetector.assembleClues()
+        //_puzzle.value.setGridSize(gridBitmap)
 
     }
 

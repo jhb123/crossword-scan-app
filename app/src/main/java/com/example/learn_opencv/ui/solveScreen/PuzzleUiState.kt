@@ -1,7 +1,8 @@
-package com.example.learn_opencv.ui
+package com.example.learn_opencv.ui.solveScreen
 
-import com.example.learn_opencv.Clue
-import com.example.learn_opencv.Puzzle
+import com.example.learn_opencv.data.Clue
+//import com.example.learn_opencv.Puzzle
+import com.example.learn_opencv.data.Puzzle
 
 data class PuzzleUiState (
     val currentPuzzle : Puzzle = Puzzle(),

@@ -1,10 +1,10 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.data
 
 import android.util.Log
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
 
-private val TAG = "PuzzleRepository"
+private const val TAG = "PuzzleRepository"
 
 class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
 

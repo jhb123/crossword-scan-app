@@ -2,6 +2,8 @@ package com.example.learn_opencv
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.example.learn_opencv.data.Clue
+import com.example.learn_opencv.data.Puzzle
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.core.Core.*
@@ -328,6 +330,7 @@ class CrosswordDetector {
         Utils.matToBitmap(binaryCrosswordImg, gridBitmap);
 
         //puzzle.image = gridBitmap
+        puzzle.gridSize = binaryCrosswordImg.rows()
 
         return puzzle
     }

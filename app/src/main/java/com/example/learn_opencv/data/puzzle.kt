@@ -1,10 +1,14 @@
-package com.example.learn_opencv
+package com.example.learn_opencv.data
 
+import android.graphics.Bitmap
 import android.util.Log
+import com.example.learn_opencv.data.Clue
 
 private const val TAG = "puzzle"
 
 class Puzzle() {
+
+    var gridSize : Int = 0
 
     //should be a way of stopping external object changing this?
     private val _clues = mutableMapOf<String, Clue>()

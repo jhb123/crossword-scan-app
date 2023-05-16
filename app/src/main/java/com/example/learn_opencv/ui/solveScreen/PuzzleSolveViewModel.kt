@@ -1,16 +1,15 @@
-package com.example.learn_opencv.viewModels
+package com.example.learn_opencv.ui.solveScreen
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.learn_opencv.Puzzle
-import com.example.learn_opencv.PuzzleData
-import com.example.learn_opencv.PuzzleRepository
-import com.example.learn_opencv.ui.PuzzleUiState
+import com.example.learn_opencv.data.Puzzle
+import com.example.learn_opencv.data.PuzzleData
+import com.example.learn_opencv.data.PuzzleRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.math.max
 
-class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val puzzleIdx : Int = 0): ViewModel() {
+class PuzzleSolveViewModel(private val repository: PuzzleRepository, private val puzzleIdx : Int = 0): ViewModel() {
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
@@ -41,7 +40,8 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
                     if( uiState.value.updateFromRepository) {
                         _uiState.update {
-                            Log.i(TAG, "received database puzzle is differnt to current" +
+                            Log.i(
+                                TAG, "received database puzzle is differnt to current" +
                                     " so updating current puzzle")
                             it.copy(
                                 currentPuzzle = puzzleList[puzzleIdx].puzzle,
@@ -79,19 +79,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         }
         return cellSetLabels
     }
-
-
-    fun getPuzzleDim() : Int {
-        var maxVal = 0
-        uiState.value.currentPuzzle.clues.forEach { s, clue ->
-            clue.clueBoxes.forEach {
-                maxVal = max(maxVal,max(it.first,it.second))
-            }
-        }
-        return maxVal+1 //the index+1 gives the maximum size!
-    }
-
-
+    
     fun updateCurrentCell(cell : Triple<Int,Int,String>){
         _uiState.update { ui ->
             ui.copy(currentCell = cell)
@@ -108,7 +96,8 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     }
 
     fun updateactiveClue2(cell : Triple<Int,Int,String>) {
-        Log.i(TAG, "trying to update clue at $cell. " +
+        Log.i(
+            TAG, "trying to update clue at $cell. " +
                 "from current Active clue ${_uiState.value.currentClue.clueName} ")
         val allClues = uiState.value.currentPuzzle.clues
         for (clue in allClues) {

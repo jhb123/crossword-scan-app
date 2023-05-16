@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.learn_opencv.PuzzleData
+import com.example.learn_opencv.data.PuzzleData
 
 
 private const val TAG = "PuzzleCardAdapter"
