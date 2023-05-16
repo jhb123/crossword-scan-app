@@ -78,9 +78,17 @@ class SolveFragment : Fragment() {
                         horizontalAlignment = Alignment.CenterHorizontally,
 
                         ) {
-                        clueGrid(viewModel) //this probably should not accept the view model
+                        //clueGrid(viewModel) //this probably should not accept the view model
+                        clueGrid(
+                            uiState = uiState,
+                            updateCurrentCell = { viewModel.updateCurrentCell(it) },
+                            updateCurrentClue = {viewModel.updateactiveClue2(it)},
+                            gridSize = viewModel.getPuzzleDim(),
+                            cellSetFromPuzzle = {viewModel.convertPuzzleToCellSet(it)},
+                            labelledClues = {viewModel.getLabelledCells(it)}
+                        )
                         clueTextArea(clues, onClueSelect = {viewModel.updateactiveClue(it)}, activeClue = activeClue)
-                        keyBoard(setLetter = {viewModel.setLetter(it)},{viewModel.delLetter()})
+                        keyBoard(setLetter = {viewModel.setLetter(it)}, delLetter = {viewModel.delLetter()})
                     }
                 }
             }
@@ -159,13 +167,23 @@ fun keyBoard(setLetter : (String) -> Unit,
 }
 
 @Composable
-fun clueGrid(viewModel: PuzzleSolveViewModel) {
-    val uiState by viewModel.uiState.collectAsState()
+fun clueGrid(
+    //viewModel: PuzzleSolveViewModel,
+    uiState: State<PuzzleUiState>,
+    updateCurrentCell : (Triple<Int, Int, String>) -> Unit,
+    updateCurrentClue :  (Triple<Int, Int, String>) -> Unit,
+    gridSize : Int,
+    cellSetFromPuzzle : (Puzzle) -> MutableSet<Triple<Int, Int, String>>,//should this be immutable?
+    labelledClues : (Puzzle) ->  Map<Triple<Int, Int, String>, String>
+) {
+    //val uiState by viewModel.uiState.collectAsState()
 
-    val grid = viewModel.convertPuzzleToCellSet(uiState.currentPuzzle)
-    val labelledClues = viewModel.getLabelledCells(uiState.currentPuzzle)
+    //val grid = viewModel.convertPuzzleToCellSet(uiState.value.currentPuzzle)
+    //val labelledClues = viewModel.getLabelledCells(uiState.value.currentPuzzle)
+    val grid = cellSetFromPuzzle(uiState.value.currentPuzzle)
+    val labelledClues = labelledClues(uiState.value.currentPuzzle)
 
-    val gridSize = viewModel.getPuzzleDim()
+    //val gridSize = viewModel.getPuzzleDim()
     Log.i(TAG, "calling puzzle layout")
         Box(modifier = Modifier
             .size(width = (gridSize * 25).dp, height = (gridSize * 25).dp)
@@ -175,10 +193,12 @@ fun clueGrid(viewModel: PuzzleSolveViewModel) {
                 onClueSelect = {
                     Log.i(TAG,"$it selected")
                     //viewModel.updateSelection(it)
-                    viewModel.updateCurrentCell(it)
-                    viewModel.updateactiveClue2(it)
+                    //viewModel.updateCurrentCell(it)
+                    //viewModel.updateactiveClue2(it)
+                    updateCurrentCell(it)
+                    updateCurrentClue(it)
                 },
-                uiState = uiState,
+                uiState = uiState.value,
                 grid = grid,
                 labelledClues = labelledClues
             )
