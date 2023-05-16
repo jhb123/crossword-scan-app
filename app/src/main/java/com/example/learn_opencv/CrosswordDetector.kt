@@ -1,13 +1,7 @@
 package com.example.learn_opencv
 
 import android.graphics.Bitmap
-import android.graphics.ColorSpace.match
-import android.nfc.Tag
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.core.Core.*

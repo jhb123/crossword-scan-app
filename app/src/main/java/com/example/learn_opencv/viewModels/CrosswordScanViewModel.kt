@@ -1,16 +1,22 @@
 package com.example.learn_opencv.viewModels
 
-import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.example.learn_opencv.CrosswordDetector
+import com.example.learn_opencv.Puzzle
 import com.example.learn_opencv.PuzzleData
 import com.example.learn_opencv.PuzzleRepository
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.launch
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -22,12 +28,30 @@ import kotlin.properties.Delegates
 
 class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewModel(
 ) {
+    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+
+    val croppedCluePic = MutableLiveData<Bitmap>()
+    val acrossClues =  SnapshotStateList<Pair<String, String>>()
+    val downClues =  SnapshotStateList<Pair<String, String>>()
+
+    val isAcross = mutableStateOf(true)
+
+    private val _cluePicDebug = MutableLiveData<Bitmap>()
+    val cluePicDebug : LiveData<Bitmap> = _cluePicDebug
+    fun updateCluePicDebug(bitmap: Bitmap){
+        _cluePicDebug.postValue(bitmap)
+    }
 
     private var TAG = "CrosswordScanViewModel"
 
-    //val allPuzzles: LiveData<List<PuzzleData>> = repository.allPuzzles.asLiveData()
+    private val _puzzle = mutableStateOf(Puzzle())
+    val puzzle : State<Puzzle> = _puzzle
+
+    private val _currentClueName = mutableStateOf("")
+    val currentClueName : State<String> = _currentClueName
 
     var takeSnapshot = false
+
     //private lateinit var gridImg : Bitmap
     private lateinit var _viewFinderImg : Mat // we want this to be set by the camera input
     private lateinit var _viewFinderImgWithContour : Mat // we want this to be set by the camera input
@@ -40,19 +64,14 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     val viewFinderImgWithContour: Mat
         get() = _viewFinderImgWithContour
 
-//    val gridImg: MutableLiveData<Bitmap> by lazy {
-//        MutableLiveData<Bitmap>()
-//    }
+
     fun insert() = viewModelScope.launch {
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
         val icon_uuid = UUID.randomUUID().toString()
         val fileContents = "Hello world!"
-//        getApplication<Application>().applicationContext.openFileOutput(icon_uuid, Context.MODE_PRIVATE).use {
-//            it.write(fileContents.toByteArray())
-//       }
 
-        val puzzleData = PuzzleData(currentDate, crosswordDetector.assembleClues())
+        val puzzleData = PuzzleData(currentDate, puzzle.value)
         repository.insert(puzzleData)
     }
 
@@ -89,8 +108,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
         Log.d(TAG, "Setting snapshot preview image")
         crosswordDetector.cropToCrossword(contours[cwContourIndex], viewFinderImg)
-//        val rectToCrop = Rect(0, 0, 500, 500)
-//        val cropped = inputWarp.submat(rectToCrop)
         Log.d(TAG, "Making bitmap")
         val bitmap =
             Bitmap.createBitmap(crosswordDetector.croppedToCrosswordImg.cols(),
@@ -103,10 +120,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         )
 
         crosswordDetector.makeBinaryCrosswordImg()
-//        crosswordDetector.getGridWithClueMarks()
-//        crosswordDetector.getAcrossClues()
-//        crosswordDetector.getDownClues()
-//        crosswordDetector.assembleClues()
 
         var gridBitmap =
             Bitmap.createBitmap(crosswordDetector.binaryCrosswordImg.cols(),
@@ -118,7 +131,75 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         gridImgResize.postValue(
             Bitmap.createBitmap(gridBitmap, 0, 0, gridBitmap.width, gridBitmap.height, matrix, true)
         )
+        _puzzle.value = crosswordDetector.assembleClues()
+
+    }
+
+    fun ocrClues()  {
+        val imageForProcessing = croppedCluePic.value
+        if(imageForProcessing != null) {
+            val image = InputImage.fromBitmap(imageForProcessing, 0)
+            val result = recognizer.process(image)
+                .addOnSuccessListener { visionText ->
+                    val text = Regex("\n").replace(visionText.text," ")
+                    //split around things that look like (4) or (4,3] etc.
+                    val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
+                    val matchResult = regex.split(text)
+
+                    if(isAcross.value) {
+                        acrossClues.clear()
+                        matchResult.forEach {
+                            val cluetxt = extractClueText(it)
+                            val clueNum = extractClueNumber(it)
+                            if (cluetxt != null && clueNum != null) {
+                                val cluePair = Pair(clueNum + "a",cluetxt)
+                                acrossClues.add(cluePair)
+                                puzzle.value.updateClueTxt(clueNum + "a",cluetxt)
+                            }
+                        }
+                    }
+                    else{
+                        downClues.clear()
+                        matchResult.forEach {
+                            val cluetxt = extractClueText(it)
+                            val clueNum = extractClueNumber(it)
+                            if (cluetxt != null && clueNum != null) {
+                                val cluePair = Pair(clueNum + "d",cluetxt)
+                                downClues.add(cluePair)
+                                puzzle.value.updateClueTxt(clueNum + "d",cluetxt)
+                            }
+                        }
+                    }
+
+                }
+                .addOnFailureListener { e ->
+                    //hmmm
+                }
         }
+    }
+
+    fun extractClueNumber(unprocessed : String):  String{
+        val regex = Regex("\\d+")
+        val processed = regex.find(unprocessed)
+        if (processed != null) {
+            return processed.value
+        }
+        else{
+            return "No clue found"
+        }
+    }
+
+    fun extractClueText(unprocessed : String):  String?{
+        val regex = Regex("(?<=\\d)(?!\\d).+")
+        val processed = regex.find(unprocessed)
+        if (processed != null) {
+            return processed.value
+        }
+        else{
+            return null
+        }
+    }
+
 }
 
 class CrosswordScanViewModelFactory(private val repository: PuzzleRepository) : ViewModelProvider.Factory {
