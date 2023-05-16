@@ -10,6 +10,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -35,6 +36,9 @@ import com.example.learn_opencv.*
 import com.example.learn_opencv.R
 import com.example.learn_opencv.ui.PuzzleUiState
 import com.example.learn_opencv.viewModels.PuzzleSolveViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private val TAG = "SolveFragment"
 
@@ -224,7 +228,9 @@ fun PuzzleLayout(
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    modifier = Modifier.offset(x = (0).dp).alpha(0.4f)
+                    modifier = Modifier
+                        .offset(x = (0).dp)
+                        .alpha(0.4f)
                 )
             }
             else{
@@ -233,7 +239,9 @@ fun PuzzleLayout(
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    modifier = Modifier.offset(x = (0).dp).alpha(0.4f)
+                    modifier = Modifier
+                        .offset(x = (0).dp)
+                        .alpha(0.4f)
 
                 )
 
@@ -250,6 +258,17 @@ fun clueTextArea( cluesTxt : Map<String, Clue>,
                   activeClue: Clue,
     //viewModel: PuzzleSolveViewModel
     ){
+    val listStateA = rememberLazyListState()
+    val listStateD = rememberLazyListState()
+    //val coroutineScope = rememberCoroutineScope()
+
+    val allClues = cluesTxt.toList()
+    val acrossClues = allClues.filter { it.first.contains("a") }.sortedBy { it.first.dropLast(1).toInt()}
+    val downClues = allClues.filter { it.first.contains("d") }.sortedBy { it.first.dropLast(1).toInt()}
+    val activeIndexA = acrossClues.indexOfFirst { (_, clue) -> clue == activeClue }
+    val activeIndexD = downClues.indexOfFirst { (_, clue) -> clue == activeClue }
+
+    Log.i(TAG,"across idx: $activeIndexA, down idx: $activeIndexD")
 
     //val cluesTxt  = viewModel.uiState.collectAsState().value.currentPuzzle.clues
     //val active
@@ -260,58 +279,72 @@ fun clueTextArea( cluesTxt : Map<String, Clue>,
             .fillMaxWidth(1f)
     ){
         val acrossColumn = LazyColumn(
+            state = listStateA,
             modifier = Modifier
                 //.fillMaxWidth(0.9f)
                 .height(150.dp)
         ){
-            items(cluesTxt.toList()){ clue->
+            items(acrossClues){ clue->
                 Log.i(TAG,"clue: ${clue.first} ${clue.second.clue}")
-                if(clue.first.contains("a")) {
-                    if(clue.second == activeClue){
-                        clueTextBox(clueData = clue,
-                            backgroundColor = MaterialTheme.colorScheme.primary,
-                            textColor = MaterialTheme.colorScheme.onPrimary,
-                            onClueSelect = onClueSelect
-                        )
-                    }
-                    else{
-                        clueTextBox(clueData = clue,
-                            backgroundColor = MaterialTheme.colorScheme.secondary,
-                            textColor = MaterialTheme.colorScheme.onSecondary,
-                            onClueSelect = onClueSelect
-                        )
-                    }
+                if(clue.second == activeClue){
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        onClueSelect = onClueSelect
+                    )
+                }
+                else{
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary,
+                        onClueSelect = onClueSelect
+                    )
                 }
             }
         }
         val downColumn = LazyColumn(
+            state = listStateD,
             modifier = Modifier
                 //.fillMaxWidth(0.01f)
                 .height(150.dp)
         ){
-            items(cluesTxt.toList()){ clue->
-                if(clue.first.contains("d")) {
-                    if(clue.second == activeClue){
-                        clueTextBox(clueData = clue,
-                            backgroundColor = MaterialTheme.colorScheme.primary,
-                            textColor = MaterialTheme.colorScheme.onPrimary,
-                            onClueSelect = onClueSelect
-                        )
-                    }
-                    else{
-                        clueTextBox(clueData = clue,
-                            backgroundColor = MaterialTheme.colorScheme.secondary,
-                            textColor = MaterialTheme.colorScheme.onSecondary,
-                            onClueSelect = onClueSelect
-                        )
-                    }
+            items(downClues){ clue->
+                if(clue.second == activeClue){
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        onClueSelect = onClueSelect
+                    )
+                }
+                else{
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary,
+                        onClueSelect = onClueSelect
+                    )
                 }
             }
         }
-
-        //downColumn.
-
     }
+//    CoroutineScope(Dispatchers.Main).launch{
+//        Log.i(TAG,"scrolling across list to $activeIndexA")
+//        if(activeIndexA>=0){
+//            listStateA.animateScrollToItem(activeIndexA)
+//        }
+//    }
+    LaunchedEffect(activeIndexA){
+        Log.i(TAG,"scrolling across list to $activeIndexA")
+        if(activeIndexA>=0){
+            listStateA.animateScrollToItem(activeIndexA)
+        }
+    }
+    LaunchedEffect(activeIndexD){
+        Log.i(TAG,"scrolling across down list to $activeIndexD")
+        if(activeIndexD>=0){
+            listStateD.animateScrollToItem(activeIndexD)
+        }
+    }
+
 }
 
 @Composable
@@ -321,11 +354,11 @@ fun clueTextBox( clueData : Pair<String, Clue>,
                  onClueSelect: (String) -> Unit ) {
     Box(
         modifier = Modifier
-        //.background(color = backgroundColor)
+            //.background(color = backgroundColor)
             .padding(5.dp)
             .width(170.dp)
             .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
-            .pointerInput(clueData.second.clueName){
+            .pointerInput(clueData.second.clueName) {
                 detectTapGestures {
                     onClueSelect(clueData.second.clueName)
                 }
