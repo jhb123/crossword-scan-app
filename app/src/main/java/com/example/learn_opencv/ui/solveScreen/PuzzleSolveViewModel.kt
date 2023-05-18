@@ -79,7 +79,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository, private val
         }
         return cellSetLabels
     }
-    
+
     fun updateCurrentCell(cell : Triple<Int,Int,String>){
         _uiState.update { ui ->
             ui.copy(currentCell = cell)
