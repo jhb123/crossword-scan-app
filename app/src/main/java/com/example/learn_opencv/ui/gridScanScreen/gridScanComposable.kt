@@ -29,23 +29,24 @@ private const val TAG = "gridScanComposable"
 fun gridScanScreen(
     uiState: State<GridScanUiState>,
     viewModel: CrosswordScanViewModel
-    ){
+    ) {
 
     val backgroundColour = MaterialTheme.colors.background.toArgb() // this is for the cameraView
 
+
     Column(
-        verticalArrangement =  Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(5.dp)
+            .background(MaterialTheme.colors.background)
     )
     {
         AndroidView(
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .height(300.dp)
-
-            .background(MaterialTheme.colors.background),
+                .padding(5.dp)
+                .background(MaterialTheme.colors.background),
             factory = { context ->
                 val mOpenCvCameraView =
                     JavaCamera2View(context, CameraBridgeViewBase.CAMERA_ID_BACK)
@@ -72,9 +73,9 @@ fun gridScanScreen(
             }
         }
 
-        Row() {
-            Button(onClick = {viewModel.takeSnapshot = true}) {
-                Text("Scan",modifier = Modifier.padding(20.dp))
+        Row(modifier = Modifier.padding(5.dp)) {
+            Button(onClick = { viewModel.takeSnapshot = true }) {
+                Text("Scan", modifier = Modifier.padding(10.dp))
             }
         }
     }
@@ -82,17 +83,18 @@ fun gridScanScreen(
 }
 
 
-class OpenCVlogic(viewModel : CrosswordScanViewModel) : CameraBridgeViewBase.CvCameraViewListener2 {
+class OpenCVlogic(viewModel: CrosswordScanViewModel) :
+    CameraBridgeViewBase.CvCameraViewListener2 {
 
     val viewModel = viewModel
 
     override fun onCameraViewStarted(width: Int, height: Int) {
         viewModel.openCVCameraSize(width, height)
-        Log.i(TAG,"onCameraViewStarted called")
+        Log.i(TAG, "onCameraViewStarted called")
     }
 
     override fun onCameraViewStopped() {
-        Log.i(TAG,"onCameraViewStopped called")
+        Log.i(TAG, "onCameraViewStopped called")
     }
 
     override fun onCameraFrame(inputFrame: CameraBridgeViewBase.CvCameraViewFrame?): Mat {

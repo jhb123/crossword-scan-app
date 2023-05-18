@@ -109,6 +109,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
 
     fun insert() = viewModelScope.launch {
+        Log.i(TAG,"inserting new puzzle")
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
         val icon_uuid = UUID.randomUUID().toString()
