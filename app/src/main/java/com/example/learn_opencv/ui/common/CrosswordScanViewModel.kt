@@ -23,6 +23,7 @@ import com.example.learn_opencv.data.PuzzleData
 import com.example.learn_opencv.data.PuzzleRepository
 import com.example.learn_opencv.ui.common.ClueDirection
 import com.example.learn_opencv.ui.common.ScanUiState
+import com.example.learn_opencv.ui.gridScanScreen.GridScanUiState
 import com.example.learn_opencv.ui.solveScreen.PuzzleUiState
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -60,6 +61,14 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     )
 
     val uiState : StateFlow<ScanUiState> = _uiState
+
+    private val _uiGridState = MutableStateFlow(
+        GridScanUiState(
+            gridPicDebug = null,
+            gridPicProcessed = null
+        )
+    )
+    val uiGridState : StateFlow<GridScanUiState> = _uiGridState
 
 
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
@@ -162,9 +171,15 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
         Utils.matToBitmap(crosswordDetector.binaryCrosswordImg, gridBitmap);
         gridBitmap = Bitmap.createScaledBitmap(gridBitmap,500,500,false)
-        gridImgResize.postValue(
-            Bitmap.createBitmap(gridBitmap, 0, 0, gridBitmap.width, gridBitmap.height, matrix, true)
-        )
+//        gridImgResize.postValue(
+//            Bitmap.createBitmap(gridBitmap, 0, 0, gridBitmap.width, gridBitmap.height, matrix, true)
+//        )
+        _uiGridState.update { it->
+            it.copy(
+                gridPicProcessed = gridBitmap
+            )
+        }
+
         _puzzle.value = crosswordDetector.assembleClues()
         //_puzzle.value.setGridSize(gridBitmap)
 
@@ -367,6 +382,16 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         }
         else{
             return null
+        }
+    }
+
+    fun openCVCameraSize(width: Int, height: Int) {
+
+        _uiGridState.update {
+            it.copy(
+                previewWidth = width,
+                previewHeight = height
+            )
         }
     }
 
