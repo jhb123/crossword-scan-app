@@ -49,7 +49,7 @@ class GridScanPreviewFragment : Fragment() {
                 puzzlePreviewScreen(
                     uiGridState = uiGridState.collectAsState(),
                     uiClueState = uiClueState.collectAsState(),
-                    onSave = viewModel.insert()
+                    onSave = {viewModel.insert()}
                 )
             }
         }

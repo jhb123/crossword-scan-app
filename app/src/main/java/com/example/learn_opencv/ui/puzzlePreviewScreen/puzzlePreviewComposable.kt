@@ -23,7 +23,7 @@ import kotlinx.coroutines.Job
 fun puzzlePreviewScreen(
     uiGridState: State<GridScanUiState>,
     uiClueState: State<ScanUiState>,
-    onSave : Job//() -> Unit
+    onSave : () -> Job//() -> Unit
     //viewModel: CrosswordScanViewModel
 ) {
 

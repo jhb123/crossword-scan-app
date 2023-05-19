@@ -1,56 +1,114 @@
 package com.example.learn_opencv
 
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import androidx.core.graphics.rotationMatrix
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.example.learn_opencv.databinding.ActivityMainBinding
 import com.example.learn_opencv.fragments.ScanFragment
 import com.example.learn_opencv.fragments.SolveFragment
+import com.example.learn_opencv.ui.solveScreen.PuzzleSolveViewModel
+import com.example.learn_opencv.ui.solveScreen.PuzzleSolveViewModelFactory
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
+import com.example.learn_opencv.viewModels.PuzzleSelectViewModel
+import com.example.learn_opencv.viewModels.PuzzleSelectViewModelFactory
 import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.LoaderCallbackInterface
 import org.opencv.android.OpenCVLoader
+import java.io.File
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val TAG = "MainActivity"
-    var scanFragment = ScanFragment()
-    var solveFragment = SolveFragment()
-    private lateinit var navController: NavController
 
-
-    lateinit var drawerLayout: DrawerLayout
-    lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
-
-    private val viewModel: CrosswordScanViewModel by viewModels {
-        CrosswordScanViewModelFactory((application as PuzzleApplication).repository)
+    private val scanViewModel: CrosswordScanViewModel by viewModels {
+        CrosswordScanViewModelFactory((this.application as PuzzleApplication).repository)
     }
+
+    private val puzzleSelectViewModel: PuzzleSelectViewModel by viewModels {
+        PuzzleSelectViewModelFactory((this.application as PuzzleApplication).repository)
+    }
+
+    private val puzzleSolveViewModel : PuzzleSolveViewModel by viewModels {
+        PuzzleSolveViewModelFactory((this.application as PuzzleApplication).repository)
+    }
+
+    private var latestTmpUri: Uri? = null
+
+    private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+        if (isSuccess) {
+            val bitmap: Bitmap? = null
+            val contentResolver: ContentResolver = this.contentResolver
+
+            latestTmpUri?.let { uri ->
+                var rotationMatrix = rotationMatrix(0f,0f,0f)
+                val exif = contentResolver.openInputStream(uri)?.let { ExifInterface(it) }
+                if(exif != null){
+                    Log.i(TAG,"input image rotation ${exif.rotationDegrees.toFloat()}")
+                    rotationMatrix = rotationMatrix(exif.rotationDegrees.toFloat(),0f,0f)
+                }
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                val rotatedBitmap = Bitmap.createBitmap(bitmap,0,0, bitmap.width,bitmap.height,rotationMatrix,true)
+                //viewModel.updateCluePicDebug(rotatedBitmap)
+                scanViewModel.setCluePicDebug(rotatedBitmap)
+            }
+        }
+    }
+
+    private fun takeImage() {
+        lifecycleScope.launchWhenStarted {
+            getTmpFileUri().let { uri ->
+                latestTmpUri = uri
+                takeImageResult.launch(uri)
+            }
+        }
+    }
+
+    private fun getTmpFileUri(): Uri {
+        val cacheDir = this.getCacheDir()
+        val tmpFile = File.createTempFile("tmp_image_file", ".bmp", cacheDir).apply {
+            createNewFile()
+            deleteOnExit()
+        }
+
+        return FileProvider.getUriForFile(this, this.packageName +  ".provider", tmpFile)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         startOpenCV()
+        Log.i(TAG, "Setting content")
+        setContent {
 
-        Log.i(TAG, "inflating layout")
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        Log.i(TAG, "Finding Nav controller")
-        navController = Navigation.findNavController(this, R.id.mainFrame)
-        //navController = Navigation.findNavController(view)
-        Log.i(TAG, "setting bottom navbar up")
-        setupWithNavController(binding.bottomNav, navController)
+            CrosswordApp(
+                scanViewModel,
+                puzzleSelectViewModel,
+                puzzleSolveViewModel,
+                takeImage = { takeImage() }
+            )
 
 
+        }
     }
 
     override fun onResume() {

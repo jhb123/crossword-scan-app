@@ -39,7 +39,7 @@ class puzzleSelectFragment : Fragment() {
             setContent {
                 puzzleSelectionComposable(
                     uiState = viewModel.uiState.collectAsState(),
-                    navigateToPuzzle = { }
+                    navigateToPuzzle = { -1 }
                 )
             }
 

@@ -24,8 +24,9 @@ class SolveFragment : Fragment() {
     ): View {
         val puzzleIdx = arguments?.getInt("puzzle_id")
         viewModel = PuzzleSolveViewModel(
-            (requireActivity().application as PuzzleApplication).repository, puzzleIdx!!
-        )
+            (requireActivity().application as PuzzleApplication).repository)
+
+        //viewModel.setPuzzle(puzzleIdx!!)
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

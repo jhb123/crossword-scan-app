@@ -1,5 +1,6 @@
 package com.example.learn_opencv.ui.puzzleSelectionScreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +22,7 @@ private val TAG = "puzzleSelectionScreen"
 @Composable
 fun puzzleSelectionComposable(
     uiState : State<PuzzleSelectionUiState>,
-    navigateToPuzzle : () ->  Unit
+    navigateToPuzzle : (Int) ->  Unit
 ){
 
     val puzzles = uiState.value.puzzles
@@ -40,7 +41,10 @@ fun puzzleSelectionComposable(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                 ),
                 shape = RoundedCornerShape(10.dp),
-                onClick = { navigateToPuzzle },
+                onClick = {
+                    Log.i(TAG,"navigate to ${puzzles.indexOf(puzzleData)}.")
+                    navigateToPuzzle(puzzles.indexOf(puzzleData))
+                          },
                 modifier = Modifier
                     .height(100.dp)
                     .fillParentMaxWidth(1f)

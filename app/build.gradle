@@ -44,8 +44,10 @@ android {
 
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.6"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
+
+
 
 
 }
@@ -75,9 +77,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     //implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
 
-    //navigatiom
+    //navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation("androidx.navigation:navigation-compose:$nav_version_compose")
 
     //layout
     implementation("androidx.gridlayout:gridlayout:1.0.0")
@@ -105,6 +108,7 @@ dependencies {
     implementation "androidx.compose.material:material:$composeVersion"
     implementation("androidx.compose.material3:material3:$composeMaterial3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$composeMaterial3Version")
+    implementation("androidx.compose.material:material:1.4.3")
 
     //ml
     implementation 'com.google.mlkit:text-recognition:16.0.0'
