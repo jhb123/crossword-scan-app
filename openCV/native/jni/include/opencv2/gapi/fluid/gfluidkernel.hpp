@@ -129,7 +129,7 @@ struct GFluidParallelOutputRois
  * @brief This structure allows to customize the way how Fluid executes
  * parallel regions.
  *
- * For example, user can utilize his own threading runtime via this parameter.
+ * For jhb, user can utilize his own threading runtime via this parameter.
  * The `parallel_for` member functor is called by the Fluid runtime with the
  * following arguments:
  *

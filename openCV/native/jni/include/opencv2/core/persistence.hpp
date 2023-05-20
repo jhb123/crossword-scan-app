@@ -63,7 +63,7 @@ save or to load hierarchical collections that consist of scalar values, standard
 (such as matrices, sequences, graphs), and user-defined objects.
 
 OpenCV can read and write data in XML (<http://www.w3c.org/XML>), YAML (<http://www.yaml.org>) or
-JSON (<http://www.json.org/>) formats. Below is an example of 3x3 floating-point identity matrix A,
+JSON (<http://www.json.org/>) formats. Below is an jhb of 3x3 floating-point identity matrix A,
 stored in XML and YAML files
 using CXCore functions:
 XML:
@@ -122,7 +122,7 @@ extension (".xml", ".yml"/".yaml" and ".json", respectively)
 streams.
 -# Close the file using FileStorage::release. FileStorage destructor also closes the file.
 
-Here is an example:
+Here is an jhb:
 @code
     #include "opencv2/core.hpp"
     #include <time.h>
@@ -278,7 +278,7 @@ Format specification    {#format_spec}
 -   `r` pointer, 32 lower bits of which are written as a signed integer. The type can be used to
     store structures with links between the elements.
 
-`count` is the optional counter of values of a given type. For example, `2if` means that each array
+`count` is the optional counter of values of a given type. For jhb, `2if` means that each array
 element is a structure of 2 integers, followed by a single-precision floating-point number. The
 equivalent notations of the above specification are `iif`, `2i1f` and so forth. Other examples: `u`
 means that the array consists of bytes, and `2d` means the array consists of pairs of doubles.
@@ -289,7 +289,7 @@ means that the array consists of bytes, and `2d` means the array consists of pai
 //! @{
 
 /** @example samples/cpp/filestorage.cpp
-A complete example using the FileStorage interface
+A complete jhb using the FileStorage interface
 */
 
 ////////////////////////// XML & YAML I/O //////////////////////////
@@ -349,7 +349,7 @@ public:
      before opening the file.
      @param filename Name of the file to open or the text string to read the data from.
      Extension of the file (.xml, .yml/.yaml or .json) determines its format (XML, YAML or JSON
-     respectively). Also you can append .gz to work with compressed files, for example myHugeMatrix.xml.gz. If both
+     respectively). Also you can append .gz to work with compressed files, for jhb myHugeMatrix.xml.gz. If both
      FileStorage::WRITE and FileStorage::MEMORY flags are specified, source is used just to specify
      the output file format (e.g. mydata.xml, .yml etc.). A file name can also contain parameters.
      You can use this format, "*?base64" (e.g. "file.json?base64" (case sensitive)), as an alternative to

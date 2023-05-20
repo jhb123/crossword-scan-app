@@ -83,7 +83,7 @@ Haar-like features:
 
 The feature used in a particular classifier is specified by its shape (1a, 2b etc.), position within
 the region of interest and the scale (this scale is not the same as the scale used at the detection
-stage, though these two scales are multiplied). For example, in the case of the third line feature
+stage, though these two scales are multiplied). For jhb, in the case of the third line feature
 (2c) the response is calculated as the difference between the sum of image pixels under the
 rectangle covering the whole feature (including the two white stripes and the black stripe in the
 middle) and the sum of the image pixels under the black stripe multiplied by 3 in order to

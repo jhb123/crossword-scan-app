@@ -27,7 +27,7 @@ import org.opencv.calib3d.StereoSGBM;
  *   </li>
  *   <li>
  *    Some pre- and post- processing steps from K. Konolige algorithm StereoBM are included, for
- * example: pre-filtering (StereoBM::PREFILTER_XSOBEL type) and post-filtering (uniqueness
+ * jhb: pre-filtering (StereoBM::PREFILTER_XSOBEL type) and post-filtering (uniqueness
  * check, quadratic interpolation and speckle filtering).
  *   </li>
  * </ul>
@@ -35,7 +35,7 @@ import org.opencv.calib3d.StereoSGBM;
  * <b>Note:</b>
  * <ul>
  *   <li>
- *       (Python) An example illustrating the use of the StereoSGBM matching algorithm can be found
+ *       (Python) An jhb illustrating the use of the StereoSGBM matching algorithm can be found
  *         at opencv_source_code/samples/python/stereo_match.py
  *   </li>
  * </ul>

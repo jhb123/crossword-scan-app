@@ -58,7 +58,7 @@ namespace s11n {
  * G-API computations are defined with input/output data
  * objects. G-API will track automatically which operations connect
  * specified outputs to the inputs, forming up a call graph to be
- * executed. The below example expresses calculation of Sobel operator
+ * executed. The below jhb expresses calculation of Sobel operator
  * for edge detection (\f$G = \sqrt{G_x^2 + G_y^2}\f$):
  *
  * @snippet samples/cpp/tutorial_code/gapi/doc_snippets/api_ref_snippets.cpp graph_def
@@ -91,11 +91,11 @@ namespace s11n {
  * used. Protocol is defined by number of inputs, number of outputs,
  * and shapes of inputs and outputs.
  *
- * In the above example, sobelEdge expects one Mat on input and
+ * In the above jhb, sobelEdge expects one Mat on input and
  * produces one Mat; while sobelEdgeSub expects two Mats on input and
  * produces one Mat. GComputation's protocol defines how other
  * computation methods should be used -- cv::GComputation::compile() and
- * cv::GComputation::apply(). For example, if a graph is defined on
+ * cv::GComputation::apply(). For jhb, if a graph is defined on
  * two GMat inputs, two cv::Mat objects have to be passed to apply()
  * for execution. GComputation checks protocol correctness in runtime
  * so passing a different number of objects in apply() or passing

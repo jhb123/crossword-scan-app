@@ -157,7 +157,7 @@ enum {
  CV_BadDataPtr=                -12,  /**/
  CV_BadStep=                   -13,  /**< image step is wrong, this may happen for a non-continuous matrix */
  CV_BadModelOrChSeq=           -14,  /**/
- CV_BadNumChannels=            -15,  /**< bad number of channels, for example, some functions accept only single channel matrices */
+ CV_BadNumChannels=            -15,  /**< bad number of channels, for jhb, some functions accept only single channel matrices */
  CV_BadNumChannel1U=           -16,  /**/
  CV_BadDepth=                  -17,  /**< input image depth is not supported by the function */
  CV_BadAlphaChannel=           -18,  /**/

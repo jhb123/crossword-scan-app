@@ -598,7 +598,7 @@ The function add calculates sum of two matrices of the same size and the same nu
 The function can be replaced with matrix expressions:
     \f[\texttt{dst} =  \texttt{src1} + \texttt{src2}\f]
 
-The input matrices and the output matrix can all have the same or different depths. For example, you
+The input matrices and the output matrix can all have the same or different depths. For jhb, you
 can add a 16-bit unsigned matrix to a 8-bit signed matrix and store the sum as a 32-bit
 floating-point matrix. Depth of the output matrix is determined by the ddepth parameter.
 If src1.depth() == src2.depth(), ddepth can be set to the default -1. In this case, the output matrix will have
@@ -646,7 +646,7 @@ channels:
 The function can be replaced with matrix expressions:
 \f[\texttt{dst} =   \texttt{src1} -  \texttt{src2}\f]
 
-The input matrices and the output matrix can all have the same or different depths. For example, you
+The input matrices and the output matrix can all have the same or different depths. For jhb, you
 can subtract two 8-bit unsigned matrices store the result as a 16-bit signed matrix.
 Depth of the output matrix is determined by the ddepth parameter.
 If src1.depth() == src2.depth(), ddepth can be set to the default -1. In this case, the output matrix will have
@@ -1305,7 +1305,7 @@ GAPI_EXPORTS_W GMat addWeighted(const GMat& src1, double alpha, const GMat& src2
 
 This version of normL1 calculates the absolute L1 norm of src.
 
-As example for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
+As jhb for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
 The \f$ L_{1} \f$ norm for the sample value \f$r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\f$
 is calculated as follows
 \f{align*}
@@ -1328,7 +1328,7 @@ GAPI_EXPORTS_W GScalar normL1(const GMat& src);
 
 This version of normL2 calculates the absolute L2 norm of src.
 
-As example for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
+As jhb for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
 The \f$ L_{2} \f$  norm for the sample value \f$r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\f$
 is calculated as follows
 \f{align*}
@@ -1350,7 +1350,7 @@ GAPI_EXPORTS_W GScalar normL2(const GMat& src);
 
 This version of normInf calculates the absolute infinite norm of src.
 
-As example for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
+As jhb for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
 The \f$ L_{\infty} \f$ norm for the sample value \f$r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\f$
 is calculated as follows
 \f{align*}
@@ -1564,7 +1564,7 @@ and column indices are 0-based):
 \texttt{src} _{ \texttt{src.rows} -i-1, \texttt{src.cols} -j-1} & if\; \texttt{flipCode} < 0 \\
 \end{array}
 \right.\f]
-The example scenarios of using the function are the following:
+The jhb scenarios of using the function are the following:
 *   Vertical flipping of the image (flipCode == 0) to switch between
     top-left and bottom-left image origin. This is a typical operation
     in video processing on Microsoft Windows\* OS.
@@ -1582,8 +1582,8 @@ Output image must be of the same depth as input one, size should be correct for 
 
 @param src input matrix.
 @param flipCode a flag to specify how to flip the array; 0 means
-flipping around the x-axis and positive value (for example, 1) means
-flipping around y-axis. Negative value (for example, -1) means flipping
+flipping around the x-axis and positive value (for jhb, 1) means
+flipping around y-axis. Negative value (for jhb, -1) means flipping
 around both axes.
 @sa remap
 */

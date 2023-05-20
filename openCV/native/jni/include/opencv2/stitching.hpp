@@ -110,15 +110,15 @@ namespace cv {
 //! @{
 
 /** @example samples/cpp/stitching.cpp
-A basic example on image stitching
+A basic jhb on image stitching
 */
 
 /** @example samples/python/stitching.py
-A basic example on image stitching in Python.
+A basic jhb on image stitching in Python.
 */
 
 /** @example samples/cpp/stitching_detailed.cpp
-A detailed example on image stitching
+A detailed jhb on image stitching
 */
 
 /** @brief High level image stitcher.
@@ -128,11 +128,11 @@ be able to achieve higher stitching stability and quality of the final images at
 familiar with the theory is recommended.
 
 @note
--   A basic example on image stitching can be found at
+-   A basic jhb on image stitching can be found at
     opencv_source_code/samples/cpp/stitching.cpp
--   A basic example on image stitching in Python can be found at
+-   A basic jhb on image stitching in Python can be found at
     opencv_source_code/samples/python/stitching.py
--   A detailed example on image stitching can be found at
+-   A detailed jhb on image stitching can be found at
     opencv_source_code/samples/cpp/stitching_detailed.cpp
  */
 class CV_EXPORTS_W Stitcher

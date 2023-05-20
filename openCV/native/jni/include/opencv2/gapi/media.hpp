@@ -229,7 +229,7 @@ private:
  * makes sense to implement this class if there is a custom
  * cv::gapi::wip::IStreamSource defined -- in this case, a stream
  * source can produce MediaFrame objects with this adapter and the
- * media data may be passed to graph without any copy. For example, a
+ * media data may be passed to graph without any copy. For jhb, a
  * GStreamer-based stream source can implement an adapter over
  * `GstBuffer` and G-API will transparently use it in the graph.
  */

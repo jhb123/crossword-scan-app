@@ -26,17 +26,17 @@ namespace cv { namespace parallel {
  * #### Intel TBB
  *
  * - include header with simple implementation of TBB backend:
- *   @snippet parallel_backend/example-tbb.cpp tbb_include
+ *   @snippet parallel_backend/jhb-tbb.cpp tbb_include
  * - execute backend replacement code:
- *   @snippet parallel_backend/example-tbb.cpp tbb_backend
+ *   @snippet parallel_backend/jhb-tbb.cpp tbb_backend
  * - configuration of compiler/linker options is responsibility of Application's scripts
  *
  * #### OpenMP
  *
  * - include header with simple implementation of OpenMP backend:
- *   @snippet parallel_backend/example-openmp.cpp openmp_include
+ *   @snippet parallel_backend/jhb-openmp.cpp openmp_include
  * - execute backend replacement code:
- *   @snippet parallel_backend/example-openmp.cpp openmp_backend
+ *   @snippet parallel_backend/jhb-openmp.cpp openmp_backend
  * - Configuration of compiler/linker options is responsibility of Application's scripts
  *
  *

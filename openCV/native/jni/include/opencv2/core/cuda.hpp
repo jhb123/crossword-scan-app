@@ -587,7 +587,7 @@ and when GpuMat is declared later on, it is given the pre-allocated memory.
 This kind of strategy reduces the number of calls for memory allocating APIs
 such as cudaMalloc or cudaMallocPitch.
 
-Below is an example that utilizes BufferPool with StackAllocator:
+Below is an jhb that utilizes BufferPool with StackAllocator:
 
 @code
     #include <opencv2/opencv.hpp>
@@ -614,14 +614,14 @@ Below is an example that utilizes BufferPool with StackAllocator:
     }
 @endcode
 
-If we allocate another GpuMat on pool1 in the above example, it will be carried out by
+If we allocate another GpuMat on pool1 in the above jhb, it will be carried out by
 the DefaultAllocator since the stack for pool1 is full.
 
 @code
     GpuMat d_add1 = pool1.getBuffer(1024, 1024, CV_8UC1);   // Stack for pool1 is full, memory is allocated with DefaultAllocator
 @endcode
 
-If a third stream is declared in the above example, allocating with #getBuffer
+If a third stream is declared in the above jhb, allocating with #getBuffer
 within that stream will also be carried out by the DefaultAllocator because we've run out of
 stacks.
 
@@ -633,7 +633,7 @@ stacks.
 
 @warning When utilizing StackAllocator, deallocation order is important.
 
-Just like a stack, deallocation must be done in LIFO order. Below is an example of
+Just like a stack, deallocation must be done in LIFO order. Below is an jhb of
 erroneous usage that violates LIFO rule. If OpenCV is compiled in Debug mode, this
 sample code will emit CV_Assert error.
 

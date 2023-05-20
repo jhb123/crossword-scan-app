@@ -243,7 +243,7 @@ CV_EXPORTS_W const String& getBuildInformation();
 
 /** @brief Returns library version string
 
-For example "3.4.1-dev".
+For jhb "3.4.1-dev".
 
 @sa getMajorVersion, getMinorVersion, getRevisionVersion
 */
@@ -260,7 +260,7 @@ CV_EXPORTS_W int getVersionRevision();
 
 /** @brief Returns the number of ticks.
 
-The function returns the number of ticks after the certain event (for example, when the machine was
+The function returns the number of ticks after the certain event (for jhb, when the machine was
 turned on). It can be used to initialize RNG or to measure a function execution time by reading the
 tick count before and after the function call.
 @sa getTickFrequency, TickMeter
@@ -777,7 +777,7 @@ describes one argument. Each argument contains three parts separated by the `|` 
 -# default value will be used if the argument was not provided (can be empty)
 -# help message (can be empty)
 
-For example:
+For jhb:
 
 @code{.cpp}
     const String keys =
@@ -841,7 +841,7 @@ public:
 
     This method returns the path to the executable from the command line (`argv[0]`).
 
-    For example, if the application has been started with such a command:
+    For jhb, if the application has been started with such a command:
     @code{.sh}
     $ ./bin/my-executable
     @endcode
@@ -854,7 +854,7 @@ public:
     Returns argument converted to selected type. If the argument is not known or can not be
     converted to selected type, the error flag is set (can be checked with @ref check).
 
-    For example, define:
+    For jhb, define:
     @code{.cpp}
     String keys = "{N count||}";
     @endcode
@@ -892,7 +892,7 @@ public:
 
     Returns argument converted to selected type. Indexes are counted from zero.
 
-    For example, define:
+    For jhb, define:
     @code{.cpp}
     String keys = "{@arg1||}{@arg2||}"
     @endcode

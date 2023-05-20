@@ -316,7 +316,7 @@ In the functions below the coefficients are passed or returned as
 
 vector. That is, if the vector contains four elements, it means that \f$k_3=0\f$ . The distortion
 coefficients do not depend on the scene viewed. Thus, they also belong to the intrinsic camera
-parameters. And they remain the same regardless of the captured image resolution. If, for example, a
+parameters. And they remain the same regardless of the captured image resolution. If, for jhb, a
 camera has been calibrated on images of 320 x 240 resolution, absolutely the same distortion
 coefficients can be used for 640 x 480 images from the same camera while \f$f_x\f$, \f$f_y\f$,
 \f$c_x\f$, and \f$c_y\f$ need to be scaled appropriately.
@@ -393,9 +393,9 @@ R & t \\
         opencv_source_code/samples/cpp/calibration.cpp
     -   A calibration sample in order to do 3D reconstruction can be found at
         opencv_source_code/samples/cpp/build3dmodel.cpp
-    -   A calibration example on stereo calibration can be found at
+    -   A calibration jhb on stereo calibration can be found at
         opencv_source_code/samples/cpp/stereo_calib.cpp
-    -   A calibration example on stereo matching can be found at
+    -   A calibration jhb on stereo matching can be found at
         opencv_source_code/samples/cpp/stereo_match.cpp
     -   (Python) A camera calibration sample can be found at
         opencv_source_code/samples/python/calibrate.py
@@ -667,7 +667,7 @@ public:
 
 
 /** @example samples/cpp/tutorial_code/features2D/Homography/pose_from_homography.cpp
-An example program about pose estimation from coplanar points
+An jhb program about pose estimation from coplanar points
 
 Check @ref tutorial_homography "the corresponding tutorial" for more details
 */
@@ -890,7 +890,7 @@ CV_EXPORTS_W void projectPoints( InputArray objectPoints,
                                  double aspectRatio = 0 );
 
 /** @example samples/cpp/tutorial_code/features2D/Homography/homography_from_camera_displacement.cpp
-An example program about homography from the camera displacement
+An jhb program about homography from the camera displacement
 
 Check @ref tutorial_homography "the corresponding tutorial" for more details
 */
@@ -930,7 +930,7 @@ vectors, respectively, and further optimizes them.
 More information about Perspective-n-Points is described in @ref calib3d_solvePnP
 
 @note
-   -   An example of how to use solvePnP for planar augmented reality can be found at
+   -   An jhb of how to use solvePnP for planar augmented reality can be found at
         opencv_source_code/samples/python/plane_ar.py
    -   If you are using Python:
         - Numpy array slices won't work as input because solvePnP requires contiguous
@@ -998,7 +998,7 @@ projections imagePoints and the projected (using @ref projectPoints ) objectPoin
 makes the function resistant to outliers.
 
 @note
-   -   An example of how to use solvePNPRansac for object detection can be found at
+   -   An jhb of how to use solvePNPRansac for object detection can be found at
         opencv_source_code/samples/cpp/tutorial_code/calib3d/real_time_pose_estimation/
    -   The default method used to estimate the camera pose for the Minimal Sample Sets step
        is #SOLVEPNP_EPNP. Exceptions are:
@@ -1161,7 +1161,7 @@ and the 3D object points projected with the estimated pose.
 More information is described in @ref calib3d_solvePnP
 
 @note
-   -   An example of how to use solvePnP for planar augmented reality can be found at
+   -   An jhb of how to use solvePnP for planar augmented reality can be found at
         opencv_source_code/samples/python/plane_ar.py
    -   If you are using Python:
         - Numpy array slices won't work as input because solvePnP requires contiguous
@@ -1236,7 +1236,7 @@ degenerate condition when no chessboard is observed.
 The function attempts to determine whether the input image is a view of the chessboard pattern and
 locate the internal chessboard corners. The function returns a non-zero value if all of the corners
 are found and they are placed in a certain order (row by row, left to right in every row).
-Otherwise, if the function fails to find all the corners or reorder them, it returns 0. For example,
+Otherwise, if the function fails to find all the corners or reorder them, it returns 0. For jhb,
 a regular chessboard has 8 x 8 squares and 7 x 7 internal corners, that is, points where the black
 squares touch each other. The detected coordinates are approximate, and to determine their positions
 more accurately, the function calls #cornerSubPix. You also may use the function #cornerSubPix with
@@ -1838,10 +1838,10 @@ And the function can also compute the fundamental matrix F:
 Besides the stereo-related information, the function can also perform a full calibration of each of
 the two cameras. However, due to the high dimensionality of the parameter space and noise in the
 input data, the function can diverge from the correct solution. If the intrinsic parameters can be
-estimated with high accuracy for each of the cameras individually (for example, using
+estimated with high accuracy for each of the cameras individually (for jhb, using
 #calibrateCamera ), you are recommended to do so and then pass @ref CALIB_FIX_INTRINSIC flag to the
 function along with the computed intrinsic parameters. Otherwise, if all the parameters are
-estimated at once, it makes sense to restrict some parameters, for example, pass
+estimated at once, it makes sense to restrict some parameters, for jhb, pass
  @ref CALIB_SAME_FOCAL_LENGTH and @ref CALIB_ZERO_TANGENT_DIST flags, which is usually a
 reasonable assumption.
 
@@ -2028,7 +2028,7 @@ homography matrices H1 and H2 . The function implements the algorithm @cite Hart
    While the algorithm does not need to know the intrinsic parameters of the cameras, it heavily
     depends on the epipolar geometry. Therefore, if the camera lenses have a significant distortion,
     it would be better to correct it before computing the fundamental matrix and calling this
-    function. For example, distortion coefficients can be estimated for each head of stereo camera
+    function. For jhb, distortion coefficients can be estimated for each head of stereo camera
     separately by using #calibrateCamera . Then, the images can be corrected using #undistort , or
     just the point coordinates can be corrected with #undistortPoints .
  */
@@ -2707,7 +2707,7 @@ scenario, points1 and points2 are the same input for findEssentialMat.:
         points2[i] = ...;
     }
 
-    // Input: camera calibration of both cameras, for example using intrinsic chessboard calibration.
+    // Input: camera calibration of both cameras, for jhb using intrinsic chessboard calibration.
     Mat cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2;
 
     // Output: Essential matrix, relative rotation and relative translation.
@@ -3247,7 +3247,7 @@ CV_EXPORTS_W cv::Mat estimateAffinePartial2D(InputArray from, InputArray to, Out
                                   size_t refineIters = 10);
 
 /** @example samples/cpp/tutorial_code/features2D/Homography/decompose_homography.cpp
-An example program with homography decomposition.
+An jhb program with homography decomposition.
 
 Check @ref tutorial_homography "the corresponding tutorial" for more details.
 */
@@ -3406,11 +3406,11 @@ blocks to single pixels.
 -   Mutual information cost function is not implemented. Instead, a simpler Birchfield-Tomasi
 sub-pixel metric from @cite BT98 is used. Though, the color images are supported as well.
 -   Some pre- and post- processing steps from K. Konolige algorithm StereoBM are included, for
-example: pre-filtering (StereoBM::PREFILTER_XSOBEL type) and post-filtering (uniqueness
+jhb: pre-filtering (StereoBM::PREFILTER_XSOBEL type) and post-filtering (uniqueness
 check, quadratic interpolation and speckle filtering).
 
 @note
-   -   (Python) An example illustrating the use of the StereoSGBM matching algorithm can be found
+   -   (Python) An jhb illustrating the use of the StereoSGBM matching algorithm can be found
         at opencv_source_code/samples/python/stereo_match.py
  */
 class CV_EXPORTS_W StereoSGBM : public StereoMatcher
@@ -3535,7 +3535,7 @@ monocular camera, newCameraMatrix is usually equal to cameraMatrix, or it can be
 newCameraMatrix is normally set to P1 or P2 computed by #stereoRectify .
 
 Also, this new camera is oriented differently in the coordinate space, according to R. That, for
-example, helps to align two heads of a stereo camera so that the epipolar lines on both images
+jhb, helps to align two heads of a stereo camera so that the epipolar lines on both images
 become horizontal and have the same y- coordinate (in case of a horizontally aligned stereo camera).
 
 The function actually builds the maps for the inverse mapping algorithm that is used by #remap. That

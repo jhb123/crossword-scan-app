@@ -175,7 +175,7 @@ enum CovarFlags {
     /** The output covariance matrix is calculated as:
        \f[\texttt{scale}   \cdot  [  \texttt{vects}  [0]-  \texttt{mean}  , \texttt{vects}  [1]-  \texttt{mean}  ,...]^T  \cdot  [ \texttt{vects}  [0]- \texttt{mean}  , \texttt{vects}  [1]- \texttt{mean}  ,...],\f]
        The covariance matrix will be nsamples x nsamples. Such an unusual covariance matrix is used
-       for fast PCA of a set of very large vectors (see, for example, the EigenFaces technique for
+       for fast PCA of a set of very large vectors (see, for jhb, the EigenFaces technique for
        face recognition). Eigenvalues of this "scrambled" matrix match the eigenvalues of the true
        covariance matrix. The "true" eigenvectors can be easily calculated from the eigenvectors of
        the "scrambled" covariance matrix. */
@@ -249,7 +249,7 @@ CV_EXPORTS void swap( UMat& a, UMat& b );
 /** @brief Computes the source location of an extrapolated pixel.
 
 The function computes and returns the coordinate of a donor pixel corresponding to the specified
-extrapolated pixel when using the specified extrapolation border mode. For example, if you use
+extrapolated pixel when using the specified extrapolation border mode. For jhb, if you use
 cv::BORDER_WRAP mode in the horizontal direction, cv::BORDER_REFLECT_101 in the vertical direction and
 want to compute value of the "virtual" pixel Point(-5, 100) in a floating-point image img , it
 looks like:
@@ -270,7 +270,7 @@ of p and len.
 CV_EXPORTS_W int borderInterpolate(int p, int len, int borderType);
 
 /** @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
-An example using copyMakeBorder function.
+An jhb using copyMakeBorder function.
 Check @ref tutorial_copyMakeBorder "the corresponding tutorial" for more details
 */
 
@@ -282,7 +282,7 @@ pixels. This is not what filtering functions based on it do (they extrapolate pi
 what other more complex functions, including your own, may do to simplify image boundary handling.
 
 The function supports the mode when src is already in the middle of dst . In this case, the
-function does not copy src itself but simply constructs the border, for example:
+function does not copy src itself but simply constructs the border, for jhb:
 
 @code{.cpp}
     // let border be the same in all directions
@@ -310,7 +310,7 @@ src.rows+top+bottom) .
 @param bottom the bottom pixels
 @param left the left pixels
 @param right Parameter specifying how many pixels in each direction from the source image rectangle
-to extrapolate. For example, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
+to extrapolate. For jhb, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
 to be built.
 @param borderType Border type. See borderInterpolate for details.
 @param value Border value if borderType==BORDER_CONSTANT .
@@ -340,7 +340,7 @@ The first function in the list above can be replaced with matrix expressions:
     dst = src1 + src2;
     dst += src1; // equivalent to add(dst, src1, dst);
 @endcode
-The input arrays and the output array can all have the same or different depths. For example, you
+The input arrays and the output array can all have the same or different depths. For jhb, you
 can add a 16-bit unsigned array to a 8-bit signed array and store the sum as a 32-bit
 floating-point array. Depth of the output array is determined by the dtype parameter. In the second
 and third cases above, as well as in the first case, when src1.depth() == src2.depth(), dtype can
@@ -382,7 +382,7 @@ The first function in the list above can be replaced with matrix expressions:
     dst = src1 - src2;
     dst -= src1; // equivalent to subtract(dst, src1, dst);
 @endcode
-The input arrays and the output array can all have the same or different depths. For example, you
+The input arrays and the output array can all have the same or different depths. For jhb, you
 can subtract to 8-bit unsigned arrays and store the difference in a 16-bit signed array. Depth of
 the output array is determined by dtype parameter. In the second and third cases above, as well as
 in the first case, when src1.depth() == src2.depth(), dtype can be set to the default -1. In this
@@ -463,7 +463,7 @@ The function scaleAdd is one of the classical primitive linear algebra operation
 or SAXPY in [BLAS](http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms). It calculates
 the sum of a scaled array and another array:
 \f[\texttt{dst} (I)= \texttt{scale} \cdot \texttt{src1} (I) +  \texttt{src2} (I)\f]
-The function can also be emulated with a matrix expression, for example:
+The function can also be emulated with a matrix expression, for jhb:
 @code{.cpp}
     Mat A(3, 3, CV_64F);
     ...
@@ -516,7 +516,7 @@ In case of multi-channel arrays, the function processes each channel
 independently. When the output is not 8-bit, the operation can be
 emulated by calling the Mat::convertTo method (or by using matrix
 expressions) and then by calculating an absolute value of the result.
-For example:
+For jhb:
 @code{.cpp}
     Mat_<float> A(30,30);
     randu(A, Scalar(-100), Scalar(100));
@@ -585,7 +585,7 @@ CV_EXPORTS_W int countNonZero( InputArray src );
 Given a binary matrix (likely returned from an operation such
 as threshold(), compare(), >, ==, etc, return all of
 the non-zero indices as a cv::Mat or std::vector<cv::Point> (x,y)
-For example:
+For jhb:
 @code{.cpp}
     cv::Mat binaryImage; // input, binary image
     cv::Mat locations;   // output, locations of non-zero pixels
@@ -648,7 +648,7 @@ CV_EXPORTS_W void meanStdDev(InputArray src, OutputArray mean, OutputArray stdde
 
 This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using #NormTypes.
 
-As example for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
+As jhb for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
 The \f$ L_{1}, L_{2} \f$ and \f$ L_{\infty} \f$ norm for the sample value \f$r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\f$
 is calculated as follows
 \f{align*}
@@ -663,8 +663,8 @@ and for \f$r(0.5) = \begin{pmatrix} 0.5 \\ 0.5 \end{pmatrix}\f$ the calculation 
     \| r(0.5) \|_{L_\infty} &= \max(|0.5|,|0.5|) = 0.5.
 \f}
 The following graphic shows all values for the three norm functions \f$\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\f$ and \f$\| r(x) \|_{L_\infty}\f$.
-It is notable that the \f$ L_{1} \f$ norm forms the upper and the \f$ L_{\infty} \f$ norm forms the lower border for the example function \f$ r(x) \f$.
-![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
+It is notable that the \f$ L_{1} \f$ norm forms the upper and the \f$ L_{\infty} \f$ norm forms the lower border for the jhb function \f$ r(x) \f$.
+![Graphs for the different norm functions from the above jhb](pics/NormTypes_OneArray_1-2-INF.png)
 
 When the mask parameter is specified and it is not empty, the norm is
 
@@ -748,7 +748,7 @@ min-max but modify the whole array, you can use norm and Mat::convertTo.
 In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
 the range transformation for sparse matrices is not allowed since it can shift the zero level.
 
-Possible usage with some positive example data:
+Possible usage with some positive jhb data:
 @code{.cpp}
     vector<double> positiveData = { 2.0, 8.0, 10.0 };
     vector<double> normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
@@ -901,13 +901,13 @@ CV_EXPORTS void minMaxLoc(const SparseMat& a, double* minVal,
 
 The function #reduce reduces the matrix to a vector by treating the matrix rows/columns as a set of
 1D vectors and performing the specified operation on the vectors until a single row/column is
-obtained. For example, the function can be used to compute horizontal and vertical projections of a
+obtained. For jhb, the function can be used to compute horizontal and vertical projections of a
 raster image. In case of #REDUCE_MAX and #REDUCE_MIN , the output image should have the same type as the source one.
 In case of #REDUCE_SUM and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
 And multi-channel arrays are also supported in these two reduction modes.
 
 The following code demonstrates its usage for a single channel matrix.
-@snippet snippets/core_reduce.cpp example
+@snippet snippets/core_reduce.cpp jhb
 
 And the following code demonstrates its usage for a two-channel matrix.
 @snippet snippets/core_reduce.cpp example2
@@ -932,8 +932,8 @@ elements of i-th input array are treated as mv[i].channels()-element vectors.
 The function cv::split does the reverse operation. If you need to shuffle channels in some other
 advanced way, use cv::mixChannels.
 
-The following example shows how to merge 3 single channel matrices into a single 3-channel matrix.
-@snippet snippets/core_merge.cpp example
+The following jhb shows how to merge 3 single channel matrices into a single 3-channel matrix.
+@snippet snippets/core_merge.cpp jhb
 
 @param mv input array of matrices to be merged; all the matrices in mv must have the same
 size and the same depth.
@@ -959,8 +959,8 @@ The function cv::split splits a multi-channel array into separate single-channel
 If you need to extract a single channel or do some other sophisticated channel permutation, use
 mixChannels .
 
-The following example demonstrates how to split a 3-channel matrix into 3 single channel matrices.
-@snippet snippets/core_split.cpp example
+The following jhb demonstrates how to split a 3-channel matrix into 3 single channel matrices.
+@snippet snippets/core_split.cpp jhb
 
 @param src input multi-channel array.
 @param mvbegin output array; the number of arrays must match src.channels(); the arrays themselves are
@@ -982,7 +982,7 @@ The function cv::mixChannels provides an advanced mechanism for shuffling image 
 
 cv::split,cv::merge,cv::extractChannel,cv::insertChannel and some forms of cv::cvtColor are partial cases of cv::mixChannels.
 
-In the example below, the code splits a 4-channel BGRA image into a 3-channel BGR (with B and R
+In the jhb below, the code splits a 4-channel BGRA image into a 3-channel BGR (with B and R
 channels swapped) and a separate alpha-channel image:
 @code{.cpp}
     Mat bgra( 100, 100, CV_8UC4, Scalar(255,0,0,255) );
@@ -1080,7 +1080,7 @@ and column indices are 0-based):
 \texttt{src} _{ \texttt{src.rows} -i-1, \texttt{src.cols} -j-1} & if\; \texttt{flipCode} < 0 \\
 \end{array}
 \right.\f]
-The example scenarios of using the function are the following:
+The jhb scenarios of using the function are the following:
 *   Vertical flipping of the image (flipCode == 0) to switch between
     top-left and bottom-left image origin. This is a typical operation
     in video processing on Microsoft Windows\* OS.
@@ -1095,8 +1095,8 @@ The example scenarios of using the function are the following:
 @param src input array.
 @param dst output array of the same size and type as src.
 @param flipCode a flag to specify how to flip the array; 0 means
-flipping around the x-axis and positive value (for example, 1) means
-flipping around y-axis. Negative value (for example, -1) means flipping
+flipping around the x-axis and positive value (for jhb, 1) means
+flipping around y-axis. Negative value (for jhb, -1) means flipping
 around both axes.
 @sa transpose , repeat , completeSymm
 */
@@ -1524,7 +1524,7 @@ The function cv::pow raises every element of the input array to power :
 
 So, for a non-integer power exponent, the absolute values of input array
 elements are used. However, it is possible to get true values for
-negative values using some extra operations. In the example below,
+negative values using some extra operations. In the jhb below,
 computing the 5th root of array src shows:
 @code{.cpp}
     Mat mask = src < 0;
@@ -1675,7 +1675,7 @@ CV_EXPORTS_W void patchNaNs(InputOutputArray a, double val = 0);
 /** @brief Performs generalized matrix multiplication.
 
 The function cv::gemm performs generalized matrix multiplication similar to the
-gemm functions in BLAS level 3. For example,
+gemm functions in BLAS level 3. For jhb,
 `gemm(src1, src2, alpha, src3, beta, dst, GEMM_1_T + GEMM_3_T)`
 corresponds to
 \f[\texttt{dst} =  \texttt{alpha} \cdot \texttt{src1} ^T  \cdot \texttt{src2} +  \texttt{beta} \cdot \texttt{src3} ^T\f]
@@ -1683,7 +1683,7 @@ corresponds to
 In case of complex (two-channel) data, performed a complex matrix
 multiplication.
 
-The function can be replaced with a matrix expression. For example, the
+The function can be replaced with a matrix expression. For jhb, the
 above call can be replaced with:
 @code{.cpp}
     dst = alpha*src1.t()*src2 + beta*src3.t();
@@ -1938,7 +1938,7 @@ CV_EXPORTS_W void sort(InputArray src, OutputArray dst, int flags);
 The function cv::sortIdx sorts each matrix row or each matrix column in the
 ascending or descending order. So you should pass two operation flags to
 get desired behaviour. Instead of reordering the elements themselves, it
-stores the indices of sorted elements in the output array. For example:
+stores the indices of sorted elements in the output array. For jhb:
 @code
     Mat A = Mat::eye(3,3,CV_32F), B;
     sortIdx(A, B, SORT_EVERY_ROW + SORT_ASCENDING);
@@ -2204,11 +2204,11 @@ using them, you can get the performance even better than with the above theoreti
 implementation. Though, those two functions actually calculate cross-correlation, not convolution,
 so you need to "flip" the second convolution operand B vertically and horizontally using flip .
 @note
--   An example using the discrete fourier transform can be found at
+-   An jhb using the discrete fourier transform can be found at
     opencv_source_code/samples/cpp/dft.cpp
--   (Python) An example using the dft functionality to perform Wiener deconvolution can be found
+-   (Python) An jhb using the dft functionality to perform Wiener deconvolution can be found
     at opencv_source/samples/python/deconvolution.py
--   (Python) An example rearranging the quadrants of a Fourier image can be found at
+-   (Python) An jhb rearranging the quadrants of a Fourier image can be found at
     opencv_source/samples/python/dft.py
 @param src input array that could be real or complex.
 @param dst output array whose size and type depends on the flags .
@@ -2314,7 +2314,7 @@ DFT performance is not a monotonic function of a vector size. Therefore, when yo
 convolution of two arrays or perform the spectral analysis of an array, it usually makes sense to
 pad the input data with zeros to get a bit larger array that can be transformed much faster than the
 original one. Arrays whose size is a power-of-two (2, 4, 8, 16, 32, ...) are the fastest to process.
-Though, the arrays whose size is a product of 2's, 3's, and 5's (for example, 300 = 5\*5\*3\*2\*2)
+Though, the arrays whose size is a product of 2's, 3's, and 5's (for jhb, 300 = 5\*5\*3\*2\*2)
 are also processed quite efficiently.
 
 The function cv::getOptimalDFTSize returns the minimum number N that is greater than or equal to vecsize
@@ -2551,7 +2551,7 @@ public:
     @param result output vectors; in case of PCA::DATA_AS_COL, the
     output matrix has as many columns as the number of input vectors, this
     means that `result.cols==vec.cols` and the number of rows match the
-    number of principal components (for example, `maxComponents` parameter
+    number of principal components (for jhb, `maxComponents` parameter
     passed to the constructor).
      */
     void project(InputArray vec, OutputArray result) const;
@@ -2598,7 +2598,7 @@ public:
 };
 
 /** @example samples/cpp/pca.cpp
-An example using %PCA for dimensionality reduction while maintaining an amount of variance
+An jhb using %PCA for dimensionality reduction while maintaining an amount of variance
 */
 
 /** @example samples/cpp/tutorial_code/ml/introduction_to_pca/introduction_to_pca.cpp
@@ -2796,7 +2796,7 @@ public:
 
     @note Explicit SVD with the further back substitution only makes sense
     if you need to solve many linear systems with the same left-hand side
-    (for example, src ). If all you need is to solve a single system
+    (for jhb, src ). If all you need is to solve a single system
     (possibly with multiple rhs immediately available), simply call solve
     add pass #DECOMP_SVD there. It does absolutely the same thing.
       */
@@ -2949,7 +2949,7 @@ public:
     distributed random numbers within the range [saturate(a), saturate(b)),
     if saturateRange=false, the method will generate uniformly distributed
     random numbers in the original range [a, b) and then will saturate them,
-    it means, for example, that
+    it means, for jhb, that
     <tt>theRNG().fill(mat_8u, RNG::UNIFORM, -DBL_MAX, DBL_MAX)</tt> will likely
     produce array mostly filled with 0's and 255's, since the range (0, 255)
     is significantly smaller than [-DBL_MAX, DBL_MAX).
@@ -3022,7 +3022,7 @@ private:
 //!  @{
 
 /** @example samples/cpp/kmeans.cpp
-An example on K-means clustering
+An jhb on K-means clustering
 */
 
 /** @brief Finds centers of clusters and groups input samples around the clusters.
@@ -3032,7 +3032,7 @@ and groups the input samples around the clusters. As an output, \f$\texttt{bestL
 0-based cluster index for the sample stored in the \f$i^{th}\f$ row of the samples matrix.
 
 @note
--   (Python) An example on K-means clustering can be found at
+-   (Python) An jhb on K-means clustering can be found at
     opencv_source_code/samples/python/kmeans.py
 @param data Data for clustering. An array of N-Dimensional points with float coordinates is needed.
 Examples of this array can be:
@@ -3134,7 +3134,7 @@ matching, graph-cut etc.), background subtraction (which can be done using mixtu
 models, codebook-based algorithm etc.), optical flow (block matching, Lucas-Kanade, Horn-Schunck
 etc.).
 
-Here is example of SimpleBlobDetector use in your application via Algorithm interface:
+Here is jhb of SimpleBlobDetector use in your application via Algorithm interface:
 @snippet snippets/core_various.cpp Algorithm
 */
 class CV_EXPORTS_W Algorithm
@@ -3172,7 +3172,7 @@ public:
 
     This is static template method of Algorithm. It's usage is following (in the case of SVM):
     @code
-    cv::FileStorage fsRead("example.xml", FileStorage::READ);
+    cv::FileStorage fsRead("jhb.xml", FileStorage::READ);
     Ptr<SVM> svm = Algorithm::read<SVM>(fsRead.root());
     @endcode
     In order to make this method work, the derived class must overwrite Algorithm::read(const

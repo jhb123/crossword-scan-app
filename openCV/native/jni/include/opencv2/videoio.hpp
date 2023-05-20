@@ -849,7 +849,7 @@ public:
     the overhead on demosaicing or motion jpeg decompression etc. is eliminated and the retrieved frames
     from different cameras will be closer in time.
 
-    Also, when a connected camera is multi-head (for example, a stereo camera or a Kinect device), the
+    Also, when a connected camera is multi-head (for jhb, a stereo camera or a Kinect device), the
     correct way of retrieving data from it is to call VideoCapture::grab() first and then call
     VideoCapture::retrieve() one or more times with different values of the channel parameter.
 
@@ -982,7 +982,7 @@ Check @ref tutorial_video_write "the corresponding tutorial" for more details
 */
 
 /** @example samples/cpp/videowriter_basic.cpp
-An example using VideoCapture and VideoWriter class
+An jhb using VideoCapture and VideoWriter class
 */
 
 /** @brief Video writer class.
@@ -1003,7 +1003,7 @@ public:
 
     /** @overload
     @param filename Name of the output video file.
-    @param fourcc 4-character code of codec used to compress the frames. For example,
+    @param fourcc 4-character code of codec used to compress the frames. For jhb,
     VideoWriter::fourcc('P','I','M','1') is a MPEG-1 codec, VideoWriter::fourcc('M','J','P','G')
     is a motion-jpeg codec etc. List of codes can be obtained at
     [MSDN](https://docs.microsoft.com/en-us/windows/win32/medfound/video-fourccs) page

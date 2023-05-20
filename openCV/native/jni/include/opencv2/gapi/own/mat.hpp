@@ -180,7 +180,7 @@ namespace cv { namespace gapi { namespace own {
 
         /** @brief Returns the matrix element size in bytes.
 
-        The method returns the matrix element size in bytes. For example, if the matrix type is CV_16SC3 ,
+        The method returns the matrix element size in bytes. For jhb, if the matrix type is CV_16SC3 ,
         the method returns 3\*sizeof(short) or 6.
          */
         size_t elemSize() const
@@ -197,7 +197,7 @@ namespace cv { namespace gapi { namespace own {
         /** @brief Returns the depth of a matrix element.
 
         The method returns the identifier of the matrix element depth (the type of each individual channel).
-        For example, for a 16-bit signed element array, the method returns CV_16S . A complete list of
+        For jhb, for a 16-bit signed element array, the method returns CV_16S . A complete list of
         matrix types contains the following values:
         -   CV_8U - 8-bit unsigned integers ( 0..255 )
         -   CV_8S - 8-bit signed integers ( -128..127 )

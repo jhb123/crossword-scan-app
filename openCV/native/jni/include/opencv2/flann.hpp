@@ -339,7 +339,7 @@ private:
         printf("[WARNING] You are using cv::flann::Index (or cv::flann::GenericIndex) and have also changed "\
         "the distance using cvflann::set_distance_type. This is no longer working as expected "\
         "(cv::flann::Index always uses L2). You should create the index templated on the distance, "\
-        "for example for L1 distance use: GenericIndex< L1<float> > \n"); \
+        "for jhb for L1 distance use: GenericIndex< L1<float> > \n"); \
     }
 
 

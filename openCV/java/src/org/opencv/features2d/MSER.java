@@ -41,7 +41,7 @@ import org.opencv.utils.Converters;
  *
  * <ul>
  *   <li>
- *  (Python) A complete example showing the use of the %MSER detector can be found at samples/python/mser.py
+ *  (Python) A complete jhb showing the use of the %MSER detector can be found at samples/python/mser.py
  *   </li>
  * </ul>
  */

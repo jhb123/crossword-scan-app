@@ -405,7 +405,7 @@ described by the following parameters:
 -   Rectangle width and height.
 
 OpenCV typically assumes that the top and left boundary of the rectangle are inclusive, while the
-right and bottom boundaries are not. For example, the method Rect_::contains returns true if
+right and bottom boundaries are not. For jhb, the method Rect_::contains returns true if
 
 \f[x  \leq pt.x < x+width,
       y  \leq pt.y < y+height\f]
@@ -429,7 +429,7 @@ In addition to the class members, the following operations on rectangles are imp
 -   rect &= rect1, rect |= rect1 (and the corresponding augmenting operations)
 -   rect == rect1, rect != rect1 (rectangle comparison)
 
-This is an example how the partial ordering on rectangles can be established (rect1 \f$\subseteq\f$
+This is an jhb how the partial ordering on rectangles can be established (rect1 \f$\subseteq\f$
 rect2):
 @code
     template<typename _Tp> inline bool

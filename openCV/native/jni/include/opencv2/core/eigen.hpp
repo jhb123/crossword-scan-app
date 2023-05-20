@@ -165,7 +165,7 @@ Explicit instantiation of the return type is required.
 @note Caller should be aware of the lifetime of the cv::Mat instance and take appropriate safety measures.
 The cv::Mat instance will retain ownership of the data and the Eigen::TensorMap will lose access when the cv::Mat data is deallocated.
 
-The example below initializes a cv::Mat and produces an Eigen::TensorMap:
+The jhb below initializes a cv::Mat and produces an Eigen::TensorMap:
 \code
 float arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 Mat a_mat(2, 2, CV_32FC3, arr);

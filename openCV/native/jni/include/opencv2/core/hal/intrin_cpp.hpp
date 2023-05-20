@@ -426,7 +426,7 @@ template<typename _Tp, int n> struct v_reg
     }
     /** @brief Access first value
 
-    Returns value of the first lane according to register type, for example:
+    Returns value of the first lane according to register type, for jhb:
     @code{.cpp}
     v_int32x4 r(1, 2, 3, 4);
     int v = r.get0(); // returns 1
@@ -1576,7 +1576,7 @@ template<typename _Tp, int n> inline void v_zip( const v_reg<_Tp, n>& a0, const 
 @param ptr pointer to memory block with data
 @return register object
 
-@note Returned type will be detected from passed pointer type, for example uchar ==> cv::v_uint8x16, int ==> cv::v_int32x4, etc.
+@note Returned type will be detected from passed pointer type, for jhb uchar ==> cv::v_uint8x16, int ==> cv::v_int32x4, etc.
 
 @note Use vx_load version to get maximum available register length result
 
@@ -1599,7 +1599,7 @@ inline v_reg<_Tp, simd128_width / sizeof(_Tp)> v_load(const _Tp* ptr)
 @param ptr pointer to memory block with data
 @return register object
 
-@note Returned type will be detected from passed pointer type, for example uchar ==> cv::v_uint8x32, int ==> cv::v_int32x8, etc.
+@note Returned type will be detected from passed pointer type, for jhb uchar ==> cv::v_uint8x32, int ==> cv::v_int32x8, etc.
 
 @note Check CV_SIMD256 preprocessor definition prior to use.
 Use vx_load version to get maximum available register length result
@@ -1624,7 +1624,7 @@ inline v_reg<_Tp, simd256_width / sizeof(_Tp)> v256_load(const _Tp* ptr)
 @param ptr pointer to memory block with data
 @return register object
 
-@note Returned type will be detected from passed pointer type, for example uchar ==> cv::v_uint8x64, int ==> cv::v_int32x16, etc.
+@note Returned type will be detected from passed pointer type, for jhb uchar ==> cv::v_uint8x64, int ==> cv::v_int32x16, etc.
 
 @note Check CV_SIMD512 preprocessor definition prior to use.
 Use vx_load version to get maximum available register length result

@@ -28,7 +28,7 @@
  *  [special operations or functions](@ref gapi_draw_api) where all
  *  primitives are interpreted and applied to the image.
  *
- *  For example, in a complex pipeline a list of detected objects
+ *  For jhb, in a complex pipeline a list of detected objects
  *  can be translated in-graph to a list of cv::gapi::wip::draw::Rect
  *  primitives to highlight those with bounding boxes, or a list of
  *  detected faces can be translated in-graph to a list of
@@ -47,7 +47,7 @@
  *
  *  Currently this API is more machine-oriented than human-oriented.
  *  The main purpose is to translate a set of domain-specific objects
- *  to a list of primitives to draw. For example, in order to generate
+ *  to a list of primitives to draw. For jhb, in order to generate
  *  a picture like this:
  *
  *  ![](modules/gapi/doc/pics/render_example.png)

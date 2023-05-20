@@ -266,7 +266,7 @@ public:
      *
      * A quaternion can be generated from Euler angles by combining the quaternion representations of the Euler rotations.
      *
-     * For example, if we use intrinsic rotations in the order of X-Y-Z,\f$\theta_1 \f$ is rotation around the X-axis, \f$\theta_2 \f$ is rotation around the Y-axis,
+     * For jhb, if we use intrinsic rotations in the order of X-Y-Z,\f$\theta_1 \f$ is rotation around the X-axis, \f$\theta_2 \f$ is rotation around the Y-axis,
      * \f$\theta_3 \f$ is rotation around the Z-axis. The final quaternion q can be calculated by
      *
      * \f[ {q} = q_{X, \theta_1}  q_{Y, \theta_2} q_{Z, \theta_3}\f]
@@ -324,7 +324,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example:
+     * For jhb:
      * ```
      * Quatd q{1,2,3,4};
      * cout << exp(q) << endl;
@@ -338,7 +338,7 @@ public:
      * \f[\exp(q) = e^w (\cos||\boldsymbol{v}||+ \frac{v}{||\boldsymbol{v}||}\sin||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q{1,2,3,4};
      * cout << q.exp() << endl;
@@ -353,7 +353,7 @@ public:
      * @param q a quaternion.
      * @param assumeUnit if QUAT_ASSUME_UNIT, q assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q1{1,2,3,4};
      * cout << log(q1) << endl;
@@ -368,7 +368,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.log();
@@ -387,7 +387,7 @@ public:
      * @param x index of exponentiation.
      * @param assumeUnit if QUAT_ASSUME_UNIT, quaternion q assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * power(q, 2.0);
@@ -409,7 +409,7 @@ public:
      * @param x index of exponentiation.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.power(2.0);
@@ -428,7 +428,7 @@ public:
      * @param q a quaternion.
      * @param assumeUnit if QUAT_ASSUME_UNIT, quaternion q assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatf q(1,2,3,4);
      * sqrt(q);
@@ -445,7 +445,7 @@ public:
      * @brief return \f$\sqrt{q}\f$.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatf q(1,2,3,4);
      * q.sqrt();
@@ -464,7 +464,7 @@ public:
      * @param q index quaternion of power function.
      * @param assumeUnit if QUAT_ASSUME_UNIT, quaternion \f$p\f$ assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p(1,2,3,4);
      * Quatd q(5,6,7,8);
@@ -484,7 +484,7 @@ public:
      * @param q index quaternion of power function.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p(1,2,3,4);
      * Quatd q(5,6,7,8);
@@ -503,7 +503,7 @@ public:
      * \f[p \times q = \boldsymbol{u} \times \boldsymbol{v}\f]
      * \f[p \times q = (cz-dy)i + (dx-bz)j + (by-xc)k \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q{1,2,3,4};
      * Quatd p{5,6,7,8};
@@ -519,7 +519,7 @@ public:
      * \f[p \times q = \boldsymbol{u} \times \boldsymbol{v}.\f]
      * \f[p \times q = (cz-dy)i + (dx-bz)j + (by-xc)k. \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q{1,2,3,4};
      * Quatd p{5,6,7,8};
@@ -547,7 +547,7 @@ public:
      * @param q a quaternion.
      * @param assumeUnit if QUAT_ASSUME_UNIT, quaternion q assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * inv(q);
@@ -565,7 +565,7 @@ public:
      * satisfying \f$q * q^{-1} = 1\f$.
      * @param assumeUnit if QUAT_ASSUME_UNIT, quaternion q assume to be a unit quaternion and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.inv();
@@ -583,7 +583,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * sinh(q);
@@ -597,7 +597,7 @@ public:
      * \f$\sinh(p) = \sin(w)\cos(||\boldsymbol{v}||) + \cosh(w)\frac{v}{||\boldsymbol{v}||}\sin||\boldsymbol{v}||\f$
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.sinh();
@@ -611,7 +611,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * cosh(q);
@@ -625,7 +625,7 @@ public:
      * \f[\cosh(p) = \cosh(w) * \cos(||\boldsymbol{v}||) + \sinh(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}sin(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.cosh();
@@ -638,7 +638,7 @@ public:
      * \f[ \tanh(q) = \frac{\sinh(q)}{\cosh(q)}.\f]
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * tanh(q);
@@ -652,7 +652,7 @@ public:
      * @brief return tanh value of this quaternion, tanh could be calculated as:
      * \f[ \tanh(q) = \frac{\sinh(q)}{\cosh(q)}.\f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.tanh();
@@ -667,7 +667,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * sin(q);
@@ -681,7 +681,7 @@ public:
      * \f[\sin(p) = \sin(w) * \cosh(||\boldsymbol{v}||) + \cos(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}\sinh(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.sin();
@@ -695,7 +695,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * cos(q);
@@ -709,7 +709,7 @@ public:
      * \f[\cos(p) = \cos(w) * \cosh(||\boldsymbol{v}||) - \sin(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}\sinh(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.cos();
@@ -722,7 +722,7 @@ public:
      * \f[\tan(q) = \frac{\sin(q)}{\cos(q)}.\f]
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * tan(q);
@@ -735,7 +735,7 @@ public:
      * @brief return tan value of this quaternion, tan could be calculated as:
      * \f[\tan(q) = \frac{\sin(q)}{\cos(q)}.\f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.tan();
@@ -749,7 +749,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * asin(q);
@@ -763,7 +763,7 @@ public:
      * \f[\arcsin(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arcsinh(q\frac{\boldsymbol{v}}{||\boldsymbol{v}||})\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.asin();
@@ -777,7 +777,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * acos(q);
@@ -791,7 +791,7 @@ public:
      * \f[\arccos(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arccosh(q)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.acos();
@@ -805,7 +805,7 @@ public:
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * atan(q);
@@ -819,7 +819,7 @@ public:
      * \f[\arctan(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arctanh(q\frac{\boldsymbol{v}}{||\boldsymbol{v}||})\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.atan();
@@ -832,7 +832,7 @@ public:
      * \f[arcsinh(q) = \ln(q + \sqrt{q^2 + 1})\f].
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * asinh(q);
@@ -845,7 +845,7 @@ public:
      * @brief return arcsinh value of this quaternion, arcsinh could be calculated as:
      * \f[arcsinh(q) = \ln(q + \sqrt{q^2 + 1})\f].
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.asinh();
@@ -858,7 +858,7 @@ public:
      * \f[arccosh(q) = \ln(q + \sqrt{q^2 - 1})\f].
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * acosh(q);
@@ -871,7 +871,7 @@ public:
      * @brief return arccosh value of this quaternion, arccosh could be calculated as:
      * \f[arcosh(q) = \ln(q + \sqrt{q^2 - 1})\f].
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.acosh();
@@ -884,7 +884,7 @@ public:
      * \f[arctanh(q) = \frac{\ln(q + 1) - \ln(1 - q)}{2}\f].
      * @param q a quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * atanh(q);
@@ -897,7 +897,7 @@ public:
      * @brief return arctanh value of this quaternion, arctanh could be calculated as:
      * \f[arcsinh(q) = \frac{\ln(q + 1) - \ln(1 - q)}{2}\f].
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.atanh();
@@ -937,7 +937,7 @@ public:
      * The points matrix A can be rotated by toRotMat3x3() * A.
      * The result has 3 rows and n columns too.
 
-     * For example
+     * For jhb
      * ```
      * double angle = CV_PI;
      * Vec3d axis{0,0,1};
@@ -978,7 +978,7 @@ public:
     /**
      * @brief transform the this quaternion to a Vec<T, 4>.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.toVec();
@@ -994,7 +994,7 @@ public:
      * \f[ rVec = [\theta v_x, \theta v_y, \theta v_z]\f]
      * where \f$\theta\f$ represents rotation angle, and \f$\boldsymbol{v}\f$ represents the normalized rotation axis.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.toRotVec();
@@ -1011,7 +1011,7 @@ public:
      * this function will save some computations.
      * \f[\psi = 2 *arccos(\frac{w}{||q||})\f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.getAngle();
@@ -1039,7 +1039,7 @@ public:
      *  where \f$v=[x, y ,z]\f$ and \f$\theta\f$ represents rotation angle.
      *
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * q.getAxis();
@@ -1062,7 +1062,7 @@ public:
      * \f[p \cdot q = p.w \cdot q.w + p.x \cdot q.x + p.y \cdot q.y + p.z \cdot q.z\f]
      * @param q the other quaternion.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q(1,2,3,4);
      * Quatd p(5,6,7,8);
@@ -1169,7 +1169,7 @@ public:
      * @param assumeUnit if QUAT_ASSUME_UNIT, \f$q_0, q_1, q_2, q_3\f$ assume to be unit quaternion. Otherwise, all input
      * quaternions will be normalized inside the function.
      *
-     * For example:
+     * For jhb:
      *
      * If there are three double quaternions \f$v_0, v_1, v_2\f$ waiting to be interpolated.
      *
@@ -1191,7 +1191,7 @@ public:
      * @brief Return opposite quaternion \f$-p\f$
      * which satisfies \f$p + (-p) = 0.\f$
      *
-     * For example
+     * For jhb
      * ```
      * Quatd q{1, 2, 3, 4};
      * std::cout << -q << std::endl; // [-1, -2, -3, -4]
@@ -1209,7 +1209,7 @@ public:
      * @brief Addition operator of two quaternions p and q.
      * It returns a new quaternion that each value is the sum of \f$p_i\f$ and \f$q_i\f$.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1222,7 +1222,7 @@ public:
      * @brief Addition assignment operator of two quaternions p and q.
      * It adds right operand to the left operand and assign the result to left operand.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1237,7 +1237,7 @@ public:
      * @brief Subtraction operator of two quaternions p and q.
      * It returns a new quaternion that each value is the sum of \f$p_i\f$ and \f$-q_i\f$.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1250,7 +1250,7 @@ public:
      * @brief Subtraction assignment operator of two quaternions p and q.
      * It subtracts right operand from the left operand and assign the result to left operand.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1276,7 +1276,7 @@ public:
      * \f]
      * where \f$\cdot\f$ means dot product and \f$\times \f$ means cross product.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1300,7 +1300,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double s = 2.0;
@@ -1326,7 +1326,7 @@ public:
      * \f]
      * where \f$\cdot\f$ means dot product and \f$\times \f$ means cross product.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1349,7 +1349,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double s = 2.0;
@@ -1373,7 +1373,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1396,7 +1396,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double s = 2.0;;
@@ -1420,7 +1420,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * Quatd q{5, 6, 7, 8};
@@ -1438,7 +1438,7 @@ public:
      * @brief Subtraction operator of a scalar and a quaternions.
      * Subtracts right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double scalar = 2.0;
@@ -1453,7 +1453,7 @@ public:
      * @brief Subtraction operator of a quaternions and a scalar.
      * Subtracts right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double scalar = 2.0;
@@ -1468,7 +1468,7 @@ public:
      * @brief Addition operator of a quaternions and a scalar.
      * Adds right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double scalar = 2.0;
@@ -1483,7 +1483,7 @@ public:
      * @brief Addition operator of a quaternions and a scalar.
      * Adds right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double scalar = 2.0;
@@ -1508,7 +1508,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double s = 2.0;
@@ -1533,7 +1533,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * Quatd p{1, 2, 3, 4};
      * double s = 2.0;
@@ -1554,7 +1554,7 @@ public:
      * When transforming a quaternion \f$q = w + x\boldsymbol{i} + y\boldsymbol{j} + z\boldsymbol{k}\f$ to Euler angles, rotation matrix M can be calculated by:
      * \f[ \begin{aligned} {M} &={\begin{bmatrix}1-2(y^{2}+z^{2})&2(xy-zx)&2(xz+yw)\\2(xy+zw)&1-2(x^{2}+z^{2})&2(yz-xw)\\2(xz-yw)&2(yz+xw)&1-2(x^{2}+y^{2})\end{bmatrix}}\end{aligned}.\f]
      * On the other hand, the rotation matrix can be obtained from Euler angles.
-     * Using intrinsic rotations with Euler angles type XYZ as an example,
+     * Using intrinsic rotations with Euler angles type XYZ as an jhb,
      * \f$\theta_1 \f$, \f$\theta_2 \f$, \f$\theta_3 \f$ are three angles for Euler angles, the rotation matrix R can be calculated by:\f[R =X(\theta_1)Y(\theta_2)Z(\theta_3)
      * ={\begin{bmatrix}\cos\theta_{2}\cos\theta_{3}&-\cos\theta_{2}\sin\theta_{3}&\sin\theta_{2}\\\cos\theta_{1}\sin\theta_{3}+\cos\theta_{3}\sin\theta_{1}\sin\theta_{2}&\cos\theta_{1}\cos\theta_{3}-\sin\theta_{1}\sin\theta_{2}\sin\theta_{3}&-\cos\theta_{2}\sin\theta_{1}\\\sin\theta_{1}\sin\theta_{3}-\cos\theta_{1}\cos\theta_{3}\sin\theta_{2}&\cos\theta_{3}\sin\theta_{1}+\cos\theta_{1}\sin\theta_{2}\sin\theta_{3}&\cos\theta_{1}\cos_{2}\end{bmatrix}}\f]
      * Rotation matrix M and R are equal. As long as \f$ s_{2} \neq 1 \f$, by comparing each element of two matrices ,the solution is\f$\begin{cases} \theta_1 = \arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3 = \arctan2(-m_{12},m_{11}) \end{cases}\f$.

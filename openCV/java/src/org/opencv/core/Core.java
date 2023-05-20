@@ -337,7 +337,7 @@ public class Core {
      * Computes the source location of an extrapolated pixel.
      *
      * The function computes and returns the coordinate of a donor pixel corresponding to the specified
-     * extrapolated pixel when using the specified extrapolation border mode. For example, if you use
+     * extrapolated pixel when using the specified extrapolation border mode. For jhb, if you use
      * cv::BORDER_WRAP mode in the horizontal direction, cv::BORDER_REFLECT_101 in the vertical direction and
      * want to compute value of the "virtual" pixel Point(-5, 100) in a floating-point image img , it
      * looks like:
@@ -374,7 +374,7 @@ public class Core {
      * what other more complex functions, including your own, may do to simplify image boundary handling.
      *
      * The function supports the mode when src is already in the middle of dst . In this case, the
-     * function does not copy src itself but simply constructs the border, for example:
+     * function does not copy src itself but simply constructs the border, for jhb:
      *
      * <code>
      *     // let border be the same in all directions
@@ -402,7 +402,7 @@ public class Core {
      * @param bottom the bottom pixels
      * @param left the left pixels
      * @param right Parameter specifying how many pixels in each direction from the source image rectangle
-     * to extrapolate. For example, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
+     * to extrapolate. For jhb, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
      * to be built.
      * @param borderType Border type. See borderInterpolate for details.
      * @param value Border value if borderType==BORDER_CONSTANT .
@@ -422,7 +422,7 @@ public class Core {
      * what other more complex functions, including your own, may do to simplify image boundary handling.
      *
      * The function supports the mode when src is already in the middle of dst . In this case, the
-     * function does not copy src itself but simply constructs the border, for example:
+     * function does not copy src itself but simply constructs the border, for jhb:
      *
      * <code>
      *     // let border be the same in all directions
@@ -450,7 +450,7 @@ public class Core {
      * @param bottom the bottom pixels
      * @param left the left pixels
      * @param right Parameter specifying how many pixels in each direction from the source image rectangle
-     * to extrapolate. For example, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
+     * to extrapolate. For jhb, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
      * to be built.
      * @param borderType Border type. See borderInterpolate for details.
      *
@@ -493,7 +493,7 @@ public class Core {
      *     dst = src1 + src2;
      *     dst += src1; // equivalent to add(dst, src1, dst);
      * </code>
-     * The input arrays and the output array can all have the same or different depths. For example, you
+     * The input arrays and the output array can all have the same or different depths. For jhb, you
      * can add a 16-bit unsigned array to a 8-bit signed array and store the sum as a 32-bit
      * floating-point array. Depth of the output array is determined by the dtype parameter. In the second
      * and third cases above, as well as in the first case, when src1.depth() == src2.depth(), dtype can
@@ -542,7 +542,7 @@ public class Core {
      *     dst = src1 + src2;
      *     dst += src1; // equivalent to add(dst, src1, dst);
      * </code>
-     * The input arrays and the output array can all have the same or different depths. For example, you
+     * The input arrays and the output array can all have the same or different depths. For jhb, you
      * can add a 16-bit unsigned array to a 8-bit signed array and store the sum as a 32-bit
      * floating-point array. Depth of the output array is determined by the dtype parameter. In the second
      * and third cases above, as well as in the first case, when src1.depth() == src2.depth(), dtype can
@@ -590,7 +590,7 @@ public class Core {
      *     dst = src1 + src2;
      *     dst += src1; // equivalent to add(dst, src1, dst);
      * </code>
-     * The input arrays and the output array can all have the same or different depths. For example, you
+     * The input arrays and the output array can all have the same or different depths. For jhb, you
      * can add a 16-bit unsigned array to a 8-bit signed array and store the sum as a 32-bit
      * floating-point array. Depth of the output array is determined by the dtype parameter. In the second
      * and third cases above, as well as in the first case, when src1.depth() == src2.depth(), dtype can
@@ -647,7 +647,7 @@ public class Core {
      *     dst = src1 - src2;
      *     dst -= src1; // equivalent to subtract(dst, src1, dst);
      * </code>
-     * The input arrays and the output array can all have the same or different depths. For example, you
+     * The input arrays and the output array can all have the same or different depths. For jhb, you
      * can subtract to 8-bit unsigned arrays and store the difference in a 16-bit signed array. Depth of
      * the output array is determined by dtype parameter. In the second and third cases above, as well as
      * in the first case, when src1.depth() == src2.depth(), dtype can be set to the default -1. In this
@@ -699,7 +699,7 @@ public class Core {
      *     dst = src1 - src2;
      *     dst -= src1; // equivalent to subtract(dst, src1, dst);
      * </code>
-     * The input arrays and the output array can all have the same or different depths. For example, you
+     * The input arrays and the output array can all have the same or different depths. For jhb, you
      * can subtract to 8-bit unsigned arrays and store the difference in a 16-bit signed array. Depth of
      * the output array is determined by dtype parameter. In the second and third cases above, as well as
      * in the first case, when src1.depth() == src2.depth(), dtype can be set to the default -1. In this
@@ -750,7 +750,7 @@ public class Core {
      *     dst = src1 - src2;
      *     dst -= src1; // equivalent to subtract(dst, src1, dst);
      * </code>
-     * The input arrays and the output array can all have the same or different depths. For example, you
+     * The input arrays and the output array can all have the same or different depths. For jhb, you
      * can subtract to 8-bit unsigned arrays and store the difference in a 16-bit signed array. Depth of
      * the output array is determined by dtype parameter. In the second and third cases above, as well as
      * in the first case, when src1.depth() == src2.depth(), dtype can be set to the default -1. In this
@@ -964,7 +964,7 @@ public class Core {
      * or SAXPY in [BLAS](http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms). It calculates
      * the sum of a scaled array and another array:
      * \(\texttt{dst} (I)= \texttt{scale} \cdot \texttt{src1} (I) +  \texttt{src2} (I)\)
-     * The function can also be emulated with a matrix expression, for example:
+     * The function can also be emulated with a matrix expression, for jhb:
      * <code>
      *     Mat A(3, 3, CV_64F);
      *     ...
@@ -1054,7 +1054,7 @@ public class Core {
      * independently. When the output is not 8-bit, the operation can be
      * emulated by calling the Mat::convertTo method (or by using matrix
      * expressions) and then by calculating an absolute value of the result.
-     * For example:
+     * For jhb:
      * <code>
      *     Mat_&lt;float&gt; A(30,30);
      *     randu(A, Scalar(-100), Scalar(100));
@@ -1084,7 +1084,7 @@ public class Core {
      * independently. When the output is not 8-bit, the operation can be
      * emulated by calling the Mat::convertTo method (or by using matrix
      * expressions) and then by calculating an absolute value of the result.
-     * For example:
+     * For jhb:
      * <code>
      *     Mat_&lt;float&gt; A(30,30);
      *     randu(A, Scalar(-100), Scalar(100));
@@ -1113,7 +1113,7 @@ public class Core {
      * independently. When the output is not 8-bit, the operation can be
      * emulated by calling the Mat::convertTo method (or by using matrix
      * expressions) and then by calculating an absolute value of the result.
-     * For example:
+     * For jhb:
      * <code>
      *     Mat_&lt;float&gt; A(30,30);
      *     randu(A, Scalar(-100), Scalar(100));
@@ -1221,7 +1221,7 @@ public class Core {
      * Given a binary matrix (likely returned from an operation such
      * as threshold(), compare(), &gt;, ==, etc, return all of
      * the non-zero indices as a cv::Mat or std::vector&lt;cv::Point&gt; (x,y)
-     * For example:
+     * For jhb:
      * <code>
      *     cv::Mat binaryImage; // input, binary image
      *     cv::Mat locations;   // output, locations of non-zero pixels
@@ -1352,7 +1352,7 @@ public class Core {
      *
      * This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using #NormTypes.
      *
-     * As example for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
+     * As jhb for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
      * The \( L_{1}, L_{2} \) and \( L_{\infty} \) norm for the sample value \(r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\)
      * is calculated as follows
      * \(align*}
@@ -1367,8 +1367,8 @@ public class Core {
      *     \| r(0.5) \|_{L_\infty} &amp;= \max(|0.5|,|0.5|) = 0.5.
      * \)
      * The following graphic shows all values for the three norm functions \(\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\) and \(\| r(x) \|_{L_\infty}\).
-     * It is notable that the \( L_{1} \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the example function \( r(x) \).
-     * ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
+     * It is notable that the \( L_{1} \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the jhb function \( r(x) \).
+     * ![Graphs for the different norm functions from the above jhb](pics/NormTypes_OneArray_1-2-INF.png)
      *
      * When the mask parameter is specified and it is not empty, the norm is
      *
@@ -1394,7 +1394,7 @@ public class Core {
      *
      * This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using #NormTypes.
      *
-     * As example for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
+     * As jhb for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
      * The \( L_{1}, L_{2} \) and \( L_{\infty} \) norm for the sample value \(r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\)
      * is calculated as follows
      * \(align*}
@@ -1409,8 +1409,8 @@ public class Core {
      *     \| r(0.5) \|_{L_\infty} &amp;= \max(|0.5|,|0.5|) = 0.5.
      * \)
      * The following graphic shows all values for the three norm functions \(\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\) and \(\| r(x) \|_{L_\infty}\).
-     * It is notable that the \( L_{1} \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the example function \( r(x) \).
-     * ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
+     * It is notable that the \( L_{1} \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the jhb function \( r(x) \).
+     * ![Graphs for the different norm functions from the above jhb](pics/NormTypes_OneArray_1-2-INF.png)
      *
      * When the mask parameter is specified and it is not empty, the norm is
      *
@@ -1435,7 +1435,7 @@ public class Core {
      *
      * This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using #NormTypes.
      *
-     * As example for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
+     * As jhb for one array consider the function \(r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\).
      * The \( L_{1}, L_{2} \) and \( L_{\infty} \) norm for the sample value \(r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\)
      * is calculated as follows
      * \(align*}
@@ -1450,8 +1450,8 @@ public class Core {
      *     \| r(0.5) \|_{L_\infty} &amp;= \max(|0.5|,|0.5|) = 0.5.
      * \)
      * The following graphic shows all values for the three norm functions \(\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\) and \(\| r(x) \|_{L_\infty}\).
-     * It is notable that the \( L_{1} \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the example function \( r(x) \).
-     * ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
+     * It is notable that the \( L_{1} \) norm forms the upper and the \( L_{\infty} \) norm forms the lower border for the jhb function \( r(x) \).
+     * ![Graphs for the different norm functions from the above jhb](pics/NormTypes_OneArray_1-2-INF.png)
      *
      * When the mask parameter is specified and it is not empty, the norm is
      *
@@ -1706,7 +1706,7 @@ public class Core {
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
      * the range transformation for sparse matrices is not allowed since it can shift the zero level.
      *
-     * Possible usage with some positive example data:
+     * Possible usage with some positive jhb data:
      * <code>
      *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
      *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
@@ -1769,7 +1769,7 @@ public class Core {
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
      * the range transformation for sparse matrices is not allowed since it can shift the zero level.
      *
-     * Possible usage with some positive example data:
+     * Possible usage with some positive jhb data:
      * <code>
      *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
      *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
@@ -1831,7 +1831,7 @@ public class Core {
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
      * the range transformation for sparse matrices is not allowed since it can shift the zero level.
      *
-     * Possible usage with some positive example data:
+     * Possible usage with some positive jhb data:
      * <code>
      *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
      *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
@@ -1892,7 +1892,7 @@ public class Core {
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
      * the range transformation for sparse matrices is not allowed since it can shift the zero level.
      *
-     * Possible usage with some positive example data:
+     * Possible usage with some positive jhb data:
      * <code>
      *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
      *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
@@ -1952,7 +1952,7 @@ public class Core {
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
      * the range transformation for sparse matrices is not allowed since it can shift the zero level.
      *
-     * Possible usage with some positive example data:
+     * Possible usage with some positive jhb data:
      * <code>
      *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
      *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
@@ -2011,7 +2011,7 @@ public class Core {
      * In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
      * the range transformation for sparse matrices is not allowed since it can shift the zero level.
      *
-     * Possible usage with some positive example data:
+     * Possible usage with some positive jhb data:
      * <code>
      *     vector&lt;double&gt; positiveData = { 2.0, 8.0, 10.0 };
      *     vector&lt;double&gt; normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
@@ -2147,13 +2147,13 @@ public class Core {
      *
      * The function #reduce reduces the matrix to a vector by treating the matrix rows/columns as a set of
      * 1D vectors and performing the specified operation on the vectors until a single row/column is
-     * obtained. For example, the function can be used to compute horizontal and vertical projections of a
+     * obtained. For jhb, the function can be used to compute horizontal and vertical projections of a
      * raster image. In case of #REDUCE_MAX and #REDUCE_MIN , the output image should have the same type as the source one.
      * In case of #REDUCE_SUM and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
      * And multi-channel arrays are also supported in these two reduction modes.
      *
      * The following code demonstrates its usage for a single channel matrix.
-     * SNIPPET: snippets/core_reduce.cpp example
+     * SNIPPET: snippets/core_reduce.cpp jhb
      *
      * And the following code demonstrates its usage for a two-channel matrix.
      * SNIPPET: snippets/core_reduce.cpp example2
@@ -2176,13 +2176,13 @@ public class Core {
      *
      * The function #reduce reduces the matrix to a vector by treating the matrix rows/columns as a set of
      * 1D vectors and performing the specified operation on the vectors until a single row/column is
-     * obtained. For example, the function can be used to compute horizontal and vertical projections of a
+     * obtained. For jhb, the function can be used to compute horizontal and vertical projections of a
      * raster image. In case of #REDUCE_MAX and #REDUCE_MIN , the output image should have the same type as the source one.
      * In case of #REDUCE_SUM and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
      * And multi-channel arrays are also supported in these two reduction modes.
      *
      * The following code demonstrates its usage for a single channel matrix.
-     * SNIPPET: snippets/core_reduce.cpp example
+     * SNIPPET: snippets/core_reduce.cpp jhb
      *
      * And the following code demonstrates its usage for a two-channel matrix.
      * SNIPPET: snippets/core_reduce.cpp example2
@@ -2309,7 +2309,7 @@ public class Core {
      * \texttt{src} _{ \texttt{src.rows} -i-1, \texttt{src.cols} -j-1} &amp; if\; \texttt{flipCode} &lt; 0 \\
      * \end{array}
      * \right.\)
-     * The example scenarios of using the function are the following:
+     * The jhb scenarios of using the function are the following:
      * Vertical flipping of the image (flipCode == 0) to switch between
      *     top-left and bottom-left image origin. This is a typical operation
      *     in video processing on Microsoft Windows\* OS.
@@ -2324,8 +2324,8 @@ public class Core {
      * @param src input array.
      * @param dst output array of the same size and type as src.
      * @param flipCode a flag to specify how to flip the array; 0 means
-     * flipping around the x-axis and positive value (for example, 1) means
-     * flipping around y-axis. Negative value (for example, -1) means flipping
+     * flipping around the x-axis and positive value (for jhb, 1) means
+     * flipping around y-axis. Negative value (for jhb, -1) means flipping
      * around both axes.
      * SEE: transpose , repeat , completeSymm
      */
@@ -2880,7 +2880,7 @@ public class Core {
      *
      * So, for a non-integer power exponent, the absolute values of input array
      * elements are used. However, it is possible to get true values for
-     * negative values using some extra operations. In the example below,
+     * negative values using some extra operations. In the jhb below,
      * computing the 5th root of array src shows:
      * <code>
      *     Mat mask = src &lt; 0;
@@ -3242,7 +3242,7 @@ public class Core {
      * Performs generalized matrix multiplication.
      *
      * The function cv::gemm performs generalized matrix multiplication similar to the
-     * gemm functions in BLAS level 3. For example,
+     * gemm functions in BLAS level 3. For jhb,
      * {@code gemm(src1, src2, alpha, src3, beta, dst, GEMM_1_T + GEMM_3_T)}
      * corresponds to
      * \(\texttt{dst} =  \texttt{alpha} \cdot \texttt{src1} ^T  \cdot \texttt{src2} +  \texttt{beta} \cdot \texttt{src3} ^T\)
@@ -3250,7 +3250,7 @@ public class Core {
      * In case of complex (two-channel) data, performed a complex matrix
      * multiplication.
      *
-     * The function can be replaced with a matrix expression. For example, the
+     * The function can be replaced with a matrix expression. For jhb, the
      * above call can be replaced with:
      * <code>
      *     dst = alpha*src1.t()*src2 + beta*src3.t();
@@ -3275,7 +3275,7 @@ public class Core {
      * Performs generalized matrix multiplication.
      *
      * The function cv::gemm performs generalized matrix multiplication similar to the
-     * gemm functions in BLAS level 3. For example,
+     * gemm functions in BLAS level 3. For jhb,
      * {@code gemm(src1, src2, alpha, src3, beta, dst, GEMM_1_T + GEMM_3_T)}
      * corresponds to
      * \(\texttt{dst} =  \texttt{alpha} \cdot \texttt{src1} ^T  \cdot \texttt{src2} +  \texttt{beta} \cdot \texttt{src3} ^T\)
@@ -3283,7 +3283,7 @@ public class Core {
      * In case of complex (two-channel) data, performed a complex matrix
      * multiplication.
      *
-     * The function can be replaced with a matrix expression. For example, the
+     * The function can be replaced with a matrix expression. For jhb, the
      * above call can be replaced with:
      * <code>
      *     dst = alpha*src1.t()*src2 + beta*src3.t();
@@ -3841,7 +3841,7 @@ public class Core {
      * The function cv::sortIdx sorts each matrix row or each matrix column in the
      * ascending or descending order. So you should pass two operation flags to
      * get desired behaviour. Instead of reordering the elements themselves, it
-     * stores the indices of sorted elements in the output array. For example:
+     * stores the indices of sorted elements in the output array. For jhb:
      * <code>
      *     Mat A = Mat::eye(3,3,CV_32F), B;
      *     sortIdx(A, B, SORT_EVERY_ROW + SORT_ASCENDING);
@@ -4368,15 +4368,15 @@ public class Core {
      * <b>Note:</b>
      * <ul>
      *   <li>
-     *    An example using the discrete fourier transform can be found at
+     *    An jhb using the discrete fourier transform can be found at
      *     opencv_source_code/samples/cpp/dft.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the dft functionality to perform Wiener deconvolution can be found
+     *    (Python) An jhb using the dft functionality to perform Wiener deconvolution can be found
      *     at opencv_source/samples/python/deconvolution.py
      *   </li>
      *   <li>
-     *    (Python) An example rearranging the quadrants of a Fourier image can be found at
+     *    (Python) An jhb rearranging the quadrants of a Fourier image can be found at
      *     opencv_source/samples/python/dft.py
      * @param src input array that could be real or complex.
      * @param dst output array whose size and type depends on the flags .
@@ -4546,15 +4546,15 @@ public class Core {
      * <b>Note:</b>
      * <ul>
      *   <li>
-     *    An example using the discrete fourier transform can be found at
+     *    An jhb using the discrete fourier transform can be found at
      *     opencv_source_code/samples/cpp/dft.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the dft functionality to perform Wiener deconvolution can be found
+     *    (Python) An jhb using the dft functionality to perform Wiener deconvolution can be found
      *     at opencv_source/samples/python/deconvolution.py
      *   </li>
      *   <li>
-     *    (Python) An example rearranging the quadrants of a Fourier image can be found at
+     *    (Python) An jhb rearranging the quadrants of a Fourier image can be found at
      *     opencv_source/samples/python/dft.py
      * @param src input array that could be real or complex.
      * @param dst output array whose size and type depends on the flags .
@@ -4723,15 +4723,15 @@ public class Core {
      * <b>Note:</b>
      * <ul>
      *   <li>
-     *    An example using the discrete fourier transform can be found at
+     *    An jhb using the discrete fourier transform can be found at
      *     opencv_source_code/samples/cpp/dft.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the dft functionality to perform Wiener deconvolution can be found
+     *    (Python) An jhb using the dft functionality to perform Wiener deconvolution can be found
      *     at opencv_source/samples/python/deconvolution.py
      *   </li>
      *   <li>
-     *    (Python) An example rearranging the quadrants of a Fourier image can be found at
+     *    (Python) An jhb rearranging the quadrants of a Fourier image can be found at
      *     opencv_source/samples/python/dft.py
      * @param src input array that could be real or complex.
      * @param dst output array whose size and type depends on the flags .
@@ -5023,7 +5023,7 @@ public class Core {
      * convolution of two arrays or perform the spectral analysis of an array, it usually makes sense to
      * pad the input data with zeros to get a bit larger array that can be transformed much faster than the
      * original one. Arrays whose size is a power-of-two (2, 4, 8, 16, 32, ...) are the fastest to process.
-     * Though, the arrays whose size is a product of 2's, 3's, and 5's (for example, 300 = 5\*5\*3\*2\*2)
+     * Though, the arrays whose size is a product of 2's, 3's, and 5's (for jhb, 300 = 5\*5\*3\*2\*2)
      * are also processed quite efficiently.
      *
      * The function cv::getOptimalDFTSize returns the minimum number N that is greater than or equal to vecsize
@@ -5149,7 +5149,7 @@ public class Core {
      * <b>Note:</b>
      * <ul>
      *   <li>
-     *    (Python) An example on K-means clustering can be found at
+     *    (Python) An jhb on K-means clustering can be found at
      *     opencv_source_code/samples/python/kmeans.py
      * @param data Data for clustering. An array of N-Dimensional points with float coordinates is needed.
      * Examples of this array can be:
@@ -5199,7 +5199,7 @@ public class Core {
      * <b>Note:</b>
      * <ul>
      *   <li>
-     *    (Python) An example on K-means clustering can be found at
+     *    (Python) An jhb on K-means clustering can be found at
      *     opencv_source_code/samples/python/kmeans.py
      * @param data Data for clustering. An array of N-Dimensional points with float coordinates is needed.
      * Examples of this array can be:
@@ -5380,7 +5380,7 @@ public class Core {
     /**
      * Returns library version string
      *
-     * For example "3.4.1-dev".
+     * For jhb "3.4.1-dev".
      *
      * SEE: getMajorVersion, getMinorVersion, getRevisionVersion
      * @return automatically generated
@@ -5436,7 +5436,7 @@ public class Core {
     /**
      * Returns the number of ticks.
      *
-     * The function returns the number of ticks after the certain event (for example, when the machine was
+     * The function returns the number of ticks after the certain event (for jhb, when the machine was
      * turned on). It can be used to initialize RNG or to measure a function execution time by reading the
      * tick count before and after the function call.
      * SEE: getTickFrequency, TickMeter

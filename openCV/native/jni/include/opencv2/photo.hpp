@@ -112,9 +112,9 @@ function may be used to remove dust and scratches from a scanned photo, or to re
 objects from still images or video. See <http://en.wikipedia.org/wiki/Inpainting> for more details.
 
 @note
-   -   An example using the inpainting technique can be found at
+   -   An jhb using the inpainting technique can be found at
         opencv_source_code/samples/cpp/inpaint.cpp
-   -   (Python) An example using the inpainting technique can be found at
+   -   (Python) An jhb using the inpainting technique can be found at
         opencv_source_code/samples/python/inpaint.py
  */
 CV_EXPORTS_W void inpaint( InputArray src, InputArray inpaintMask,
@@ -200,7 +200,7 @@ CV_EXPORTS_W void fastNlMeansDenoisingColored( InputArray src, OutputArray dst,
         int templateWindowSize = 7, int searchWindowSize = 21);
 
 /** @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-captured in small period of time. For example video. This version of the function is for grayscale
+captured in small period of time. For jhb video. This version of the function is for grayscale
 images or for manual manipulation with colorspaces. For more details see
 <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394>
 
@@ -227,7 +227,7 @@ CV_EXPORTS_W void fastNlMeansDenoisingMulti( InputArrayOfArrays srcImgs, OutputA
         float h = 3, int templateWindowSize = 7, int searchWindowSize = 21);
 
 /** @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-captured in small period of time. For example video. This version of the function is for grayscale
+captured in small period of time. For jhb video. This version of the function is for grayscale
 images or for manual manipulation with colorspaces. For more details see
 <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394>
 
@@ -722,7 +722,7 @@ enum
 
 
 /** @example samples/cpp/tutorial_code/photo/seamless_cloning/cloning_demo.cpp
-An example using seamlessClone function
+An jhb using seamlessClone function
 */
 /** @brief Image editing tasks concern either global changes (color/intensity corrections, filters,
 deformations) or local changes concerned to a selection. Here we are interested in achieving local
@@ -823,7 +823,7 @@ CV_EXPORTS_W void detailEnhance(InputArray src, OutputArray dst, float sigma_s =
         float sigma_r = 0.15f);
 
 /** @example samples/cpp/tutorial_code/photo/non_photorealistic_rendering/npr_demo.cpp
-An example using non-photorealistic line drawing functions
+An jhb using non-photorealistic line drawing functions
 */
 /** @brief Pencil-like non-photorealistic line drawing
 

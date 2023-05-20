@@ -100,7 +100,7 @@ public class Feature2D extends Algorithm {
      *
      *     @param image Image.
      *     @param keypoints Input collection of keypoints. Keypoints for which a descriptor cannot be
-     *     computed are removed. Sometimes new keypoints can be added, for example: SIFT duplicates keypoint
+     *     computed are removed. Sometimes new keypoints can be added, for jhb: SIFT duplicates keypoint
      *     with several dominant orientations (for each orientation).
      *     @param descriptors Computed descriptors. In the second variant of the method descriptors[i] are
      *     descriptors computed for a keypoints[i]. Row j is the keypoints (or keypoints[i]) is the
@@ -121,7 +121,7 @@ public class Feature2D extends Algorithm {
      *
      *     @param images Image set.
      *     @param keypoints Input collection of keypoints. Keypoints for which a descriptor cannot be
-     *     computed are removed. Sometimes new keypoints can be added, for example: SIFT duplicates keypoint
+     *     computed are removed. Sometimes new keypoints can be added, for jhb: SIFT duplicates keypoint
      *     with several dominant orientations (for each orientation).
      *     @param descriptors Computed descriptors. In the second variant of the method descriptors[i] are
      *     descriptors computed for a keypoints[i]. Row j is the keypoints (or keypoints[i]) is the
