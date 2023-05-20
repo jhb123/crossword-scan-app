@@ -13,49 +13,51 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.math.max
 
-class PuzzleSolveViewModel(private val repository: PuzzleRepository): ViewModel() {
+class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val puzzleIdx : Int ): ViewModel() {
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
         private const val TAG = "PuzzleSolveViewModel"
     }
 
-
-    private val _uiState = MutableStateFlow(PuzzleUiState())
-    val uiState : StateFlow<PuzzleUiState> = _uiState
-
-
-    fun setUpPuzzle(idx : Int) {
+    init {
         Log.i(TAG,"initialising ui")
         viewModelScope.launch {
-            delay(100)
+            delay(250)
             repository.allPuzzles
                 // Writes to the value property of MutableStateFlow,
                 // adding a new element to the flow and updating all
                 // of its collectors
                 .collect { puzzleList ->
                     Log.i(TAG, "Collecting puzzles from database")
-                    puzzleList[idx].puzzle.clues.forEach{ (key,value) ->
+                    puzzleList[puzzleIdx].puzzle.clues.forEach{ (key,value) ->
                         Log.i(TAG, "db clue $key : ${value.clueBoxes}")
                     }
                     uiState.value.currentPuzzle.clues.forEach{ (key,value) ->
                         Log.i(TAG, "ui clue $key : ${value.clueBoxes}")
                     }
+
+
                     if( uiState.value.updateFromRepository) {
                         _uiState.update {
                             Log.i(
                                 TAG, "received database puzzle is differnt to current" +
                                     " so updating current puzzle")
                             it.copy(
-                                currentPuzzle = puzzleList[idx].puzzle,
-                                name = puzzleList[idx].id
+                                currentPuzzle = puzzleList[puzzleIdx].puzzle,
+                                name = puzzleList[puzzleIdx].id
                             )
                         }
                         Log.i(TAG, "Finished updating current puzzle")
                     }
                 }
         }
+        Log.i(TAG,"Finished initialising ui")
+
     }
+
+    private val _uiState = MutableStateFlow(PuzzleUiState())
+    val uiState : StateFlow<PuzzleUiState> = _uiState
 
     fun convertPuzzleToCellSet(puzzle : Puzzle) : MutableSet<Triple<Int, Int, String>>{
         val cellSet = mutableSetOf<Triple<Int, Int, String>>()
@@ -126,7 +128,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository): ViewModel(
 
         //go through the current puzzle and add the new cell to all the clues
         var clue_box_idx = -1
-        uiState.value.currentPuzzle.clues.forEach { (_, clue) ->
+        uiState.value.currentPuzzle.clues.forEach { (key, clue) ->
             val idx = clue.clueBoxes.indexOf(_uiState.value.currentCell)
             Log.i(TAG, "clue ${clue.clueName} idx is: $idx")
             if (idx >= 0) {
@@ -243,11 +245,11 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository): ViewModel(
     }
 }
 
-class PuzzleSolveViewModelFactory(private val repository: PuzzleRepository) : ViewModelProvider.Factory {
+class PuzzleSolveViewModelFactory(private val repository: PuzzleRepository, private val puzzleIdx : Int) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(PuzzleSolveViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return PuzzleSolveViewModel(repository) as T
+            return PuzzleSolveViewModel(repository,puzzleIdx) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

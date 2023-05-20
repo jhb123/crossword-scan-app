@@ -1,6 +1,8 @@
 package com.example.learn_opencv.ui.solveScreen
 
+import android.content.Context
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.learn_opencv.data.Clue
 //import com.example.learn_opencv.Puzzle
 import androidx.compose.material.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
@@ -29,10 +32,38 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.example.learn_opencv.PuzzleApplication
 import com.example.learn_opencv.R
 import com.example.learn_opencv.data.Puzzle
+import com.example.learn_opencv.data.PuzzleRepository
+import com.example.learn_opencv.viewModels.CrosswordScanViewModel
+import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
+import kotlinx.coroutines.delay
 
 private const val TAG = "solveComposable"
+
+@Composable
+fun SolveScreenWrapper(puzzleSolveViewModel : PuzzleSolveViewModel){//repository: PuzzleRepository,index: Int){
+
+    //var puzzleSolveViewModel = PuzzleSolveViewModel(repository)
+    //val count by viewModel.counter.collectAsStateWithLifecycle()
+    //puzzleSolveViewModel.setup(index)
+    //val puzzleSolveViewModel = PuzzleSolveViewModelFactory(repository,index)
+
+
+    SolveScreen(
+        uiState = puzzleSolveViewModel.uiState.collectAsState(),
+        onClueSelect = {puzzleSolveViewModel.updateactiveClue(it)},
+        setLetter = {puzzleSolveViewModel.setLetter(it)},
+        delLetter = {puzzleSolveViewModel.delLetter()},
+        updateCurrentCell = { puzzleSolveViewModel.updateCurrentCell(it) },
+        updateCurrentClue = {puzzleSolveViewModel.updateactiveClue2(it)},
+        cellSetFromPuzzle = {puzzleSolveViewModel.convertPuzzleToCellSet(it)},//should this be immutable?
+        labelledClues = {puzzleSolveViewModel.getLabelledCells(it)} //should these even be functions!?
+    )
+
+
+}
 
 @Composable
 fun SolveScreen(

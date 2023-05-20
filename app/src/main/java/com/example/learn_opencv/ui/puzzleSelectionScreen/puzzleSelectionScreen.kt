@@ -42,7 +42,7 @@ fun puzzleSelectionComposable(
                 ),
                 shape = RoundedCornerShape(10.dp),
                 onClick = {
-                    Log.i(TAG,"navigate to ${puzzles.indexOf(puzzleData)}.")
+                    Log.i(TAG, "Card clicked")
                     navigateToPuzzle(puzzles.indexOf(puzzleData))
                           },
                 modifier = Modifier

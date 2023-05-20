@@ -1,39 +1,45 @@
 package com.example.learn_opencv
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.learn_opencv.data.PuzzleRepository
 import com.example.learn_opencv.navigation.Screen
 import com.example.learn_opencv.ui.clueScanScreen.ClueScanScreen
 import com.example.learn_opencv.ui.gridScanScreen.gridScanScreen
 import com.example.learn_opencv.ui.puzzlePreviewScreen.puzzlePreviewScreen
 import com.example.learn_opencv.ui.puzzleSelectionScreen.puzzleSelectionComposable
 import com.example.learn_opencv.ui.solveScreen.PuzzleSolveViewModel
-import com.example.learn_opencv.ui.solveScreen.SolveScreen
+import com.example.learn_opencv.ui.solveScreen.PuzzleSolveViewModelFactory
+import com.example.learn_opencv.ui.solveScreen.SolveScreenWrapper
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import com.example.learn_opencv.viewModels.PuzzleSelectViewModel
+
 
 private const val TAG = "CrosswordAppActivity"
 
 @Composable
 fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                  puzzleSelectViewModel: PuzzleSelectViewModel,
-                 puzzleSolveViewModel : PuzzleSolveViewModel,
-                 takeImage : () -> Unit
+                 repository: PuzzleRepository,
+                 takeImage : () -> Unit,
 ) {
 
     val navController = rememberNavController()
@@ -122,40 +128,35 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 }
 
                 composable(route = "puzzleSelect"){
-                    //navController.navigate("solve")
-
                     puzzleSelectionComposable(
                         uiState = puzzleSelectViewModel.uiState.collectAsState(),
                         navigateToPuzzle = {
-                            puzzleSolveViewModel.setUpPuzzle(it)
-                            navController.navigate("solve/${it}")
+                            Log.i(TAG,"Navigating to solve/$it")
+                            navController.navigate("solve/$it")
                         }
                     )
                 }
 
-                composable(route = "solve/{puzzleId}", arguments =
-                listOf(navArgument("puzzleId") { type = NavType.IntType }))
+                composable(
+                    route = "solve/{puzzleId}",
+                    arguments = listOf(navArgument("puzzleId") { type = NavType.IntType }),
+                )
                     {
-                        val puzzleIdx = it.arguments?.getInt("puzzleIdx")
 
-                        SolveScreen(
-                            uiState = puzzleSolveViewModel.uiState.collectAsState(),
-                            onClueSelect = {puzzleSolveViewModel.updateactiveClue(it)},
-                            setLetter = {puzzleSolveViewModel.setLetter(it)},
-                            delLetter = {puzzleSolveViewModel.delLetter()},
-                            updateCurrentCell = { puzzleSolveViewModel.updateCurrentCell(it) },
-                            updateCurrentClue = {puzzleSolveViewModel.updateactiveClue2(it)},
-                            cellSetFromPuzzle = {puzzleSolveViewModel.convertPuzzleToCellSet(it)},//should this be immutable?
-                            labelledClues = {puzzleSolveViewModel.getLabelledCells(it)} //should these even be functions!?
-                        )
+                        val puzzleIdx = it.arguments?.getInt("puzzleId")
+                        //puzzleApplication.
+
+//                        val puzzleSolveViewModel: PuzzleSolveViewModel by   {
+//                            PuzzleSolveViewModelFactory(repository,puzzleIdx!!)
+//                        }
+                        val puzzleSolveViewModel: PuzzleSolveViewModel = viewModel(factory = PuzzleSolveViewModelFactory(repository,puzzleIdx!!))
+
+
+                        Log.i(TAG,"navigated to solve/$puzzleIdx")
+                        SolveScreenWrapper(puzzleSolveViewModel)
 
                 }
             }
-
-//            Box(Modifier.padding(innerPadding)) {
-//                currentScreen.screen()
-//            }
-
         }
- //   }
+    //} when a theme is made, this can be uncommented.
 }

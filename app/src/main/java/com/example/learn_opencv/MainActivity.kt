@@ -25,7 +25,6 @@ import com.example.learn_opencv.databinding.ActivityMainBinding
 import com.example.learn_opencv.fragments.ScanFragment
 import com.example.learn_opencv.fragments.SolveFragment
 import com.example.learn_opencv.ui.solveScreen.PuzzleSolveViewModel
-import com.example.learn_opencv.ui.solveScreen.PuzzleSolveViewModelFactory
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import com.example.learn_opencv.viewModels.CrosswordScanViewModelFactory
 import com.example.learn_opencv.viewModels.PuzzleSelectViewModel
@@ -48,9 +47,10 @@ class MainActivity : ComponentActivity() {
         PuzzleSelectViewModelFactory((this.application as PuzzleApplication).repository)
     }
 
-    private val puzzleSolveViewModel : PuzzleSolveViewModel by viewModels {
-        PuzzleSolveViewModelFactory((this.application as PuzzleApplication).repository)
-    }
+//    private val puzzleSolveViewModel : PuzzleSolveViewModel by viewModels {
+//        PuzzleSolveViewModelFactory((this.application as PuzzleApplication).repository)
+//    }
+
 
     private var latestTmpUri: Uri? = null
 
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
             CrosswordApp(
                 scanViewModel,
                 puzzleSelectViewModel,
-                puzzleSolveViewModel,
+                (this.application as PuzzleApplication).repository,
                 takeImage = { takeImage() }
             )
 
