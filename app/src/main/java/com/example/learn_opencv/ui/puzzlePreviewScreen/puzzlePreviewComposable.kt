@@ -1,5 +1,6 @@
 package com.example.learn_opencv.ui.puzzlePreviewScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,7 @@ import com.example.learn_opencv.ui.gridScanScreen.GridScanUiState
 import com.example.learn_opencv.viewModels.CrosswordScanViewModel
 import kotlinx.coroutines.Job
 
+private const val TAG = "puzzlePreviewComposable"
 @Composable
 fun puzzlePreviewScreen(
     uiGridState: State<GridScanUiState>,
@@ -68,7 +70,10 @@ fun puzzlePreviewScreen(
                 }
             }
         }
-        Button(onClick = { onSave }) {
+        Button(onClick = {
+            //Log.i(TAG,"Save button clicked")
+            onSave()
+        }) {
             Text(text = "Save Puzzle")
         }
     }

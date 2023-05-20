@@ -120,10 +120,14 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 }
 
                 composable(route = "previewScan") {
+                    Log.i(TAG, "Navigated to preview screen")
                     puzzlePreviewScreen(
                         uiGridState = gridScanViewModel.uiGridState.collectAsState(),
                         uiClueState = gridScanViewModel.uiState.collectAsState(),
-                        onSave = { gridScanViewModel.insert() }
+                        onSave = {
+                            Log.i(TAG,"inserting...")
+                            gridScanViewModel.insert()
+                        }
                     )
                 }
 
