@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">learn_opencv</string>
+    <string name="app_name">Crossword Scan</string>
     <string name="gridScan">Capture grid</string>
     <string name="previewGridScan">Preview</string>
     <string name="clueScan">Scan clues</string>

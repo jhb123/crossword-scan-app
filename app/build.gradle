@@ -8,12 +8,12 @@ plugins {
 
 
 android {
-    namespace 'com.jhb.learn_opencv'
+    namespace 'com.jhb.crosswordScan'
     compileSdk 33
     //buildToolsVersion '23.0.1'
 
     defaultConfig {
-        applicationId "com.jhb.learn_opencv"
+        applicationId "com.jhb.crosswordScan"
         minSdk 24
         //multiDexEnabled true
         targetSdk 33
