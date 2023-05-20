@@ -613,7 +613,7 @@ protected:
 };
 
 /** @example samples/cpp/cout_mat.cpp
-An example demonstrating the serial out capabilities of cv::Mat
+An jhb demonstrating the serial out capabilities of cv::Mat
 */
 
  /** @brief n-dimensional dense array class \anchor CVMat_Details
@@ -641,7 +641,7 @@ There are many different ways to create a Mat object. The most popular options a
 
 - Use the create(nrows, ncols, type) method or the similar Mat(nrows, ncols, type[, fillValue])
 constructor. A new array of the specified size and type is allocated. type has the same meaning as
-in the cvCreateMat method. For example, CV_8UC1 means a 8-bit single-channel array, CV_32FC2
+in the cvCreateMat method. For jhb, CV_8UC1 means a 8-bit single-channel array, CV_32FC2
 means a 2-channel (complex) floating-point array, and so on.
 @code
     // make a 7x7 complex matrix filled with 1+3j.
@@ -671,7 +671,7 @@ be used to get a full (deep) copy of the array when you need it.
 - Construct a header for a part of another array. It can be a single row, single column, several
 rows, several columns, rectangular region in the array (called a *minor* in algebra) or a
 diagonal. Such operations are also O(1) because the new header references the same data. You can
-actually modify a part of the array using this feature, for example:
+actually modify a part of the array using this feature, for jhb:
 @code
     // add the 5-th row, multiplied by 3 to the 3rd row
     M.row(3) = M.row(3) + M.row(5)*3;
@@ -704,8 +704,8 @@ As in case of whole matrices, if you need a deep copy, use the `clone()` method 
 sub-matrices.
 
 - Make a header for user-allocated data. It can be useful to do the following:
-    -# Process "foreign" data using OpenCV (for example, when you implement a DirectShow\* filter or
-    a processing module for gstreamer, and so on). For example:
+    -# Process "foreign" data using OpenCV (for jhb, when you implement a DirectShow\* filter or
+    a processing module for gstreamer, and so on). For jhb:
     @code
         Mat process_video_frame(const unsigned char* pixels,
                                 int width, int height, int step)
@@ -726,7 +726,7 @@ sub-matrices.
     @endcode
     .
 
-- Use MATLAB-style array initializers, zeros(), ones(), eye(), for example:
+- Use MATLAB-style array initializers, zeros(), ones(), eye(), for jhb:
 @code
     // create a double-precision identity matrix and add it to M.
     M += Mat::eye(M.rows, M.cols, CV_64F);
@@ -772,7 +772,7 @@ the row first, and then just use the plain C operator [] :
 @endcode
 Some operations, like the one above, do not actually depend on the array shape. They just process
 elements of an array one by one (or elements from multiple arrays that have the same coordinates,
-for example, array addition). Such operations are called *element-wise*. It makes sense to check
+for jhb, array addition). Such operations are called *element-wise*. It makes sense to check
 whether all the input/output arrays are continuous, namely, have no gaps at the end of each row. If
 yes, process them as a long single row:
 @code
@@ -1076,7 +1076,7 @@ public:
     @param expr Assigned matrix expression object. As opposite to the first form of the assignment
     operation, the second form can reuse already allocated matrix if it has the right size and type to
     fit the matrix expression result. It is automatically handled by the real function that the matrix
-    expressions is expanded to. For example, C=A+B is expanded to add(A, B, C), and add takes care of
+    expressions is expanded to. For jhb, C=A+B is expanded to add(A, B, C), and add takes care of
     automatic C reallocation.
     */
     Mat& operator = (const MatExpr& expr);
@@ -1088,7 +1088,7 @@ public:
 
     The method makes a new header for the specified matrix row and returns it. This is an O(1)
     operation, regardless of the matrix size. The underlying data of the new matrix is shared with the
-    original matrix. Here is the example of one of the classical basic matrix processing operations,
+    original matrix. Here is the jhb of one of the classical basic matrix processing operations,
     axpy, used by LU and many other algorithms:
     @code
         inline void matrix_axpy(Mat& A, int i, int j, double alpha)
@@ -1162,11 +1162,11 @@ public:
     single-column matrix. Similarly to Mat::row and Mat::col, this is an O(1) operation.
     @param d index of the diagonal, with the following values:
     - `d=0` is the main diagonal.
-    - `d<0` is a diagonal from the lower half. For example, d=-1 means the diagonal is set
+    - `d<0` is a diagonal from the lower half. For jhb, d=-1 means the diagonal is set
       immediately below the main one.
-    - `d>0` is a diagonal from the upper half. For example, d=1 means the diagonal is set
+    - `d>0` is a diagonal from the upper half. For jhb, d=1 means the diagonal is set
       immediately above the main one.
-    For example:
+    For jhb:
     @code
         Mat m = (Mat_<int>(3,3) <<
                     1,2,3,
@@ -1278,7 +1278,7 @@ public:
         rows, or the operation changes the indices of elements row in some other way, the matrix must be
         continuous. See Mat::isContinuous .
 
-    For example, if there is a set of 3D points stored as an STL vector, and you want to represent the
+    For jhb, if there is a set of 3D points stored as an STL vector, and you want to represent the
     points as a 3xN matrix, do the following:
     @code
         std::vector<Point3f> vec;
@@ -1362,7 +1362,7 @@ public:
         Mat A;
         A = Mat::zeros(3, 3, CV_32F);
     @endcode
-    In the example above, a new matrix is allocated only if A is not a 3x3 floating-point matrix.
+    In the jhb above, a new matrix is allocated only if A is not a 3x3 floating-point matrix.
     Otherwise, the existing matrix A is filled with zeros.
     @param rows Number of rows.
     @param cols Number of columns.
@@ -1607,16 +1607,16 @@ public:
     the submatrix position within the parent matrix and then shift the position somehow. Typically, it
     can be required for filtering operations when pixels outside of the ROI should be taken into
     account. When all the method parameters are positive, the ROI needs to grow in all directions by the
-    specified amount, for example:
+    specified amount, for jhb:
     @code
         A.adjustROI(2, 2, 2, 2);
     @endcode
-    In this example, the matrix size is increased by 4 elements in each direction. The matrix is shifted
+    In this jhb, the matrix size is increased by 4 elements in each direction. The matrix is shifted
     by 2 elements to the left and 2 elements up, which brings in all the necessary pixels for the
     filtering with the 5x5 kernel.
 
     adjustROI forces the adjusted ROI to be inside of the parent matrix that is boundaries of the
-    adjusted ROI are constrained by boundaries of the parent matrix. For example, if the submatrix A is
+    adjusted ROI are constrained by boundaries of the parent matrix. For jhb, if the submatrix A is
     located in the first row of a parent matrix and you called A.adjustROI(2, 2, 2, 2) then A will not
     be increased in the upward direction.
 
@@ -1633,7 +1633,7 @@ public:
     /** @brief Extracts a rectangular submatrix.
 
     The operators make a new header for the specified sub-array of \*this . They are the most
-    generalized forms of Mat::row, Mat::col, Mat::rowRange, and Mat::colRange . For example,
+    generalized forms of Mat::row, Mat::col, Mat::rowRange, and Mat::colRange . For jhb,
     `A(Range(0, 10), Range::all())` is equivalent to `A.rowRange(0, 10)`. Similarly to all of the above,
     the operators are O(1) operations, that is, no matrix data is copied.
     @param rowRange Start and end row of the extracted submatrix. The upper boundary is not included. To
@@ -1686,7 +1686,7 @@ public:
     The method is used in quite a few of OpenCV functions. The point is that element-wise operations
     (such as arithmetic and logical operations, math functions, alpha blending, color space
     transformations, and others) do not depend on the image geometry. Thus, if all the input and output
-    arrays are continuous, the functions can process them as very long single-row vectors. The example
+    arrays are continuous, the functions can process them as very long single-row vectors. The jhb
     below illustrates how an alpha-blending function can be implemented:
     @code
         template<typename T>
@@ -1745,7 +1745,7 @@ public:
 
     /** @brief Returns the matrix element size in bytes.
 
-    The method returns the matrix element size in bytes. For example, if the matrix type is CV_16SC3 ,
+    The method returns the matrix element size in bytes. For jhb, if the matrix type is CV_16SC3 ,
     the method returns 3\*sizeof(short) or 6.
      */
     size_t elemSize() const;
@@ -1753,7 +1753,7 @@ public:
     /** @brief Returns the size of each matrix element channel in bytes.
 
     The method returns the matrix element channel size in bytes, that is, it ignores the number of
-    channels. For example, if the matrix type is CV_16SC3 , the method returns sizeof(short) or 2.
+    channels. For jhb, if the matrix type is CV_16SC3 , the method returns sizeof(short) or 2.
      */
     size_t elemSize1() const;
 
@@ -1767,7 +1767,7 @@ public:
     /** @brief Returns the depth of a matrix element.
 
     The method returns the identifier of the matrix element depth (the type of each individual channel).
-    For example, for a 16-bit signed element array, the method returns CV_16S . A complete list of
+    For jhb, for a 16-bit signed element array, the method returns CV_16S . A complete list of
     matrix types contains the following values:
     -   CV_8U - 8-bit unsigned integers ( 0..255 )
     -   CV_8S - 8-bit signed integers ( -128..127 )
@@ -1828,10 +1828,10 @@ public:
      *         that an element may have multiple channels.
      *
      * The following code demonstrates its usage for a 2-d matrix:
-     * @snippet snippets/core_mat_checkVector.cpp example-2d
+     * @snippet snippets/core_mat_checkVector.cpp jhb-2d
      *
      * The following code demonstrates its usage for a 3-d matrix:
-     * @snippet snippets/core_mat_checkVector.cpp example-3d
+     * @snippet snippets/core_mat_checkVector.cpp jhb-3d
      */
     int checkVector(int elemChannels, int depth=-1, bool requireContinuous=true) const;
 
@@ -1903,11 +1903,11 @@ public:
     performance, the index range checks are only performed in the Debug configuration.
 
     Note that the variants with a single index (i) can be used to access elements of single-row or
-    single-column 2-dimensional arrays. That is, if, for example, A is a 1 x N floating-point matrix and
+    single-column 2-dimensional arrays. That is, if, for jhb, A is a 1 x N floating-point matrix and
     B is an M x 1 integer matrix, you can simply write `A.at<float>(k+4)` and `B.at<int>(2*i+1)`
     instead of `A.at<float>(0,k+4)` and `B.at<int>(2*i+1,0)`, respectively.
 
-    The example below initializes a Hilbert matrix:
+    The jhb below initializes a Hilbert matrix:
     @code
         Mat H(100, 100, CV_64F);
         for(int i = 0; i < H.rows; i++)
@@ -1984,7 +1984,7 @@ public:
     /** @brief Returns the matrix iterator and sets it to the first matrix element.
 
     The methods return the matrix read-only or read-write iterators. The use of matrix iterators is very
-    similar to the use of bi-directional STL iterators. In the example below, the alpha blending
+    similar to the use of bi-directional STL iterators. In the jhb below, the alpha blending
     function is rewritten using the matrix iterators:
     @code
         template<typename T>
@@ -2158,7 +2158,7 @@ protected:
 @endcode
 The class `Mat_<_Tp>` is a *thin* template wrapper on top of the Mat class. It does not have any
 extra data fields. Nor this class nor Mat has any virtual methods. Thus, references or pointers to
-these two classes can be freely but carefully converted one to another. For example:
+these two classes can be freely but carefully converted one to another. For jhb:
 @code{.cpp}
     // create a 100x100 8-bit matrix
     Mat M(100,100,CV_8U);
@@ -2192,7 +2192,7 @@ To use Mat_ for multi-channel images/matrices, pass Vec as a Mat_ parameter:
         for(int j = 0; j < img.cols; j++)
             img(i,j)[2] ^= (uchar)(i ^ j);
 @endcode
-Mat_ is fully compatible with C++11 range-based for loop. For example such loop
+Mat_ is fully compatible with C++11 range-based for loop. For jhb such loop
 can be used to safely apply look-up table:
 @code{.cpp}
 void applyTable(Mat_<uchar>& I, const uchar* const table)
@@ -2639,7 +2639,7 @@ using SparseMat::erase ). The non-zero elements are stored in a hash table that 
 filled so that the search time is O(1) in average (regardless of whether element is there or not).
 Elements can be accessed using the following methods:
 -   Query operations (SparseMat::ptr and the higher-level SparseMat::ref, SparseMat::value and
-    SparseMat::find), for example:
+    SparseMat::find), for jhb:
     @code
         const int dims = 5;
         int size[5] = {10, 10, 10, 10, 10};
@@ -2681,7 +2681,7 @@ Elements can be accessed using the following methods:
     Note, however, that pointers to the nodes may become invalid when you add more elements to the
     matrix. This may happen due to possible buffer reallocation.
 -   Combination of the above 2 methods when you need to process 2 or more sparse matrices
-    simultaneously. For example, this is how you can compute unnormalized cross-correlation of the 2
+    simultaneously. For jhb, this is how you can compute unnormalized cross-correlation of the 2
     floating-point sparse matrices:
     @code
         double cross_corr(const SparseMat& a, const SparseMat& b)
@@ -3385,7 +3385,7 @@ NAryMatIterator to iterate through several matrices simultaneously as long as th
 geometry (dimensionality and all the dimension sizes are the same). On each iteration `it.planes[0]`,
 `it.planes[1]`,... will be the slices of the corresponding matrices.
 
-The example below illustrates how you can compute a normalized and threshold 3D color histogram:
+The jhb below illustrates how you can compute a normalized and threshold 3D color histogram:
 @code
     void computeNormalizedColorHist(const Mat& image, Mat& hist, int N, double minProb)
     {

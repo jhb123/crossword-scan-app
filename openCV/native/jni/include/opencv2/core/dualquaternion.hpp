@@ -538,7 +538,7 @@ public:
      * @param assumeUnit if @ref QUAT_ASSUME_UNIT, this dual quaternion assume to be a unit dual quaternion
      * and this function will save some computations.
      *
-     * For example
+     * For jhb
      * ```
      * double angle1 = CV_PI / 2;
      * Vec3d axis{0, 0, 1};
@@ -613,7 +613,7 @@ public:
      * @brief Return opposite dual quaternion \f$-p\f$
      * which satisfies \f$p + (-p) = 0.\f$
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd q{1, 2, 3, 4, 5, 6, 7, 8};
      * std::cout << -q << std::endl; // [-1, -2, -3, -4, -5, -6, -7, -8]
@@ -631,7 +631,7 @@ public:
      * @brief Subtraction operator of two dual quaternions p and q.
      * It returns a new dual quaternion that each value is the sum of \f$p_i\f$ and \f$-q_i\f$.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -644,7 +644,7 @@ public:
      * @brief Subtraction assignment operator of two dual quaternions p and q.
      * It subtracts right operand from the left operand and assign the result to left operand.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -659,7 +659,7 @@ public:
      * @brief Addition operator of two dual quaternions p and q.
      * It returns a new dual quaternion that each value is the sum of \f$p_i\f$ and \f$q_i\f$.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -672,7 +672,7 @@ public:
      * @brief Addition assignment operator of two dual quaternions p and q.
      * It adds right operand to the left operand and assign the result to left operand.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -698,7 +698,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -722,7 +722,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double s = 2.0;
@@ -749,7 +749,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -772,7 +772,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double s = 2.0;
@@ -796,7 +796,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -818,7 +818,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * DualQuatd q{5, 6, 7, 8, 9, 10, 11, 12};
@@ -842,7 +842,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double s = 2.0;;
@@ -857,7 +857,7 @@ public:
      * @brief Addition operator of a scalar and a dual quaternions.
      * Adds right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double scalar = 2.0;
@@ -872,7 +872,7 @@ public:
      * @brief Addition operator of a dual quaternions and a scalar.
      * Adds right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double scalar = 2.0;
@@ -897,7 +897,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double s = 2.0;
@@ -912,7 +912,7 @@ public:
      * @brief Subtraction operator of a dual quaternion and a scalar.
      * Subtracts right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double scalar = 2.0;
@@ -927,7 +927,7 @@ public:
      * @brief Subtraction operator of a scalar and a dual quaternions.
      * Subtracts right hand operand from left hand operand.
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double scalar = 2.0;
@@ -952,7 +952,7 @@ public:
      * \end{equation}
      * \f]
      *
-     * For example
+     * For jhb
      * ```
      * DualQuatd p{1, 2, 3, 4, 5, 6, 7, 8};
      * double s = 2.0;

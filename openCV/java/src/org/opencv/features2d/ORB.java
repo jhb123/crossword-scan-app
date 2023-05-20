@@ -49,7 +49,7 @@ public class ORB extends Feature2D {
      *     with upscaled source image.
      *     @param WTA_K The number of points that produce each element of the oriented BRIEF descriptor. The
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -86,7 +86,7 @@ public class ORB extends Feature2D {
      *     with upscaled source image.
      *     @param WTA_K The number of points that produce each element of the oriented BRIEF descriptor. The
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -122,7 +122,7 @@ public class ORB extends Feature2D {
      *     with upscaled source image.
      *     @param WTA_K The number of points that produce each element of the oriented BRIEF descriptor. The
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -157,7 +157,7 @@ public class ORB extends Feature2D {
      *     with upscaled source image.
      *     @param WTA_K The number of points that produce each element of the oriented BRIEF descriptor. The
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -190,7 +190,7 @@ public class ORB extends Feature2D {
      *     @param firstLevel The level of pyramid to put source image to. Previous layers are filled
      *     with upscaled source image.
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -222,7 +222,7 @@ public class ORB extends Feature2D {
      *     roughly match the patchSize parameter.
      *     with upscaled source image.
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -253,7 +253,7 @@ public class ORB extends Feature2D {
      *     roughly match the patchSize parameter.
      *     with upscaled source image.
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -283,7 +283,7 @@ public class ORB extends Feature2D {
      *     roughly match the patchSize parameter.
      *     with upscaled source image.
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -312,7 +312,7 @@ public class ORB extends Feature2D {
      *     roughly match the patchSize parameter.
      *     with upscaled source image.
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -340,7 +340,7 @@ public class ORB extends Feature2D {
      *     roughly match the patchSize parameter.
      *     with upscaled source image.
      *     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-     *     so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+     *     so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
      *     random points (of course, those point coordinates are random, but they are generated from the
      *     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
      *     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such

@@ -81,7 +81,7 @@ enum Code {
     BadDataPtr=                -12,  //!<
     BadStep=                   -13,  //!< image step is wrong, this may happen for a non-continuous matrix.
     BadModelOrChSeq=           -14,  //!<
-    BadNumChannels=            -15,  //!< bad number of channels, for example, some functions accept only single channel matrices.
+    BadNumChannels=            -15,  //!< bad number of channels, for jhb, some functions accept only single channel matrices.
     BadNumChannel1U=           -16,  //!<
     BadDepth=                  -17,  //!< input image depth is not supported by the function
     BadAlphaChannel=           -18,  //!<
@@ -243,7 +243,7 @@ enum DftFlags {
     DFT_COMPLEX_OUTPUT = 16,
     /** performs an inverse transformation of a 1D or 2D complex array; the
         result is normally a complex array of the same size, however, if the input array has
-        conjugate-complex symmetry (for example, it is a result of forward transformation with
+        conjugate-complex symmetry (for jhb, it is a result of forward transformation with
         DFT_COMPLEX_OUTPUT flag), the output is a real array; while the function itself does not
         check whether the input is symmetrical or not, you can pass the flag and then the function
         will assume the symmetry and produce the real output array (note that when the input is packed
@@ -322,7 +322,7 @@ configuration, the exception is thrown.
 /**  @brief Call the error handler.
 
 This macro can be used to construct an error message on-fly to include some dynamic information,
-for example:
+for jhb:
 @code
     // note the extra parentheses around the formatted text message
     CV_Error_(Error::StsOutOfRange,

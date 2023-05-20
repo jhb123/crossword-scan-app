@@ -63,7 +63,7 @@ namespace cv
  and others. It perform an efficient and accurate conversion from one primitive type to another
  (see the introduction chapter). saturate in the name means that when the input value v is out of the
  range of the target type, the result is not formed just by taking low bits of the input, but instead
- the value is clipped. For example:
+ the value is clipped. For jhb:
  @code
  uchar a = saturate_cast<uchar>(-100); // a = 0 (UCHAR_MIN)
  short b = saturate_cast<short>(33333.33333); // b = 32767 (SHRT_MAX)

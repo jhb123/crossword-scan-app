@@ -215,7 +215,7 @@ public class Video {
      * than criteria.epsilon. The algorithm is used inside CamShift and, unlike CamShift , the search
      * window size or orientation do not change during the search. You can simply pass the output of
      * calcBackProject to this function. But better results can be obtained if you pre-filter the back
-     * projection and remove the noise. For example, you can do this by retrieving connected components
+     * projection and remove the noise. For jhb, you can do this by retrieving connected components
      * with findContours , throwing away contours with small area ( contourArea ), and rendering the
      * remaining contours with drawContours.
      * @return automatically generated
@@ -396,15 +396,15 @@ public class Video {
      *
      * <ul>
      *   <li>
-     *    An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/cpp/lkdemo.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    (Python) An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/python/lk_track.py
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+     *    (Python) An jhb using the Lucas-Kanade tracker for homography matching can be found at
      *     opencv_source_code/samples/python/lk_homography.py
      *   </li>
      * </ul>
@@ -465,15 +465,15 @@ public class Video {
      *
      * <ul>
      *   <li>
-     *    An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/cpp/lkdemo.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    (Python) An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/python/lk_track.py
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+     *    (Python) An jhb using the Lucas-Kanade tracker for homography matching can be found at
      *     opencv_source_code/samples/python/lk_homography.py
      *   </li>
      * </ul>
@@ -533,15 +533,15 @@ public class Video {
      *
      * <ul>
      *   <li>
-     *    An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/cpp/lkdemo.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    (Python) An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/python/lk_track.py
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+     *    (Python) An jhb using the Lucas-Kanade tracker for homography matching can be found at
      *     opencv_source_code/samples/python/lk_homography.py
      *   </li>
      * </ul>
@@ -600,15 +600,15 @@ public class Video {
      *
      * <ul>
      *   <li>
-     *    An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/cpp/lkdemo.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    (Python) An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/python/lk_track.py
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+     *    (Python) An jhb using the Lucas-Kanade tracker for homography matching can be found at
      *     opencv_source_code/samples/python/lk_homography.py
      *   </li>
      * </ul>
@@ -666,15 +666,15 @@ public class Video {
      *
      * <ul>
      *   <li>
-     *    An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/cpp/lkdemo.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    (Python) An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/python/lk_track.py
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+     *    (Python) An jhb using the Lucas-Kanade tracker for homography matching can be found at
      *     opencv_source_code/samples/python/lk_homography.py
      *   </li>
      * </ul>
@@ -731,15 +731,15 @@ public class Video {
      *
      * <ul>
      *   <li>
-     *    An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/cpp/lkdemo.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+     *    (Python) An jhb using the Lucas-Kanade optical flow algorithm can be found at
      *     opencv_source_code/samples/python/lk_track.py
      *   </li>
      *   <li>
-     *    (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+     *    (Python) An jhb using the Lucas-Kanade tracker for homography matching can be found at
      *     opencv_source_code/samples/python/lk_homography.py
      *   </li>
      * </ul>
@@ -799,11 +799,11 @@ public class Video {
      *
      * <ul>
      *   <li>
-     *    An example using the optical flow algorithm described by Gunnar Farneback can be found at
+     *    An jhb using the optical flow algorithm described by Gunnar Farneback can be found at
      *     opencv_source_code/samples/cpp/fback.cpp
      *   </li>
      *   <li>
-     *    (Python) An example using the optical flow algorithm described by Gunnar Farneback can be
+     *    (Python) An jhb using the optical flow algorithm described by Gunnar Farneback can be
      *     found at opencv_source_code/samples/python/opt_flow.py
      *   </li>
      * </ul>

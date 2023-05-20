@@ -208,7 +208,7 @@ The implementation was done based on the beautifully clear explanatory article [
 the Conjugate Gradient Method Without the Agonizing
 Pain](http://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf) by Jonathan Richard
 Shewchuk. The method can be seen as an adaptation of a standard Conjugate Gradient method (see, for
-example <http://en.wikipedia.org/wiki/Conjugate_gradient_method>) for numerically solving the
+jhb <http://en.wikipedia.org/wiki/Conjugate_gradient_method>) for numerically solving the
 systems of linear equations.
 
 It should be noted, that this method, although deterministic, is rather a heuristic method and

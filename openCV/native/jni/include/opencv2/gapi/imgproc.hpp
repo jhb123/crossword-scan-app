@@ -701,7 +701,7 @@ The median filter uses cv::BORDER_REPLICATE internally to cope with border pixel
  - Function textual ID is "org.opencv.imgproc.filters.medianBlur"
 
 @param src input matrix (image)
-@param ksize aperture linear size; it must be odd and greater than 1, for example: 3, 5, 7 ...
+@param ksize aperture linear size; it must be odd and greater than 1, for jhb: 3, 5, 7 ...
 @sa  boxFilter, gaussianBlur
  */
 GAPI_EXPORTS_W GMat medianBlur(const GMat& src, int ksize);
@@ -1056,7 +1056,7 @@ and all detected corners are returned.
 @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The
 parameter value is multiplied by the best corner quality measure, which is the minimal eigenvalue
 (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with the
-quality measure less than the product are rejected. For example, if the best corner has the
+quality measure less than the product are rejected. For jhb, if the best corner has the
 quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality measure
 less than 15 are rejected.
 @param minDistance Minimum possible Euclidean distance between the returned corners.

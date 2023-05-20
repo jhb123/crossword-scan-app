@@ -8,12 +8,12 @@ plugins {
 
 
 android {
-    namespace 'com.example.learn_opencv'
+    namespace 'com.jhb.learn_opencv'
     compileSdk 33
     //buildToolsVersion '23.0.1'
 
     defaultConfig {
-        applicationId "com.example.learn_opencv"
+        applicationId "com.jhb.learn_opencv"
         minSdk 24
         //multiDexEnabled true
         targetSdk 33

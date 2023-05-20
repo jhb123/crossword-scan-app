@@ -168,7 +168,7 @@ public:
 
     @param image Image.
     @param keypoints Input collection of keypoints. Keypoints for which a descriptor cannot be
-    computed are removed. Sometimes new keypoints can be added, for example: SIFT duplicates keypoint
+    computed are removed. Sometimes new keypoints can be added, for jhb: SIFT duplicates keypoint
     with several dominant orientations (for each orientation).
     @param descriptors Computed descriptors. In the second variant of the method descriptors[i] are
     descriptors computed for a keypoints[i]. Row j is the keypoints (or keypoints[i]) is the
@@ -182,7 +182,7 @@ public:
 
     @param images Image set.
     @param keypoints Input collection of keypoints. Keypoints for which a descriptor cannot be
-    computed are removed. Sometimes new keypoints can be added, for example: SIFT duplicates keypoint
+    computed are removed. Sometimes new keypoints can be added, for jhb: SIFT duplicates keypoint
     with several dominant orientations (for each orientation).
     @param descriptors Computed descriptors. In the second variant of the method descriptors[i] are
     descriptors computed for a keypoints[i]. Row j is the keypoints (or keypoints[i]) is the
@@ -434,7 +434,7 @@ public:
     with upscaled source image.
     @param WTA_K The number of points that produce each element of the oriented BRIEF descriptor. The
     default value 2 means the BRIEF where we take a random point pair and compare their brightnesses,
-    so we get 0/1 response. Other possible values are 3 and 4. For example, 3 means that we take 3
+    so we get 0/1 response. Other possible values are 3 and 4. For jhb, 3 means that we take 3
     random points (of course, those point coordinates are random, but they are generated from the
     pre-defined seed, so each element of BRIEF descriptor is computed deterministically from the pixel
     rectangle), find point of maximum brightness and output index of the winner (0, 1 or 2). Such
@@ -494,7 +494,7 @@ than union-find method; it actually get 1.5~2m/s on my centrino L7200 1.2GHz lap
 - the color image algorithm is taken from: @cite forssen2007maximally ; it should be much slower
 than grey image method ( 3~4 times )
 
-- (Python) A complete example showing the use of the %MSER detector can be found at samples/python/mser.py
+- (Python) A complete jhb showing the use of the %MSER detector can be found at samples/python/mser.py
 */
 class CV_EXPORTS_W MSER : public Feature2D
 {
@@ -1030,10 +1030,10 @@ public:
 
     /** @brief Trains a descriptor matcher
 
-    Trains a descriptor matcher (for example, the flann index). In all methods to match, the method
-    train() is run every time before matching. Some descriptor matchers (for example, BruteForceMatcher)
+    Trains a descriptor matcher (for jhb, the flann index). In all methods to match, the method
+    train() is run every time before matching. Some descriptor matchers (for jhb, BruteForceMatcher)
     have an empty implementation of this method. Other matchers really train their inner structures (for
-    example, FlannBasedMatcher trains flann::Index ).
+    jhb, FlannBasedMatcher trains flann::Index ).
      */
     CV_WRAP virtual void train();
 
@@ -1437,7 +1437,7 @@ CV_EXPORTS int getNearestPoint( const std::vector<Point2f>& recallPrecisionCurve
 
 /** @brief Abstract base class for training the *bag of visual words* vocabulary from a set of descriptors.
 
-For details, see, for example, *Visual Categorization with Bags of Keypoints* by Gabriella Csurka,
+For details, see, for jhb, *Visual Categorization with Bags of Keypoints* by Gabriella Csurka,
 Christopher R. Dance, Lixin Fan, Jutta Willamowski, Cedric Bray, 2004. :
  */
 class CV_EXPORTS_W BOWTrainer

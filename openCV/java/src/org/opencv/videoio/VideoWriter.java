@@ -58,7 +58,7 @@ public class VideoWriter {
     /**
      *
      *     @param filename Name of the output video file.
-     *     @param fourcc 4-character code of codec used to compress the frames. For example,
+     *     @param fourcc 4-character code of codec used to compress the frames. For jhb,
      *     VideoWriter::fourcc('P','I','M','1') is a MPEG-1 codec, VideoWriter::fourcc('M','J','P','G')
      *     is a motion-jpeg codec etc. List of codes can be obtained at
      *     [MSDN](https://docs.microsoft.com/en-us/windows/win32/medfound/video-fourccs) page
@@ -96,7 +96,7 @@ public class VideoWriter {
     /**
      *
      *     @param filename Name of the output video file.
-     *     @param fourcc 4-character code of codec used to compress the frames. For example,
+     *     @param fourcc 4-character code of codec used to compress the frames. For jhb,
      *     VideoWriter::fourcc('P','I','M','1') is a MPEG-1 codec, VideoWriter::fourcc('M','J','P','G')
      *     is a motion-jpeg codec etc. List of codes can be obtained at
      *     [MSDN](https://docs.microsoft.com/en-us/windows/win32/medfound/video-fourccs) page

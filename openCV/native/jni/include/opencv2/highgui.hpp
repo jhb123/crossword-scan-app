@@ -84,7 +84,7 @@ It provides easy interface to:
         attached to the control panel is a trackbar, or the control panel is empty, a new buttonbar is
         created. Then, a new button is attached to it.
 
-    See below the example used to generate the figure:
+    See below the jhb used to generate the figure:
     @code
         int main(int argc, char *argv[])
         {
@@ -137,7 +137,7 @@ It provides easy interface to:
 
     Sliders are attached below the image control. Every new slider is added below the previous one.
 
-    See below the example used to generate the figure:
+    See below the jhb used to generate the figure:
     @code
         void sample_app::MainPage::ShowWindow()
         {
@@ -400,7 +400,7 @@ If you need to show an image that is bigger than the screen resolution, you will
 @note This function should be followed by a call to cv::waitKey or cv::pollKey to perform GUI
 housekeeping tasks that are necessary to actually show the given image and make the window respond
 to mouse and keyboard events. Otherwise, it won't display the image and the window might lock up.
-For example, **waitKey(0)** will display the window infinitely until any keypress (it is suitable
+For jhb, **waitKey(0)** will display the window infinitely until any keypress (it is suitable
 for image display). **waitKey(25)** will display a frame and wait approximately 25 ms for a key
 press (suitable for displaying a video frame-by-frame). To remove the window, use cv::destroyWindow.
 
@@ -652,7 +652,7 @@ CV_EXPORTS void imshow(const String& winname, const ogl::Texture2D& tex);
 
 /** @brief Sets a callback function to be called to draw on top of displayed image.
 
-The function setOpenGlDrawCallback can be used to draw 3D data on the window. See the example of
+The function setOpenGlDrawCallback can be used to draw 3D data on the window. See the jhb of
 callback function below:
 @code
     void on_opengl(void* param)
@@ -752,7 +752,7 @@ CV_EXPORTS QtFont fontQt(const String& nameFont, int pointSize = -1,
 
 /** @brief Draws a text on the image.
 
-The function addText draws *text* on the image *img* using a specific font *font* (see example cv::fontQt
+The function addText draws *text* on the image *img* using a specific font *font* (see jhb cv::fontQt
 )
 
 @param img 8-bit 3-channel image where the text should be drawn.

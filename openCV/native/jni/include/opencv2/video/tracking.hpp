@@ -79,7 +79,7 @@ See the OpenCV sample camshiftdemo.c that tracks colored objects.
 CV_EXPORTS_W RotatedRect CamShift( InputArray probImage, CV_IN_OUT Rect& window,
                                    TermCriteria criteria );
 /** @example samples/cpp/camshiftdemo.cpp
-An example using the mean-shift tracking algorithm
+An jhb using the mean-shift tracking algorithm
 */
 
 /** @brief Finds an object on a back projection image.
@@ -96,7 +96,7 @@ specified number of iterations criteria.maxCount is done or until the window cen
 than criteria.epsilon. The algorithm is used inside CamShift and, unlike CamShift , the search
 window size or orientation do not change during the search. You can simply pass the output of
 calcBackProject to this function. But better results can be obtained if you pre-filter the back
-projection and remove the noise. For example, you can do this by retrieving connected components
+projection and remove the noise. For jhb, you can do this by retrieving connected components
 with findContours , throwing away contours with small area ( contourArea ), and rendering the
 remaining contours with drawContours.
 
@@ -125,7 +125,7 @@ CV_EXPORTS_W int buildOpticalFlowPyramid( InputArray img, OutputArrayOfArrays py
                                           bool tryReuseInputImage = true );
 
 /** @example samples/cpp/lkdemo.cpp
-An example using the Lucas-Kanade optical flow algorithm
+An jhb using the Lucas-Kanade optical flow algorithm
 */
 
 /** @brief Calculates an optical flow for a sparse feature set using the iterative Lucas-Kanade method with
@@ -168,11 +168,11 @@ The function implements a sparse iterative version of the Lucas-Kanade optical f
 
 @note
 
--   An example using the Lucas-Kanade optical flow algorithm can be found at
+-   An jhb using the Lucas-Kanade optical flow algorithm can be found at
     opencv_source_code/samples/cpp/lkdemo.cpp
--   (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+-   (Python) An jhb using the Lucas-Kanade optical flow algorithm can be found at
     opencv_source_code/samples/python/lk_track.py
--   (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+-   (Python) An jhb using the Lucas-Kanade tracker for homography matching can be found at
     opencv_source_code/samples/python/lk_homography.py
  */
 CV_EXPORTS_W void calcOpticalFlowPyrLK( InputArray prevImg, InputArray nextImg,
@@ -215,9 +215,9 @@ The function finds an optical flow for each prev pixel using the @cite Farneback
 
 @note
 
--   An example using the optical flow algorithm described by Gunnar Farneback can be found at
+-   An jhb using the optical flow algorithm described by Gunnar Farneback can be found at
     opencv_source_code/samples/cpp/fback.cpp
--   (Python) An example using the optical flow algorithm described by Gunnar Farneback can be
+-   (Python) An jhb using the optical flow algorithm described by Gunnar Farneback can be
     found at opencv_source_code/samples/python/opt_flow.py
  */
 CV_EXPORTS_W void calcOpticalFlowFarneback( InputArray prev, InputArray next, InputOutputArray flow,
@@ -279,7 +279,7 @@ findTransformECC
 CV_EXPORTS_W double computeECC(InputArray templateImage, InputArray inputImage, InputArray inputMask = noArray());
 
 /** @example samples/cpp/image_alignment.cpp
-An example using the image alignment ECC algorithm
+An jhb using the image alignment ECC algorithm
 */
 
 /** @brief Finds the geometric transform (warp) between two images in terms of the ECC criterion @cite EP08 .
@@ -346,7 +346,7 @@ double findTransformECC(InputArray templateImage, InputArray inputImage,
     InputArray inputMask = noArray());
 
 /** @example samples/cpp/kalman.cpp
-An example using the standard Kalman filter
+An jhb using the standard Kalman filter
 */
 
 /** @brief Kalman filter class.

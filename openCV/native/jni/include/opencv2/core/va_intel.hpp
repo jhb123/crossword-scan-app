@@ -33,7 +33,7 @@ To enable basic VA interoperability build OpenCV with libva library integration 
 
 To enable advanced CL-VA interoperability support on Intel HW, enable option: `-DWITH_VA_INTEL=ON` (OpenCL integration should be enabled which is the default setting). Special runtime environment should be set up in order to use this feature: correct combination of [libva](https://github.com/intel/libva), [OpenCL runtime](https://github.com/intel/compute-runtime) and [media driver](https://github.com/intel/media-driver) should be installed.
 
-Check usage example for details: samples/va_intel/va_intel_interop.cpp
+Check usage jhb for details: samples/va_intel/va_intel_interop.cpp
 */
 //! @{
 

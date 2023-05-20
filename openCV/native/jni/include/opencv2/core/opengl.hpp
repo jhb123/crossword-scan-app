@@ -60,7 +60,7 @@ supported only with WIN32, GTK and Qt backends on Windows and Linux (MacOS and A
 supported). For GTK backend gtkglext-1.0 library is required.
 
 To use OpenGL functionality you should first create OpenGL context (window or frame buffer). You can
-do this with namedWindow function or with other OpenGL toolkit (GLUT, for example).
+do this with namedWindow function or with other OpenGL toolkit (GLUT, for jhb).
 */
 //! @{
 
@@ -84,7 +84,7 @@ public:
     enum Target
     {
         ARRAY_BUFFER         = 0x8892, //!< The buffer will be used as a source for vertex data
-        ELEMENT_ARRAY_BUFFER = 0x8893, //!< The buffer will be used for indices (in glDrawElements, for example)
+        ELEMENT_ARRAY_BUFFER = 0x8893, //!< The buffer will be used for indices (in glDrawElements, for jhb)
         PIXEL_PACK_BUFFER    = 0x88EB, //!< The buffer will be used for reading from OpenGL textures
         PIXEL_UNPACK_BUFFER  = 0x88EC  //!< The buffer will be used for writing to OpenGL textures
     };

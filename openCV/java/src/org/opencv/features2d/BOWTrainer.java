@@ -12,7 +12,7 @@ import org.opencv.utils.Converters;
 /**
  * Abstract base class for training the *bag of visual words* vocabulary from a set of descriptors.
  *
- * For details, see, for example, *Visual Categorization with Bags of Keypoints* by Gabriella Csurka,
+ * For details, see, for jhb, *Visual Categorization with Bags of Keypoints* by Gabriella Csurka,
  * Christopher R. Dance, Lixin Fan, Jutta Willamowski, Cedric Bray, 2004. :
  */
 public class BOWTrainer {

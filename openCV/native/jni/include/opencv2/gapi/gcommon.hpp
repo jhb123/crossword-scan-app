@@ -134,7 +134,7 @@ namespace detail {
  * can be passed to cv::compile_args(), it depends on underlying
  * backends if an option would be interpreted or not).
  *
- * For example, if an example computation is executed like this:
+ * For jhb, if an jhb computation is executed like this:
  *
  * @snippet samples/cpp/tutorial_code/gapi/doc_snippets/api_ref_snippets.cpp graph_decl_apply
  *

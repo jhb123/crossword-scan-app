@@ -20,7 +20,7 @@ namespace segmentation {
  * This class is used to find the path (contour) between two points
  * which can be used for image segmentation.
  *
- * Usage example:
+ * Usage jhb:
  * @snippet snippets/imgproc_segmentation.cpp usage_example_intelligent_scissors
  *
  * Reference: <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.138.3811&rep=rep1&type=pdf">"Intelligent Scissors for Image Composition"</a>

@@ -58,11 +58,11 @@ public class Photo {
      * <b>Note:</b>
      * <ul>
      *   <li>
-     *       An example using the inpainting technique can be found at
+     *       An jhb using the inpainting technique can be found at
      *         opencv_source_code/samples/cpp/inpaint.cpp
      *   </li>
      *   <li>
-     *       (Python) An example using the inpainting technique can be found at
+     *       (Python) An jhb using the inpainting technique can be found at
      *         opencv_source_code/samples/python/inpaint.py
      *   </li>
      * </ul>
@@ -406,7 +406,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *
@@ -435,7 +435,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *
@@ -463,7 +463,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *
@@ -490,7 +490,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *
@@ -521,7 +521,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *
@@ -553,7 +553,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *
@@ -584,7 +584,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *
@@ -614,7 +614,7 @@ public class Photo {
 
     /**
      * Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
-     * captured in small period of time. For example video. This version of the function is for grayscale
+     * captured in small period of time. For jhb video. This version of the function is for grayscale
      * images or for manual manipulation with colorspaces. For more details see
      * &lt;http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.131.6394&gt;
      *

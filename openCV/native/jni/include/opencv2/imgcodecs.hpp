@@ -205,7 +205,7 @@ Currently, the following file formats are supported:
     the color management embedded into MacOSX.
 -   On Linux\*, BSD flavors and other Unix-like open-source operating systems, OpenCV looks for
     codecs supplied with an OS image. Install the relevant packages (do not forget the development
-    files, for example, "libjpeg-dev", in Debian\* and Ubuntu\*) to get the codec support or turn
+    files, for jhb, "libjpeg-dev", in Debian\* and Ubuntu\*) to get the codec support or turn
     on the OPENCV_BUILD_3RDPARTY_LIBS flag in CMake.
 -   In the case you set *WITH_GDAL* flag to true in CMake and @ref IMREAD_LOAD_GDAL to load the image,
     then the [GDAL](http://www.gdal.org) driver will be used in order to decode the image, supporting

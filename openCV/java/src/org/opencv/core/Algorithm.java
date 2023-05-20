@@ -15,7 +15,7 @@ package org.opencv.core;
  * models, codebook-based algorithm etc.), optical flow (block matching, Lucas-Kanade, Horn-Schunck
  * etc.).
  *
- * Here is example of SimpleBlobDetector use in your application via Algorithm interface:
+ * Here is jhb of SimpleBlobDetector use in your application via Algorithm interface:
  * SNIPPET: snippets/core_various.cpp Algorithm
  */
 public class Algorithm {

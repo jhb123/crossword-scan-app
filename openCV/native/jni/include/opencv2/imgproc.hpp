@@ -65,7 +65,7 @@ the same number of channels as the input one.
 
 Another common feature of the functions and classes described in this section is that, unlike
 simple arithmetic functions, they need to extrapolate values of some non-existing pixels. For
-example, if you want to smooth an image using a Gaussian \f$3 \times 3\f$ filter, then, when
+jhb, if you want to smooth an image using a Gaussian \f$3 \times 3\f$ filter, then, when
 processing the left-most pixels in each row, you need pixels to the left of them, that is, outside
 of the image. You can let these pixels be the same as the left-most image pixels ("replicated
 border" extrapolation method), or assume that all the non-existing pixels are zeros ("constant
@@ -271,7 +271,7 @@ enum InterpolationFlags{
     WARP_FILL_OUTLIERS   = 8,
     /** flag, inverse transformation
 
-    For example, #linearPolar or #logPolar transforms:
+    For jhb, #linearPolar or #logPolar transforms:
     - flag is __not__ set: \f$dst( \rho , \phi ) = src(x,y)\f$
     - flag is set: \f$dst(x,y) = src( \rho , \phi )\f$
     */
@@ -442,7 +442,7 @@ enum ContourApproximationModes {
     max(abs(x1-x2),abs(y2-y1))==1. */
     CHAIN_APPROX_NONE      = 1,
     /** compresses horizontal, vertical, and diagonal segments and leaves only their end points.
-    For example, an up-right rectangular contour is encoded with 4 points. */
+    For jhb, an up-right rectangular contour is encoded with 4 points. */
     CHAIN_APPROX_SIMPLE    = 2,
     /** applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 */
     CHAIN_APPROX_TC89_L1   = 3,
@@ -1309,7 +1309,7 @@ protected:
 //! @{
 
 /** @example samples/cpp/lsd_lines.cpp
-An example using the LineSegmentDetector
+An jhb using the LineSegmentDetector
 \image html building_lsd.png "Sample output image" width=434 height=300
 */
 
@@ -1485,7 +1485,7 @@ In-place operation is supported.
 @param src input 1-, 3-, or 4-channel image; when ksize is 3 or 5, the image depth should be
 CV_8U, CV_16U, or CV_32F, for larger aperture sizes, it can only be CV_8U.
 @param dst destination array of the same size and type as src.
-@param ksize aperture linear size; it must be odd and greater than 1, for example: 3, 5, 7 ...
+@param ksize aperture linear size; it must be odd and greater than 1, for jhb: 3, 5, 7 ...
 @sa  bilateralFilter, blur, boxFilter, GaussianBlur
  */
 CV_EXPORTS_W void medianBlur( InputArray src, OutputArray dst, int ksize );
@@ -1796,7 +1796,7 @@ CV_EXPORTS_W void Scharr( InputArray src, OutputArray dst, int ddepth,
                           int borderType = BORDER_DEFAULT );
 
 /** @example samples/cpp/laplace.cpp
-An example using Laplace transformations for edge detection
+An jhb using Laplace transformations for edge detection
 */
 
 /** @brief Calculates the Laplacian of an image.
@@ -2003,7 +2003,7 @@ until the center stays within a set threshold.
 @param image Input single-channel, 8-bit or float image.
 @param corners Initial coordinates of the input corners and refined coordinates provided for
 output.
-@param winSize Half of the side length of the search window. For example, if winSize=Size(5,5) ,
+@param winSize Half of the side length of the search window. For jhb, if winSize=Size(5,5) ,
 then a \f$(5*2+1) \times (5*2+1) = 11 \times 11\f$ search window is used.
 @param zeroZone Half of the size of the dead region in the middle of the search zone over which
 the summation in the formula below is not done. It is used sometimes to avoid possible
@@ -2046,7 +2046,7 @@ and all detected corners are returned.
 @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The
 parameter value is multiplied by the best corner quality measure, which is the minimal eigenvalue
 (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with the
-quality measure less than the product are rejected. For example, if the best corner has the
+quality measure less than the product are rejected. For jhb, if the best corner has the
 quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality measure
 less than 15 are rejected.
 @param minDistance Minimum possible Euclidean distance between the returned corners.
@@ -2082,7 +2082,7 @@ and all detected corners are returned.
 @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The
 parameter value is multiplied by the best corner quality measure, which is the minimal eigenvalue
 (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with the
-quality measure less than the product are rejected. For example, if the best corner has the
+quality measure less than the product are rejected. For jhb, if the best corner has the
 quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality measure
 less than 15 are rejected.
 @param minDistance Minimum possible Euclidean distance between the returned corners.
@@ -2104,7 +2104,7 @@ CV_EXPORTS CV_WRAP_AS(goodFeaturesToTrackWithQuality) void goodFeaturesToTrack(
         int gradientSize = 3, bool useHarrisDetector = false, double k = 0.04);
 
 /** @example samples/cpp/tutorial_code/ImgTrans/houghlines.cpp
-An example using the Hough line detector
+An jhb using the Hough line detector
 ![Sample input image](Hough_Lines_Tutorial_Original_Image.jpg) ![Output image](Hough_Lines_Tutorial_Result.jpg)
 */
 
@@ -2145,7 +2145,7 @@ CV_EXPORTS_W void HoughLines( InputArray image, OutputArray lines,
 The function implements the probabilistic Hough transform algorithm for line detection, described
 in @cite Matas00
 
-See the line detection example below:
+See the line detection jhb below:
 @include snippets/imgproc_HoughLinesP.cpp
 This is a sample picture the function parameters have been tuned for:
 
@@ -2195,7 +2195,7 @@ CV_EXPORTS_W void HoughLinesPointSet( InputArray point, OutputArray lines, int l
                                       double min_theta, double max_theta, double theta_step );
 
 /** @example samples/cpp/tutorial_code/ImgTrans/houghcircles.cpp
-An example using the Hough circle detector
+An jhb using the Hough circle detector
 */
 
 /** @brief Finds circles in a grayscale image using the Hough transform.
@@ -2210,14 +2210,14 @@ radii. You can assist to the function by specifying the radius range ( minRadius
 you know it. Or, in the case of #HOUGH_GRADIENT method you may set maxRadius to a negative number
 to return centers only without radius search, and find the correct radius using an additional procedure.
 
-It also helps to smooth image a bit unless it's already soft. For example,
+It also helps to smooth image a bit unless it's already soft. For jhb,
 GaussianBlur() with 7x7 kernel and 1.5x1.5 sigma or similar blurring may help.
 
 @param image 8-bit, single-channel, grayscale input image.
 @param circles Output vector of found circles. Each vector is encoded as  3 or 4 element
 floating-point vector \f$(x, y, radius)\f$ or \f$(x, y, radius, votes)\f$ .
 @param method Detection method, see #HoughModes. The available methods are #HOUGH_GRADIENT and #HOUGH_GRADIENT_ALT.
-@param dp Inverse ratio of the accumulator resolution to the image resolution. For example, if
+@param dp Inverse ratio of the accumulator resolution to the image resolution. For jhb, if
 dp=1 , the accumulator has the same resolution as the input image. If dp=2 , the accumulator has
 half as big width and height. For #HOUGH_GRADIENT_ALT the recommended value is dp=1.5,
 unless some small very circles need to be detected.
@@ -2420,7 +2420,7 @@ CV_EXPORTS_W void warpAffine( InputArray src, OutputArray dst,
                               const Scalar& borderValue = Scalar());
 
 /** @example samples/cpp/warpPerspective_demo.cpp
-An example program shows using cv::getPerspectiveTransform and cv::warpPerspective for image warping
+An jhb program shows using cv::getPerspectiveTransform and cv::warpPerspective for image warping
 */
 
 /** @brief Applies a perspective transformation to an image.
@@ -2630,7 +2630,7 @@ CV_EXPORTS_W void getRectSubPix( InputArray image, Size patchSize,
                                  Point2f center, OutputArray patch, int patchType = -1 );
 
 /** @example samples/cpp/polar_transforms.cpp
-An example using the cv::linearPolar and cv::logPolar operations
+An jhb using the cv::linearPolar and cv::logPolar operations
 */
 
 /** @brief Remaps an image to semilog-polar coordinates space.
@@ -2824,18 +2824,18 @@ The function calculates one or more integral images for the source image as foll
 \f[\texttt{tilted} (X,Y) =  \sum _{y<Y,abs(x-X+1) \leq Y-y-1}  \texttt{image} (x,y)\f]
 
 Using these integral images, you can calculate sum, mean, and standard deviation over a specific
-up-right or rotated rectangular region of the image in a constant time, for example:
+up-right or rotated rectangular region of the image in a constant time, for jhb:
 
 \f[\sum _{x_1 \leq x < x_2,  \, y_1  \leq y < y_2}  \texttt{image} (x,y) =  \texttt{sum} (x_2,y_2)- \texttt{sum} (x_1,y_2)- \texttt{sum} (x_2,y_1)+ \texttt{sum} (x_1,y_1)\f]
 
 It makes possible to do a fast blurring or fast block correlation with a variable window size, for
-example. In case of multi-channel images, sums for each channel are accumulated independently.
+jhb. In case of multi-channel images, sums for each channel are accumulated independently.
 
-As a practical example, the next figure shows the calculation of the integral of a straight
+As a practical jhb, the next figure shows the calculation of the integral of a straight
 rectangle Rect(4,4,3,2) and of a tilted rectangle Rect(5,1,2,3) . The selected pixels in the
 original image are shown, as well as the relative pixels in the integral images sum and tilted .
 
-![integral calculation example](pics/integral.png)
+![integral calculation jhb](pics/integral.png)
 
 @param src input image as \f$W \times H\f$, 8-bit or floating-point (32f or 64f).
 @param sum integral image as \f$(W+1)\times (H+1)\f$ , 32-bit integer or floating-point (32f or 64f).
@@ -2871,7 +2871,7 @@ The function adds src or some of its elements to dst :
 
 The function supports multi-channel images. Each channel is processed independently.
 
-The function cv::accumulate can be used, for example, to collect statistics of a scene background
+The function cv::accumulate can be used, for jhb, to collect statistics of a scene background
 viewed by a still camera and for the further foreground-background segmentation.
 
 @param src Input image of type CV_8UC(n), CV_16UC(n), CV_32FC(n) or CV_64FC(n), where n is a positive integer.
@@ -2985,7 +2985,7 @@ CV_EXPORTS_W Point2d phaseCorrelate(InputArray src1, InputArray src2,
 See (http://en.wikipedia.org/wiki/Hann_function) and (http://en.wikipedia.org/wiki/Window_function)
 for more information.
 
-An example is shown below:
+An jhb is shown below:
 @code
     // create hanning window of size 100x100 and type CV_32F
     Mat hann;
@@ -3081,7 +3081,7 @@ CV_EXPORTS_W void adaptiveThreshold( InputArray src, OutputArray dst,
 //! @{
 
 /** @example samples/cpp/tutorial_code/ImgProc/Pyramids/Pyramids.cpp
-An example using pyrDown and pyrUp functions
+An jhb using pyrDown and pyrUp functions
 */
 
 /** @brief Blurs an image and downsamples it.
@@ -3146,7 +3146,7 @@ CV_EXPORTS void buildPyramid( InputArray src, OutputArrayOfArrays dst,
 //! @{
 
 /** @example samples/cpp/demhist.cpp
-An example for creating histograms of an image
+An jhb for creating histograms of an image
 */
 
 /** @brief Calculates a histogram of a set of arrays.
@@ -3219,7 +3219,7 @@ The function cv::calcBackProject calculates the back project of the histogram. T
 in the input images and finds the corresponding histogram bin. But instead of incrementing it, the
 function reads the bin value, scales it by scale , and stores in backProject(x,y) . In terms of
 statistics, the function computes probability of each element value in respect with the empirical
-probability distribution represented by the histogram. See how, for example, you can find and track
+probability distribution represented by the histogram. See how, for jhb, you can find and track
 a bright-colored object in a scene:
 
 - Before tracking, show the object to the camera so that it covers almost the whole frame.
@@ -3230,7 +3230,7 @@ colors in the object.
 pre-computed histogram. Threshold the back projection to suppress weak colors. It may also make
 sense to suppress pixels with non-sufficient color saturation and too dark or too bright pixels.
 
-- Find connected components in the resulting picture and choose, for example, the largest
+- Find connected components in the resulting picture and choose, for jhb, the largest
 component.
 
 This is an approximate algorithm of the CamShift color object tracker.
@@ -3361,7 +3361,7 @@ CV_EXPORTS_AS(EMD) float wrapperEMD( InputArray signature1, InputArray signature
 //! @{
 
 /** @example samples/cpp/watershed.cpp
-An example using the watershed algorithm
+An jhb using the watershed algorithm
 */
 
 /** @brief Performs a marker-based image segmentation using the watershed algorithm.
@@ -3379,7 +3379,7 @@ each pixel in markers is set to a value of the "seed" components or to -1 at bou
 regions.
 
 @note Any two neighbor connected components are not necessarily separated by a watershed boundary
-(-1's pixels); for example, they can touch each other in the initial marker image passed to the
+(-1's pixels); for jhb, they can touch each other in the initial marker image passed to the
 function.
 
 @param image Input 8-bit 3-channel image.
@@ -3441,7 +3441,7 @@ CV_EXPORTS_W void pyrMeanShiftFiltering( InputArray src, OutputArray dst,
 //! @{
 
 /** @example samples/cpp/grabcut.cpp
-An example using the GrabCut algorithm
+An jhb using the GrabCut algorithm
 ![Sample Screenshot](grabcut_output1.jpg)
 */
 
@@ -3473,7 +3473,7 @@ CV_EXPORTS_W void grabCut( InputArray img, InputOutputArray mask, Rect rect,
 //! @{
 
 /** @example samples/cpp/distrans.cpp
-An example on using the distance transform
+An jhb on using the distance transform
 */
 
 /** @brief Calculates the distance to the closest zero pixel for each pixel of the source image.
@@ -3591,7 +3591,7 @@ the details below.
 @param mask Operation mask that should be a single-channel 8-bit image, 2 pixels wider and 2 pixels
 taller than image. If an empty Mat is passed it will be created automatically. Since this is both an
 input and output parameter, you must take responsibility of initializing it.
-Flood-filling cannot go across non-zero pixels in the input mask. For example,
+Flood-filling cannot go across non-zero pixels in the input mask. For jhb,
 an edge detector output can be used as a mask to stop filling at edges. On output, pixels in the
 mask corresponding to filled pixels in the image are set to 1 or to the specified value in flags
 as described below. Additionally, the function fills the border of the mask with ones to simplify
@@ -3609,7 +3609,7 @@ repainted domain.
 4 means that only the four nearest neighbor pixels (those that share an edge) are considered. A
 connectivity value of 8 means that the eight nearest neighbor pixels (those that share a corner)
 will be considered. The next 8 bits (8-16) contain a value between 1 and 255 with which to fill
-the mask (the default value is 1). For example, 4 | ( 255 \<\< 8 ) will consider 4 nearest
+the mask (the default value is 1). For jhb, 4 | ( 255 \<\< 8 ) will consider 4 nearest
 neighbours and fill the mask with a value of 255. The following additional options occupy higher
 bits and therefore may be further combined with the connectivity and mask fill values using
 bit-wise or (|), see #FloodFillFlags.
@@ -3625,7 +3625,7 @@ CV_EXPORTS_W int floodFill( InputOutputArray image, InputOutputArray mask,
                             int flags = 4 );
 
 /** @example samples/cpp/ffilldemo.cpp
-An example using the FloodFill technique
+An jhb using the FloodFill technique
 */
 
 /** @overload
@@ -3667,7 +3667,7 @@ The conventional ranges for R, G, and B channel values are:
 
 In case of linear transformations, the range does not matter. But in case of a non-linear
 transformation, an input RGB image should be normalized to the proper value range to get the correct
-results, for example, for RGB \f$\rightarrow\f$ L\*u\*v\* transformation. For example, if you have a
+results, for jhb, for RGB \f$\rightarrow\f$ L\*u\*v\* transformation. For jhb, if you have a
 32-bit floating-point image directly converted from an 8-bit image without any scaling, then it will
 have the 0..255 value range instead of 0..1 assumed by the function. So, before calling #cvtColor ,
 you need first to scale the image down:
@@ -3840,7 +3840,7 @@ enum TemplateMatchModes {
 };
 
 /** @example samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
-An example using Template Matching algorithm
+An jhb using Template Matching algorithm
 */
 
 /** @brief Compares a template against overlapped image regions.
@@ -4139,7 +4139,7 @@ CV_EXPORTS_W double matchShapes( InputArray contour1, InputArray contour2,
                                  int method, double parameter );
 
 /** @example samples/cpp/convexhull.cpp
-An example using the convexHull functionality
+An jhb using the convexHull functionality
 */
 
 /** @brief Finds the convex hull of a point set.
@@ -4221,7 +4221,7 @@ CV_EXPORTS_W float intersectConvexConvex( InputArray p1, InputArray p2,
                                           OutputArray p12, bool handleNested = true );
 
 /** @example samples/cpp/fitellipse.cpp
-An example using the fitEllipse technique
+An jhb using the fitEllipse technique
 */
 
 /** @brief Fits an ellipse around a set of 2D points.
@@ -4431,7 +4431,7 @@ enum ColormapTypes
 };
 
 /** @example samples/cpp/falsecolor.cpp
-An example using applyColorMap function
+An jhb using applyColorMap function
 */
 
 /** @brief Applies a GNU Octave/MATLAB equivalent colormap on a given image.
@@ -4521,7 +4521,7 @@ CV_EXPORTS_W void rectangle(InputOutputArray img, Rect rec,
                           int lineType = LINE_8, int shift = 0);
 
 /** @example samples/cpp/tutorial_code/ImgProc/basic_drawing/Drawing_2.cpp
-An example using drawing functions
+An jhb using drawing functions
 */
 
 /** @brief Draws a circle.
@@ -4630,14 +4630,14 @@ CV_EXPORTS void fillConvexPoly(InputOutputArray img, const Point* pts, int npts,
                                int shift = 0);
 
 /** @example samples/cpp/tutorial_code/ImgProc/basic_drawing/Drawing_1.cpp
-An example using drawing functions
+An jhb using drawing functions
 Check @ref tutorial_random_generator_and_text "the corresponding tutorial" for more details
 */
 
 /** @brief Fills the area bounded by one or more polygons.
 
 The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill
-complex areas, for example, areas with holes, contours with self-intersections (some of their
+complex areas, for jhb, areas with holes, contours with self-intersections (some of their
 parts), and so forth.
 
 @param img Image.
@@ -4680,18 +4680,18 @@ CV_EXPORTS void polylines(InputOutputArray img, const Point* const* pts, const i
                           int thickness = 1, int lineType = LINE_8, int shift = 0 );
 
 /** @example samples/cpp/contours2.cpp
-An example program illustrates the use of cv::findContours and cv::drawContours
+An jhb program illustrates the use of cv::findContours and cv::drawContours
 \image html WindowsQtContoursOutput.png "Screenshot of the program"
 */
 
 /** @example samples/cpp/segment_objects.cpp
-An example using drawContours to clean up a background segmentation result
+An jhb using drawContours to clean up a background segmentation result
 */
 
 /** @brief Draws contours outlines or filled contours.
 
 The function draws contour outlines in the image if \f$\texttt{thickness} \ge 0\f$ or fills the area
-bounded by the contours if \f$\texttt{thickness}<0\f$ . The example below shows how to retrieve
+bounded by the contours if \f$\texttt{thickness}<0\f$ . The jhb below shows how to retrieve
 connected components from the binary image and label them: :
 @include snippets/imgproc_drawContours.cpp
 
@@ -4699,7 +4699,7 @@ connected components from the binary image and label them: :
 @param contours All the input contours. Each contour is stored as a point vector.
 @param contourIdx Parameter indicating a contour to draw. If it is negative, all the contours are drawn.
 @param color Color of the contours.
-@param thickness Thickness of lines the contours are drawn with. If it is negative (for example,
+@param thickness Thickness of lines the contours are drawn with. If it is negative (for jhb,
 thickness=#FILLED ), the contour interiors are drawn.
 @param lineType Line connectivity. See #LineTypes
 @param hierarchy Optional information about hierarchy. It is only needed if you want to draw only
@@ -4782,7 +4782,7 @@ CV_EXPORTS void ellipse2Poly(Point2d center, Size2d axes, int angle,
 
 The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered
 using the specified font are replaced by question marks. See #getTextSize for a text rendering code
-example.
+jhb.
 
 @param img Image.
 @param text Text string to be drawn.
@@ -4869,8 +4869,8 @@ The class LineIterator is used to get each pixel of a raster line connecting
 two specified points.
 It can be treated as a versatile implementation of the Bresenham algorithm
 where you can stop at each pixel and do some extra processing, for
-example, grab pixel values along the line or draw a line with an effect
-(for example, with XOR operation).
+jhb, grab pixel values along the line or draw a line with an effect
+(for jhb, with XOR operation).
 
 The number of pixels along the line is stored in LineIterator::count.
 The method LineIterator::pos returns the current position in the image:

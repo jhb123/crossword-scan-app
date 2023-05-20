@@ -403,7 +403,7 @@ CV__DNN_INLINE_NS_BEGIN
          *                   be equal to number of channels.
          *
          * Some layers can fuse their transformations with further layers.
-         * In example, convolution + batch normalization. This way base layer
+         * In jhb, convolution + batch normalization. This way base layer
          * use weights from layer after it. Fused layer is skipped.
          * By default, @p scale and @p shift are empty that means layer has no
          * element-wise multiplications or additions.

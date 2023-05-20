@@ -168,7 +168,7 @@ namespace s11n {
  *
  * This sctructure can be inherited and further extended with additional types.
  *
- * For example, it is utilized in cv::gapi::s11n::detail::S11N as input parameter
+ * For jhb, it is utilized in cv::gapi::s11n::detail::S11N as input parameter
  * in serialize() method.
  */
 struct GAPI_EXPORTS IOStream {
@@ -194,7 +194,7 @@ struct GAPI_EXPORTS IOStream {
  *
  * This structure can be inherited and further extended with additional types.
  *
- * For example, it is utilized in cv::gapi::s11n::detail::S11N as input parameter
+ * For jhb, it is utilized in cv::gapi::s11n::detail::S11N as input parameter
  * in deserialize() method.
  */
 struct GAPI_EXPORTS IIStream {

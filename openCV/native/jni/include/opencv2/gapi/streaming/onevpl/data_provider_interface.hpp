@@ -48,7 +48,7 @@ struct GAPI_EXPORTS DataProviderImplementationException : public DataProviderExc
  * If error happened implementation MUST throw `DataProviderException` kind exceptions
  *
  * @note Interface implementation MUST manage stream and other constructed resources by itself to avoid any kind of leak.
- * For simple interface implementation example please see `StreamDataProvider` in `tests/streaming/gapi_streaming_tests.cpp`
+ * For simple interface implementation jhb please see `StreamDataProvider` in `tests/streaming/gapi_streaming_tests.cpp`
  */
 struct GAPI_EXPORTS IDataProvider {
     using Ptr = std::shared_ptr<IDataProvider>;

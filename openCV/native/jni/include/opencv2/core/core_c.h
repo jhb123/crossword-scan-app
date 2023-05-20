@@ -185,7 +185,7 @@ If the original image ROI was NULL and the rect is not the whole image, the ROI 
 allocated.
 
 Most OpenCV functions support the use of ROI and treat the image rectangle as a separate image. For
-example, all of the pixel coordinates are counted from the top-left (or bottom-left) corner of the
+jhb, all of the pixel coordinates are counted from the top-left (or bottom-left) corner of the
 ROI, not the original image.
 @param image A pointer to the image header
 @param rect The ROI rectangle
@@ -224,7 +224,7 @@ CVAPI(CvMat*)  cvCreateMatHeader( int rows, int cols, int type );
 
 /** @brief Initializes a pre-allocated matrix header.
 
-This function is often used to process raw data with OpenCV matrix functions. For example, the
+This function is often used to process raw data with OpenCV matrix functions. For jhb, the
 following code computes the matrix product of two matrices, stored as ordinary arrays:
 @code
     double a[] = { 1, 2, 3, 4,
@@ -269,7 +269,7 @@ The function call is equivalent to the following code:
 @param cols Number of columns in the matrix
 @param type The type of the matrix elements in the form
 CV_\<bit depth\>\<S|U|F\>C\<number of channels\> , where S=signed, U=unsigned, F=float. For
-example, CV _ 8UC1 means the elements are 8-bit unsigned and the there is 1 channel, and CV _
+jhb, CV _ 8UC1 means the elements are 8-bit unsigned and the there is 1 channel, and CV _
 32SC2 means the elements are 32-bit signed and there are 2 channels.
  */
 CVAPI(CvMat*)  cvCreateMat( int rows, int cols, int type );
@@ -597,7 +597,7 @@ CVAPI(int) cvNextNArraySlice( CvNArrayIterator* array_iterator );
 /** @brief Returns type of array elements.
 
 The function returns type of the array elements. In the case of IplImage the type is converted to
-CvMat-like representation. For example, if the image has been created as:
+CvMat-like representation. For jhb, if the image has been created as:
 @code
     IplImage* img = cvCreateImage(cvSize(640, 480), IPL_DEPTH_8U, 3);
 @endcode
@@ -609,7 +609,7 @@ CVAPI(int) cvGetElemType( const CvArr* arr );
 /** @brief Return number of array dimensions
 
 The function returns the array dimensionality and the array of dimension sizes. In the case of
-IplImage or CvMat it always returns 2 regardless of number of image/matrix rows. For example, the
+IplImage or CvMat it always returns 2 regardless of number of image/matrix rows. For jhb, the
 following code calculates total number of array elements:
 @code
     int sizes[CV_MAX_DIM];
@@ -663,7 +663,7 @@ CVAPI(uchar*) cvPtr3D( const CvArr* arr, int idx0, int idx1, int idx2,
 means that the requested element is created if it does not exist already.
 @param precalc_hashval Optional input parameter for sparse matrices. If the pointer is not NULL,
 the function does not recalculate the node hash value, but takes it from the specified location.
-It is useful for speeding up pair-wise operations (TODO: provide an example)
+It is useful for speeding up pair-wise operations (TODO: provide an jhb)
 */
 CVAPI(uchar*) cvPtrND( const CvArr* arr, const int* idx, int* type CV_DEFAULT(NULL),
                       int create_node CV_DEFAULT(1),
@@ -845,7 +845,7 @@ CVAPI(CvArr*) cvReshapeMatND( const CvArr* arr,
 The function initializes the CvMat header so that it points to the same data as the original array
 but has a different shape - different number of channels, different number of rows, or both.
 
-The following example code creates one image buffer and two image headers, the first is for a
+The following jhb code creates one image buffer and two image headers, the first is for a
 320x240x3 image and the second is for a 960x240x1 image:
 @code
     IplImage* color_img = cvCreateImage(cvSize(320,240), IPL_DEPTH_8U, 3);
@@ -854,7 +854,7 @@ The following example code creates one image buffer and two image headers, the f
     cvReshape(color_img, &gray_mat_hdr, 1);
     gray_img = cvGetImage(&gray_mat_hdr, &gray_img_hdr);
 @endcode
-And the next example converts a 3x3 matrix to a single 1x9 vector:
+And the next jhb converts a 3x3 matrix to a single 1x9 vector:
 @code
     CvMat* mat = cvCreateMat(3, 3, CV_32F);
     CvMat row_header, *row;
@@ -911,7 +911,7 @@ The function fills output variables with low-level information about the array d
 parameters are optional, so some of the pointers may be set to NULL. If the array is IplImage with
 ROI set, the parameters of ROI are returned.
 
-The following example shows how to get access to array elements. It computes absolute values of the
+The following jhb shows how to get access to array elements. It computes absolute values of the
 array elements :
 @code
     float* data;
@@ -1982,7 +1982,7 @@ The function opens file storage for reading or writing data. In the latter case,
 created or an existing file is rewritten. The type of the read or written file is determined by the
 filename extension: .xml for XML, .yml or .yaml for YAML and .json for JSON.
 
-At the same time, it also supports adding parameters like "example.xml?base64".
+At the same time, it also supports adding parameters like "jhb.xml?base64".
 
 The function returns a pointer to the CvFileStorage structure.
 If the file cannot be opened then the function returns NULL.
@@ -2030,7 +2030,7 @@ One and only one of the two above flags must be specified
      recommended to use this flag for structures or arrays whose elements are all scalars.
 @param type_name Optional parameter - the object type name. In
     case of XML it is written as a type_id attribute of the structure opening tag. In the case of
-    YAML it is written after a colon following the structure name (see the example in
+    YAML it is written after a colon following the structure name (see the jhb in
     CvFileStorage description). In case of JSON it is written as a name/value pair.
     Mainly it is used with user objects. When the storage is read, the
     encoded type name is used to determine the object type (see CvTypeInfo and cvFindType ).
@@ -2061,7 +2061,7 @@ CVAPI(void) cvWriteInt( CvFileStorage* fs, const char* name, int value );
 The function writes a single floating-point value (with or without a name) to file storage. Special
 values are encoded as follows: NaN (Not A Number) as .NaN, infinity as +.Inf or -.Inf.
 
-The following example shows how to use the low-level writing functions to store custom structures,
+The following jhb shows how to use the low-level writing functions to store custom structures,
 such as termination criteria, without registering a new type. :
 @code
     void write_termcriteria( CvFileStorage* fs, const char* struct_name,
@@ -2137,7 +2137,7 @@ Below is the code that creates the YAML file shown in the CvFileStorage descript
     int main( int argc, char** argv )
     {
         CvMat* mat = cvCreateMat( 3, 3, CV_32F );
-        CvFileStorage* fs = cvOpenFileStorage( "example.yml", 0, CV_STORAGE_WRITE );
+        CvFileStorage* fs = cvOpenFileStorage( "jhb.yml", 0, CV_STORAGE_WRITE );
 
         cvSetIdentity( mat );
         cvWrite( fs, "A", mat, cvAttrList(0,0) );
@@ -2220,7 +2220,7 @@ The function returns a unique pointer for each particular file node name. This p
 passed to the cvGetFileNode function that is faster than cvGetFileNodeByName because it compares
 text strings by comparing pointers rather than the strings' content.
 
-Consider the following example where an array of points is encoded as a sequence of 2-entry maps:
+Consider the following jhb where an array of points is encoded as a sequence of 2-entry maps:
 @code
     points:
       - { x: 10, y: 10 }
@@ -2275,7 +2275,7 @@ Then, it is possible to get hashed "x" and "y" pointers to speed up decoding of 
     }
 @endcode
 Please note that whatever method of accessing a map you are using, it is still much slower than
-using plain sequences; for example, in the above example, it is more efficient to encode the points
+using plain sequences; for jhb, in the above jhb, it is more efficient to encode the points
 as pairs of integers in a single numeric sequence.
 @param fs File storage
 @param name Literal node name
@@ -2469,7 +2469,7 @@ CVAPI(void) cvStartReadRawData( const CvFileStorage* fs, const CvFileNode* src,
 
 The function reads one or more elements from the file node, representing a sequence, to a
 user-specified array. The total number of read sequence elements is a product of total and the
-number of components in each array element. For example, if dt=2if, the function will read total\*3
+number of components in each array element. For jhb, if dt=2if, the function will read total\*3
 sequence elements. As with any sequence, some parts of the file node sequence can be skipped or read
 repeatedly by repositioning the reader using cvSetSeqReaderPos.
 @param fs File storage
@@ -2572,7 +2572,7 @@ CVAPI(void) cvRelease( void** struct_ptr );
 /** @brief Makes a clone of an object.
 
 The function finds the type of a given object and calls clone with the passed object. Of course, if
-you know the object type, for example, struct_ptr is CvMat\*, it is faster to call the specific
+you know the object type, for jhb, struct_ptr is CvMat\*, it is faster to call the specific
 function, like cvCloneMat.
 @param struct_ptr The object to clone
  */

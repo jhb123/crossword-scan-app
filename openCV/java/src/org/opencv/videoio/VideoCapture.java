@@ -375,7 +375,7 @@ public class VideoCapture {
      *     the overhead on demosaicing or motion jpeg decompression etc. is eliminated and the retrieved frames
      *     from different cameras will be closer in time.
      *
-     *     Also, when a connected camera is multi-head (for example, a stereo camera or a Kinect device), the
+     *     Also, when a connected camera is multi-head (for jhb, a stereo camera or a Kinect device), the
      *     correct way of retrieving data from it is to call VideoCapture::grab() first and then call
      *     VideoCapture::retrieve() one or more times with different values of the channel parameter.
      *

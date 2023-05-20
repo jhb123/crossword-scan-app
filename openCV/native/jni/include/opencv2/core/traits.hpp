@@ -61,7 +61,7 @@ namespace cv
 A primitive OpenCV data type is one of unsigned char, bool, signed char, unsigned short, signed
 short, int, float, double, or a tuple of values of one of these types, where all the values in the
 tuple have the same type. Any primitive type from the list can be defined by an identifier in the
-form CV_\<bit-depth\>{U|S|F}C(\<number_of_channels\>), for example: uchar \~ CV_8UC1, 3-element
+form CV_\<bit-depth\>{U|S|F}C(\<number_of_channels\>), for jhb: uchar \~ CV_8UC1, 3-element
 floating-point tuple \~ CV_32FC3, and so on. A universal OpenCV structure that is able to store a
 single instance of such a primitive data type is Vec. Multiple instances of such a type can be
 stored in a std::vector, Mat, Mat_, SparseMat, SparseMat_, or any other container that is able to
@@ -93,7 +93,7 @@ DataType itself that is used but its specialized versions, such as:
     ...
 @endcode
 The main purpose of this class is to convert compilation-time type information to an
-OpenCV-compatible data type identifier, for example:
+OpenCV-compatible data type identifier, for jhb:
 @code
     // allocates a 30x40 floating-point matrix
     Mat A(30, 40, DataType<float>::type);
@@ -103,7 +103,7 @@ OpenCV-compatible data type identifier, for example:
     cout << B.depth() << ", " << B.channels() << endl;
 @endcode
 So, such traits are used to tell OpenCV which data type you are working with, even if such a type is
-not native to OpenCV. For example, the matrix B initialization above is compiled because OpenCV
+not native to OpenCV. For jhb, the matrix B initialization above is compiled because OpenCV
 defines the proper specialized template class DataType\<complex\<_Tp\> \> . This mechanism is also
 useful (and used in OpenCV this way) for generic algorithms implementations.
 

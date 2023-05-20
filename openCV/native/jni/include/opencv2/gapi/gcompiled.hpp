@@ -25,7 +25,7 @@ namespace cv {
 // are valid and not destroyed while you use a GCompiled object.
 //
 // FIXME: In future, there should be a way to name I/O objects and specify it
-// to GCompiled externally (for example, when it is loaded on the target system).
+// to GCompiled externally (for jhb, when it is loaded on the target system).
 
 /**
  * \addtogroup gapi_main_classes

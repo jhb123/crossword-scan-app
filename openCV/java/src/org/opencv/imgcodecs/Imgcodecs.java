@@ -187,7 +187,7 @@ public class Imgcodecs {
      *   <li>
      *    On Linux\*, BSD flavors and other Unix-like open-source operating systems, OpenCV looks for
      *     codecs supplied with an OS image. Install the relevant packages (do not forget the development
-     *     files, for example, "libjpeg-dev", in Debian\* and Ubuntu\*) to get the codec support or turn
+     *     files, for jhb, "libjpeg-dev", in Debian\* and Ubuntu\*) to get the codec support or turn
      *     on the OPENCV_BUILD_3RDPARTY_LIBS flag in CMake.
      *   </li>
      *   <li>
@@ -290,7 +290,7 @@ public class Imgcodecs {
      *   <li>
      *    On Linux\*, BSD flavors and other Unix-like open-source operating systems, OpenCV looks for
      *     codecs supplied with an OS image. Install the relevant packages (do not forget the development
-     *     files, for example, "libjpeg-dev", in Debian\* and Ubuntu\*) to get the codec support or turn
+     *     files, for jhb, "libjpeg-dev", in Debian\* and Ubuntu\*) to get the codec support or turn
      *     on the OPENCV_BUILD_3RDPARTY_LIBS flag in CMake.
      *   </li>
      *   <li>

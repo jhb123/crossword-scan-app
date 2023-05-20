@@ -14,7 +14,7 @@ import org.opencv.imgproc.IntelligentScissorsMB;
  * This class is used to find the path (contour) between two points
  * which can be used for image segmentation.
  *
- * Usage example:
+ * Usage jhb:
  * SNIPPET: snippets/imgproc_segmentation.cpp usage_example_intelligent_scissors
  *
  * Reference: &lt;a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.138.3811&amp;rep=rep1&amp;type=pdf"&gt;"Intelligent Scissors for Image Composition"&lt;/a&gt;

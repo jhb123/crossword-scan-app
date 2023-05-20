@@ -55,7 +55,7 @@ namespace detail
  *  by all output arguments in the order from the template argument
  *  signature.
  *
- *  Refer to the following example. Regular (untyped) code is written this way:
+ *  Refer to the following jhb. Regular (untyped) code is written this way:
  *
  *  @snippet samples/cpp/tutorial_code/gapi/doc_snippets/api_ref_snippets.cpp Untyped_Example
  *
