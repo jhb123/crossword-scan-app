@@ -39,13 +39,14 @@ fun gridScanScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(MaterialTheme.colors.background)
+            .fillMaxSize()
+            .padding(5.dp)
     )
     {
         AndroidView(
             modifier = Modifier
                 .fillMaxWidth(1f)
-                .height(300.dp)
-                .padding(5.dp)
+                .height(400.dp)
                 .background(MaterialTheme.colors.background),
             factory = { context ->
                 val mOpenCvCameraView =
@@ -73,11 +74,11 @@ fun gridScanScreen(
             }
         }
 
-        Row(modifier = Modifier.padding(5.dp)) {
+        //Row(modifier = Modifier.padding(5.dp)) {
             Button(onClick = { viewModel.takeSnapshot = true }) {
                 Text("Scan", modifier = Modifier.padding(10.dp))
             }
-        }
+        //}
     }
 
 }
