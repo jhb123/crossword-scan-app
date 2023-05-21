@@ -10,10 +10,11 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
+import com.jhb.crosswordScan.ui.common.clueTextBox
 import kotlin.math.max
 import kotlin.math.min
 
@@ -155,22 +157,28 @@ fun ClueScanScreen(
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(1f)){
+                .fillMaxWidth(1f).padding(10.dp)
+        ){
             LazyColumn(
                 modifier = Modifier
-                    .width(150.dp)
+                    .padding(5.dp)
+                    .fillMaxWidth(0.5f)
             ){
                 items(uiState.value.acrossClues){ clue->
-                    Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary)
                 }
             }
             LazyColumn(
                 modifier = Modifier
-                    .width(150.dp)
+                    .padding(5.dp)
+                    .fillMaxWidth(1f)
             ){
                 items(uiState.value.downClues){ clue->
-                    Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary)
                 }
             }
 

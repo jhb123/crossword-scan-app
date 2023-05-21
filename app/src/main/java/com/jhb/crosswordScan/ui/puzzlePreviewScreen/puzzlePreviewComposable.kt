@@ -5,9 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.ui.common.ScanUiState
+import com.jhb.crosswordScan.ui.common.clueTextBox
 import com.jhb.crosswordScan.ui.gridScanScreen.GridScanUiState
 import kotlinx.coroutines.Job
 
@@ -30,7 +31,10 @@ fun puzzlePreviewScreen(
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background(MaterialTheme.colors.background)//Modifier.padding(5.dp)
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize(1f)
+            .padding(5.dp)//Modifier.padding(5.dp)
     ) {
         uiGridState.value.gridPicProcessed.let {
             if (it != null) {
@@ -53,18 +57,25 @@ fun puzzlePreviewScreen(
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .width(150.dp)
+                    .fillMaxWidth(0.5f)
+                    .padding(5.dp)
             ) {
                 items(uiClueState.value.acrossClues) { clue ->
-                    Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary)
                 }
             }
             LazyColumn(
                 modifier = Modifier
-                    .width(150.dp)
+                    .padding(5.dp)
+                    .fillMaxWidth(1f)
             ) {
                 items(uiClueState.value.downClues) { clue ->
-                    Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
+                    clueTextBox(clueData = clue,
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onSecondary)
+                    //Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
                 }
             }
         }
