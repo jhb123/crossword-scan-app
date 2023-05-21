@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import com.jhb.crosswordScan.ui.shapes
 import com.jhb.crosswordScan.ui.typography
 
 
@@ -87,6 +88,7 @@ fun AppTheme(
   MaterialTheme(
     colorScheme = colors,
       typography = typography,
+      shapes = shapes,
     content = content
   )
 }

@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -114,7 +114,7 @@ fun keyBoard(setLetter : (String) -> Unit,
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             "QWERTYUIOP".forEach {
-                ElevatedButton(onClick = { setLetter(it.toString()) },
+                FilledTonalButton(onClick = { setLetter(it.toString()) },
                     shape = RoundedCornerShape(2.dp),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
@@ -131,7 +131,7 @@ fun keyBoard(setLetter : (String) -> Unit,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             "ASDFGHJKL".forEach {
-                ElevatedButton(onClick = { setLetter(it.toString()) },
+                FilledTonalButton(onClick = { setLetter(it.toString()) },
                     shape = RoundedCornerShape(2.dp),
                     contentPadding = PaddingValues(0.dp),
                     //elevation = ,
@@ -150,7 +150,7 @@ fun keyBoard(setLetter : (String) -> Unit,
 
         ){
             "ZXCVBNM".forEach {
-                ElevatedButton(onClick = { setLetter(it.toString()) },
+                FilledTonalButton(onClick = { setLetter(it.toString()) },
                     shape = RoundedCornerShape(2.dp),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
@@ -166,7 +166,7 @@ fun keyBoard(setLetter : (String) -> Unit,
                     )
                 }
             }
-            ElevatedButton(onClick = { delLetter() },
+            FilledTonalButton(onClick = { delLetter() },
                 shape = RoundedCornerShape(2.dp),
                 contentPadding = PaddingValues(0.dp),
                 modifier = Modifier
@@ -199,7 +199,7 @@ fun clueGrid(
     Box(contentAlignment = Alignment.TopStart,
         modifier = Modifier
             .size(width = (gridSize * 25 + 3).dp, height = (gridSize * 25 + 3).dp)
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.outline)
             .padding(1.dp)
     ) {
         PuzzleLayout(
@@ -231,16 +231,16 @@ fun PuzzleLayout(
                 .size(width = 25.dp, height = 25.dp)
                 .offset(x = (coord.first * 25).dp)
                 .offset(y = (coord.second * 25).dp)
-                .padding(1.dp)
+                .padding(0.8.dp)
                 .background(
                     if (coord == uiState.currentCell) {
                         //MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
                         //MaterialTheme.colorScheme.scrim
                         //Color.Green
-                        MaterialTheme.colorScheme.errorContainer
+                        MaterialTheme.colorScheme.primaryContainer
                     } else if (uiState.currentClue.clueBoxes.contains(coord)) {
                         //Color.Yellow
-                        MaterialTheme.colorScheme.secondaryContainer
+                        MaterialTheme.colorScheme.surfaceVariant
                         //MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
                     } else {
                         MaterialTheme.colorScheme.surface
@@ -312,7 +312,7 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
     //val cluesTxt  = viewModel.uiState.collectAsState().value.currentPuzzle.clues
     //val active
 
-    Row(horizontalArrangement = Arrangement.SpaceBetween,
+    Row(horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth(1f)
@@ -327,15 +327,15 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
                 Log.i(TAG,"clue: ${clue.first} ${clue.second.clue}")
                 if(clue.second == activeClue){
                     dynamicClueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.primary,
-                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         onClueSelect = onClueSelect
                     )
                 }
                 else{
                     dynamicClueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.secondary,
-                        textColor = MaterialTheme.colorScheme.onSecondary,
+                        backgroundColor = MaterialTheme.colorScheme.surface,
+                        textColor = MaterialTheme.colorScheme.onSurface,
                         onClueSelect = onClueSelect
                     )
                 }
@@ -350,15 +350,15 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
             items(downClues){ clue->
                 if(clue.second == activeClue){
                     dynamicClueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.primary,
-                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         onClueSelect = onClueSelect
                     )
                 }
                 else{
                     dynamicClueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.secondary,
-                        textColor = MaterialTheme.colorScheme.onSecondary,
+                        backgroundColor = MaterialTheme.colorScheme.surface,
+                        textColor = MaterialTheme.colorScheme.onSurface,
                         onClueSelect = onClueSelect
                     )
                 }
@@ -385,38 +385,4 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
     }
 
 }
-
-
-//@Composable
-//fun clueTextBox(clueData : Pair<String, Clue>,
-//                backgroundColor: Color,
-//                textColor: Color,
-//                onClueSelect: (String) -> Unit ) {
-//    Box(
-//        modifier = Modifier
-//            //.background(color = backgroundColor)
-//            .padding(5.dp)
-//            .width(170.dp)
-//            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
-//            .pointerInput(clueData.second.clueName) {
-//                detectTapGestures {
-//                    onClueSelect(clueData.second.clueName)
-//                }
-//            }
-//    ){
-//
-//        Text(
-//            "${clueData.first}) ${clueData.second.clue}",
-//            color = textColor,
-//            //shape = RoundedCornerShape(20.dp),
-//            modifier = Modifier
-//                //.fillMaxWidth(0.5f)
-//                .padding(5.dp)
-//
-//            //.clip(RoundedCornerShape(20.dp))
-//            //shape = RoundedCornerShape(20.dp)
-//        )
-//    }
-//}
-
 

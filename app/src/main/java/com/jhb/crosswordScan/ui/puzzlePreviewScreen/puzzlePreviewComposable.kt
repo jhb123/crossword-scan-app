@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,18 +30,17 @@ fun puzzlePreviewScreen(
 ) {
 
     Column(
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize(1f)
             .padding(5.dp)//Modifier.padding(5.dp)
     ) {
-        Box(modifier = Modifier
+        Card(modifier = Modifier
             .width(200.dp)
             .height(200.dp)
             .padding(5.dp)
-            .background(MaterialTheme.colorScheme.secondary)
         ){
             uiGridState.value.gridPicProcessed.let {
                 if (it != null) {
@@ -66,8 +66,9 @@ fun puzzlePreviewScreen(
             ) {
                 items(uiClueState.value.acrossClues) { clue ->
                     clueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.secondary,
-                        textColor = MaterialTheme.colorScheme.onSecondary)
+                        //backgroundColor = MaterialTheme.colorScheme.secondary,
+                        //textColor = MaterialTheme.colorScheme.onSecondary
+                )
                 }
             }
             LazyColumn(
@@ -77,8 +78,9 @@ fun puzzlePreviewScreen(
             ) {
                 items(uiClueState.value.downClues) { clue ->
                     clueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.secondary,
-                        textColor = MaterialTheme.colorScheme.onSecondary)
+                        //backgroundColor = MaterialTheme.colorScheme.secondary,
+                        //textColor = MaterialTheme.colorScheme.onSecondary
+                )
                     //Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
                 }
             }

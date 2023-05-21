@@ -72,7 +72,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                         Text(
                             text = pageTitle,
                             color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.headlineLarge)
+                            style = MaterialTheme.typography.headlineSmall)
                             },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
                     actions = {

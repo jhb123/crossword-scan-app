@@ -1,11 +1,11 @@
 package com.jhb.crosswordScan.ui.common
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,15 +16,27 @@ import com.jhb.crosswordScan.data.Clue
 
 @Composable
 fun clueTextBox(clueData : Pair<String, String>,
-                backgroundColor: Color,
-                textColor: Color) {
-    Box(
+                backgroundColor: Color = MaterialTheme.colorScheme.surface,
+                textColor: Color = MaterialTheme.colorScheme.onSurface) {
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor,//MaterialTheme.colorScheme.surface,
+        ),
+        //shape = RoundedCornerShape(10.dp),
         modifier = Modifier
-            //.background(color = backgroundColor)
-            .padding(5.dp)
             .width(170.dp)
-            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
-    ){
+            .padding(5.dp)
+
+    ) {
+
+//      Box(
+//        modifier = Modifier
+//            //.background(color = backgroundColor)
+//            .padding(5.dp)
+//            .width(170.dp)
+//            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
+//    ){
         Text(
             "${clueData.first}) ${clueData.second}",
             color = textColor,
@@ -32,6 +44,7 @@ fun clueTextBox(clueData : Pair<String, String>,
                 .padding(5.dp)
         )
     }
+
 }
 
 
@@ -40,18 +53,35 @@ fun dynamicClueTextBox(clueData : Pair<String, Clue>,
                 backgroundColor: Color,
                 textColor: Color,
                 onClueSelect: (String) -> Unit ) {
-    Box(
+
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor,//MaterialTheme.colorScheme.surface,
+        ),
+        //shape = RoundedCornerShape(10.dp),
         modifier = Modifier
-            //.background(color = backgroundColor)
-            .padding(5.dp)
             .width(170.dp)
-            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
+            .padding(5.dp)
             .pointerInput(clueData.second.clueName) {
                 detectTapGestures {
                     onClueSelect(clueData.second.clueName)
                 }
             }
     ){
+
+//    Box(
+//        modifier = Modifier
+//            //.background(color = backgroundColor)
+//            .padding(5.dp)
+//            .width(170.dp)
+//            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
+//            .pointerInput(clueData.second.clueName) {
+//                detectTapGestures {
+//                    onClueSelect(clueData.second.clueName)
+//                }
+//            }
+//    ){
 
         Text(
             "${clueData.first}) ${clueData.second.clue}",

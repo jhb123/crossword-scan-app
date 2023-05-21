@@ -10,7 +10,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
@@ -74,8 +73,11 @@ fun ClueScanScreen(
                 .height(editAreaHeight.dp)){
             Box(modifier = Modifier
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.inverseSurface)
-                .clip(RectangleShape)
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = MaterialTheme.shapes.large
+                )
+                .clip(MaterialTheme.shapes.large)
             ) {
                 cluePicDebug?.asImageBitmap()?.let {
                     Image(
@@ -138,13 +140,13 @@ fun ClueScanScreen(
                 .fillMaxWidth(1f)
         ) {
 
-            Button(onClick = { takeImage() }) {
+            FilledTonalButton(onClick = { takeImage() }) {
                 Text(text="Snap",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(60.dp)
                 )
             }
-            Button(onClick = {
+            FilledTonalButton(onClick = {
                 //viewModel.isAcross.value = true
                 setClueScanDirection(ClueDirection.ACROSS)
                 scanClues()
@@ -154,10 +156,12 @@ fun ClueScanScreen(
                     modifier = Modifier.width(60.dp)
                 )
             }
-            Button(onClick = {
+            FilledTonalButton(
+                onClick = {
                 setClueScanDirection(ClueDirection.DOWN)
-                scanClues()
-            }) {
+                scanClues() },
+                //colors = //ButtonDefaults.elevatedButtonColors()
+            ) {
                 Text("Down",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(60.dp)
@@ -167,7 +171,8 @@ fun ClueScanScreen(
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
-                .fillMaxWidth(1f).padding(10.dp)
+                .fillMaxWidth(1f)
+                .padding(10.dp)
         ){
             LazyColumn(
                 modifier = Modifier
@@ -176,8 +181,9 @@ fun ClueScanScreen(
             ){
                 items(uiState.value.acrossClues){ clue->
                     clueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.secondary,
-                        textColor = MaterialTheme.colorScheme.onSecondary)
+                        //backgroundColor = MaterialTheme.colorScheme.secondary,
+                        //textColor = MaterialTheme.colorScheme.onSecondary
+                )
                 }
             }
             LazyColumn(
@@ -187,8 +193,9 @@ fun ClueScanScreen(
             ){
                 items(uiState.value.downClues){ clue->
                     clueTextBox(clueData = clue,
-                        backgroundColor = MaterialTheme.colorScheme.secondary,
-                        textColor = MaterialTheme.colorScheme.onSecondary)
+                        //backgroundColor = MaterialTheme.colorScheme.secondary,
+                        //textColor = MaterialTheme.colorScheme.onSecondary
+                )
                 }
             }
 

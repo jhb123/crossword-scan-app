@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,11 +66,12 @@ fun gridScanScreen(
             },
         )
 
-        Box(modifier = Modifier
+        Card(
+            modifier = Modifier
             .width(200.dp)
             .height(200.dp)
             .padding(5.dp)
-            .background(MaterialTheme.colorScheme.secondary)
+            //.background(MaterialTheme.colorScheme.secondary)
         ){
             uiState.value.gridPicProcessed.let {
                 if (it != null) {

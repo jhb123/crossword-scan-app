@@ -18,7 +18,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     init {
         Log.i(TAG,"initialising ui")
         viewModelScope.launch {
-            delay(250)
+            delay(50)
             repository.allPuzzles
                 // Writes to the value property of MutableStateFlow,
                 // adding a new element to the flow and updating all
