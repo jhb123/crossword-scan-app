@@ -1,12 +1,12 @@
 package com.jhb.crosswordScan
 
 
+//import androidx.compose.material.BottomNavigation
+//import androidx.compose.material3.BottomNavigation
+//import androidx.compose.material.BottomNavigationItem
 import android.util.Log
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
-import androidx.compose.material.Icon
 import androidx.compose.material3.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -82,17 +82,18 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     Screen.SelectPuzzle
                 )
 
-                BottomNavigation {
+                NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
                     items.forEach { screen ->
-                        BottomNavigationItem(
+                        NavigationBarItem(
                             alwaysShowLabel = false,
                             icon = { Icon(painterResource(screen.iconResourceId), contentDescription = null) },
                             label = {
                                 Text(
                                     stringResource(screen.resourceId),
-                                    color = MaterialTheme.colorScheme.onPrimary)
+                                    //color = MaterialTheme.colorScheme.onPrimary
+                                )
                                     },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {

@@ -5,9 +5,9 @@ import android.view.SurfaceView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
@@ -28,14 +28,14 @@ fun gridScanScreen(
     viewModel: CrosswordScanViewModel
     ) {
 
-    val backgroundColour = MaterialTheme.colors.background.toArgb() // this is for the cameraView
+    val backgroundColour = MaterialTheme.colorScheme.background.toArgb() // this is for the cameraView
 
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
             .padding(5.dp)
     )
@@ -44,7 +44,7 @@ fun gridScanScreen(
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .height(400.dp)
-                .background(MaterialTheme.colors.background),
+                .background(MaterialTheme.colorScheme.inverseSurface),
             factory = { context ->
                 val mOpenCvCameraView =
                     JavaCamera2View(context, CameraBridgeViewBase.CAMERA_ID_BACK)
@@ -73,7 +73,7 @@ fun gridScanScreen(
 
         //Row(modifier = Modifier.padding(5.dp)) {
             Button(onClick = { viewModel.takeSnapshot = true }) {
-                Text("Scan", modifier = Modifier.padding(10.dp))
+                Text("Scan")
             }
         //}
     }

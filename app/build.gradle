@@ -108,7 +108,7 @@ dependencies {
     //implementation "androidx.compose.material:material:$composeVersion"
     implementation("androidx.compose.material3:material3:$composeMaterial3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$composeMaterial3Version")
-    implementation("androidx.compose.material:material:1.4.3") // bottom navbar
+    //implementation("androidx.compose.material:material:1.4.3") // bottom navbar
 
     //ml
     implementation 'com.google.mlkit:text-recognition:16.0.0'

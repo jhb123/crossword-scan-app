@@ -2,7 +2,6 @@ package com.jhb.crosswordScan.ui.solveScreen
 
 //import com.jhb.learn_opencv.Puzzle
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -10,9 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.Clue
 import com.jhb.crosswordScan.data.Puzzle
+import com.jhb.crosswordScan.ui.common.dynamicClueTextBox
 
 private const val TAG = "solveComposable"
 
@@ -115,7 +115,9 @@ fun keyBoard(setLetter : (String) -> Unit,
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             "QWERTYUIOP".forEach {
-                Button(onClick = { setLetter(it.toString()) },
+                ElevatedButton(onClick = { setLetter(it.toString()) },
+                    shape = RoundedCornerShape(2.dp),
+                    contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
                         .width(screenWidth / 10)
                         .padding(2.dp)
@@ -130,7 +132,10 @@ fun keyBoard(setLetter : (String) -> Unit,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             "ASDFGHJKL".forEach {
-                Button(onClick = { setLetter(it.toString()) },
+                ElevatedButton(onClick = { setLetter(it.toString()) },
+                    shape = RoundedCornerShape(2.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    //elevation = ,
                     modifier = Modifier
                         .width(screenWidth / 9)
                         .padding(2.dp)
@@ -143,26 +148,36 @@ fun keyBoard(setLetter : (String) -> Unit,
         }
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
+
         ){
             "ZXCVBNM".forEach {
-                Button(onClick = { setLetter(it.toString()) },
+                ElevatedButton(onClick = { setLetter(it.toString()) },
+                    shape = RoundedCornerShape(2.dp),
+                    contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
                         .width(screenWidth / 8)
                         .padding(2.dp)
+
                 ) {
                     Text(text = it.toString(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        //modifier = Modifier.offset(-5.dp,-5.dp)
+                        //fontSize = 1.sp
+                        //style = MaterialTheme.typography.displaySmall
                     )
                 }
             }
-            Button(onClick = { delLetter() },
+            ElevatedButton(onClick = { delLetter() },
+                shape = RoundedCornerShape(2.dp),
+                contentPadding = PaddingValues(0.dp),
                 modifier = Modifier
                     .width(screenWidth / 8)
                     .padding(2.dp)
             ) {
-                Image(painter = painterResource(R.drawable.ic_baseline_keyboard_backspace_24),
+                Icon(painter = painterResource(R.drawable.ic_baseline_keyboard_backspace_24),
                     contentDescription = "delete",
-                    colorFilter = ColorFilter.tint(Color.White))
+                    //colorFilter = ColorFilter.tint(Color.White)
+            )
             }
         }
     }
@@ -184,7 +199,7 @@ fun clueGrid(
     Log.i(TAG, "calling puzzle layout")
     Box(modifier = Modifier
         .size(width = (gridSize * 25).dp, height = (gridSize * 25).dp)
-        .background(Color.DarkGray)
+        .background(MaterialTheme.colorScheme.primary)
     ) {
         PuzzleLayout(
             onClueSelect = {
@@ -218,11 +233,14 @@ fun PuzzleLayout(
                 .padding(1.dp)
                 .background(
                     if (coord == uiState.currentCell) {
+                        //MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
+                        //MaterialTheme.colorScheme.scrim
                         Color.Green
                     } else if (uiState.currentClue.clueBoxes.contains(coord)) {
                         Color.Yellow
+                        //MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
                     } else {
-                        Color.White
+                        MaterialTheme.colorScheme.surface
                     }
                 )
                 .pointerInput(coord) {
@@ -243,7 +261,7 @@ fun PuzzleLayout(
                     fontSize = 16.sp,
                     modifier = Modifier
                         .offset(x = (0).dp)
-                        .alpha(0.4f)
+                        .alpha(0.7f)
                 )
             }
             else{
@@ -254,7 +272,7 @@ fun PuzzleLayout(
                     fontSize = 16.sp,
                     modifier = Modifier
                         .offset(x = (0).dp)
-                        .alpha(0.4f)
+                        .alpha(0.7f)
 
                 )
 
@@ -302,14 +320,14 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
             items(acrossClues){ clue->
                 Log.i(TAG,"clue: ${clue.first} ${clue.second.clue}")
                 if(clue.second == activeClue){
-                    clueTextBox(clueData = clue,
+                    dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.primary,
                         textColor = MaterialTheme.colorScheme.onPrimary,
                         onClueSelect = onClueSelect
                     )
                 }
                 else{
-                    clueTextBox(clueData = clue,
+                    dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.secondary,
                         textColor = MaterialTheme.colorScheme.onSecondary,
                         onClueSelect = onClueSelect
@@ -325,14 +343,14 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
         ){
             items(downClues){ clue->
                 if(clue.second == activeClue){
-                    clueTextBox(clueData = clue,
+                    dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.primary,
                         textColor = MaterialTheme.colorScheme.onPrimary,
                         onClueSelect = onClueSelect
                     )
                 }
                 else{
-                    clueTextBox(clueData = clue,
+                    dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.secondary,
                         textColor = MaterialTheme.colorScheme.onSecondary,
                         onClueSelect = onClueSelect
@@ -363,36 +381,36 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
 }
 
 
-@Composable
-fun clueTextBox(clueData : Pair<String, Clue>,
-                backgroundColor: Color,
-                textColor: Color,
-                onClueSelect: (String) -> Unit ) {
-    Box(
-        modifier = Modifier
-            //.background(color = backgroundColor)
-            .padding(5.dp)
-            .width(170.dp)
-            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
-            .pointerInput(clueData.second.clueName) {
-                detectTapGestures {
-                    onClueSelect(clueData.second.clueName)
-                }
-            }
-    ){
-
-        Text(
-            "${clueData.first}) ${clueData.second.clue}",
-            color = textColor,
-            //shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
-                //.fillMaxWidth(0.5f)
-                .padding(5.dp)
-
-            //.clip(RoundedCornerShape(20.dp))
-            //shape = RoundedCornerShape(20.dp)
-        )
-    }
-}
+//@Composable
+//fun clueTextBox(clueData : Pair<String, Clue>,
+//                backgroundColor: Color,
+//                textColor: Color,
+//                onClueSelect: (String) -> Unit ) {
+//    Box(
+//        modifier = Modifier
+//            //.background(color = backgroundColor)
+//            .padding(5.dp)
+//            .width(170.dp)
+//            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
+//            .pointerInput(clueData.second.clueName) {
+//                detectTapGestures {
+//                    onClueSelect(clueData.second.clueName)
+//                }
+//            }
+//    ){
+//
+//        Text(
+//            "${clueData.first}) ${clueData.second.clue}",
+//            color = textColor,
+//            //shape = RoundedCornerShape(20.dp),
+//            modifier = Modifier
+//                //.fillMaxWidth(0.5f)
+//                .padding(5.dp)
+//
+//            //.clip(RoundedCornerShape(20.dp))
+//            //shape = RoundedCornerShape(20.dp)
+//        )
+//    }
+//}
 
 
