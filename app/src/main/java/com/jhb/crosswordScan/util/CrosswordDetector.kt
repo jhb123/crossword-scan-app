@@ -1,4 +1,4 @@
-package com.jhb.crosswordScan
+package com.jhb.crosswordScan.util
 
 import android.graphics.Bitmap
 import android.util.Log
