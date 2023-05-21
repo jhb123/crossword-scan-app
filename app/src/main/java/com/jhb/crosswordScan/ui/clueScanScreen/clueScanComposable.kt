@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
@@ -138,20 +139,29 @@ fun ClueScanScreen(
         ) {
 
             Button(onClick = { takeImage() }) {
-                Text("Take Picture")
+                Text(text="Snap",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.width(60.dp)
+                )
             }
             Button(onClick = {
                 //viewModel.isAcross.value = true
                 setClueScanDirection(ClueDirection.ACROSS)
                 scanClues()
             }) {
-                Text("Across")
+                Text("Across",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.width(60.dp)
+                )
             }
             Button(onClick = {
                 setClueScanDirection(ClueDirection.DOWN)
                 scanClues()
             }) {
-                Text("Down")
+                Text("Down",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.width(60.dp)
+                )
             }
         }
 

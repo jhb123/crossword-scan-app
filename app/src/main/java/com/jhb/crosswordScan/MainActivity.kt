@@ -102,15 +102,12 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-
             CrosswordApp(
                 scanViewModel,
                 puzzleSelectViewModel,
                 (this.application as PuzzleApplication).repository,
                 takeImage = { takeImage() }
             )
-
-
         }
     }
 

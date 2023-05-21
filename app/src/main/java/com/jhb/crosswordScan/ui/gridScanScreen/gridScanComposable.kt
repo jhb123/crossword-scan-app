@@ -69,7 +69,7 @@ fun gridScanScreen(
             .width(200.dp)
             .height(200.dp)
             .padding(5.dp)
-            .background(MaterialTheme.colorScheme.inverseSurface)
+            .background(MaterialTheme.colorScheme.secondary)
         ){
             uiState.value.gridPicProcessed.let {
                 if (it != null) {

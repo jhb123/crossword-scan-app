@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.compose.AppTheme
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.navigation.Screen
 import com.jhb.crosswordScan.ui.clueScanScreen.ClueScanScreen
@@ -48,7 +49,9 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
 
     val navController = rememberNavController()
     val uiState = MutableStateFlow(CrosswordAppUiState(pageTitle = ""))
-    //RallyTheme {
+    //val darkMode = uiState.collectAsState().value.darkMode
+    var darkMode by remember{ mutableStateOf(false) }
+    AppTheme(useDarkTheme = darkMode){
     //    var currentScreen: RallyDestination by remember { mutableStateOf(Overview) }
         Scaffold(
             topBar = {
@@ -68,9 +71,21 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     title = {
                         Text(
                             text = pageTitle,
+                            color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.headlineLarge)
                             },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
+                    actions = {
+                        IconButton(
+                        onClick = {darkMode = !darkMode},
+                        content = {
+                            Icon(
+                                painterResource(id = R.drawable.ic_baseline_dark_mode_24),
+                                contentDescription = "dark mode"
+                            )
+                        }
+                        )
+                    }
                 )
             },
             bottomBar = {
@@ -200,5 +215,5 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 }
             }
         }
-    //} when a theme is made, this can be uncommented.
+    }
 }

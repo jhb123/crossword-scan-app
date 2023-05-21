@@ -40,7 +40,7 @@ fun puzzlePreviewScreen(
             .width(200.dp)
             .height(200.dp)
             .padding(5.dp)
-            .background(MaterialTheme.colorScheme.inverseSurface)
+            .background(MaterialTheme.colorScheme.secondary)
         ){
             uiGridState.value.gridPicProcessed.let {
                 if (it != null) {
@@ -56,6 +56,7 @@ fun puzzlePreviewScreen(
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth(1f)
+                .fillMaxHeight(0.9f)
                 .height(500.dp)
         ) {
             LazyColumn(

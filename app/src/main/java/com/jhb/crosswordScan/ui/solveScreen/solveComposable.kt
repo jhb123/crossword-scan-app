@@ -20,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -199,9 +198,9 @@ fun clueGrid(
     Log.i(TAG, "calling puzzle layout")
     Box(contentAlignment = Alignment.TopStart,
         modifier = Modifier
-        .size(width = (gridSize * 25 + 3).dp, height = (gridSize * 25 + 3).dp)
-        .background(MaterialTheme.colorScheme.secondary)
-        .padding(1.dp)
+            .size(width = (gridSize * 25 + 3).dp, height = (gridSize * 25 + 3).dp)
+            .background(MaterialTheme.colorScheme.secondary)
+            .padding(1.dp)
     ) {
         PuzzleLayout(
             onClueSelect = {
@@ -237,9 +236,11 @@ fun PuzzleLayout(
                     if (coord == uiState.currentCell) {
                         //MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
                         //MaterialTheme.colorScheme.scrim
-                        Color.Green
+                        //Color.Green
+                        MaterialTheme.colorScheme.errorContainer
                     } else if (uiState.currentClue.clueBoxes.contains(coord)) {
-                        Color.Yellow
+                        //Color.Yellow
+                        MaterialTheme.colorScheme.secondaryContainer
                         //MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
                     } else {
                         MaterialTheme.colorScheme.surface
@@ -254,27 +255,30 @@ fun PuzzleLayout(
         ){
             if (labelledClues[coord] != null){
                 Text(text = labelledClues[coord]!!,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 8.sp,
                     modifier = Modifier.offset(x = (-7).dp, y = (-7).dp))
                 Text(
                     text = coord.third,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .offset(x = (0).dp)
-                        .alpha(0.7f)
+                        .alpha(0.9f)
                 )
             }
             else{
                 Text(
                     text = coord.third,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .offset(x = (0).dp)
-                        .alpha(0.7f)
+                        .alpha(0.9f)
 
                 )
 
