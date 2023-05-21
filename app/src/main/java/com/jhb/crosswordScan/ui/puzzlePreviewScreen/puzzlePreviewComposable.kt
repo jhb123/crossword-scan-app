@@ -1,5 +1,6 @@
 package com.jhb.crosswordScan.ui.puzzlePreviewScreen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.common.clueTextBox
@@ -28,6 +30,7 @@ fun puzzlePreviewScreen(
     onSave : () -> Job//() -> Unit
     //viewModel: CrosswordScanViewModel
 ) {
+    val context = LocalContext.current
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -46,7 +49,9 @@ fun puzzlePreviewScreen(
                 if (it != null) {
                     Image(bitmap = it.asImageBitmap(),
                         contentDescription = "scanned bitmap",
-                        modifier = Modifier.padding(5.dp).fillMaxSize())
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxSize())
                 }
             }
         }
@@ -87,6 +92,7 @@ fun puzzlePreviewScreen(
         }
         Button(onClick = {
             //Log.i(TAG,"Save button clicked")
+            Toast.makeText(context,"Saved",Toast.LENGTH_SHORT).show()
             onSave()
         }) {
             Text(text = "Save Puzzle")
