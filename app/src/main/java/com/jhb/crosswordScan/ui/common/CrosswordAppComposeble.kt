@@ -4,6 +4,9 @@ package com.jhb.crosswordScan
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -20,6 +23,7 @@ import androidx.navigation.navArgument
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.navigation.Screen
 import com.jhb.crosswordScan.ui.clueScanScreen.ClueScanScreen
+import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
 import com.jhb.crosswordScan.ui.puzzlePreviewScreen.puzzlePreviewScreen
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionComposable
@@ -28,10 +32,13 @@ import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModelFactory
 import com.jhb.crosswordScan.ui.solveScreen.SolveScreenWrapper
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 
 private const val TAG = "CrosswordAppActivity"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                  puzzleSelectViewModel: PuzzleSelectViewModel,
@@ -40,14 +47,31 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
 ) {
 
     val navController = rememberNavController()
-
-    //put all viewmodels and uistates here?
-
+    val uiState = MutableStateFlow(CrosswordAppUiState(pageTitle = ""))
     //RallyTheme {
     //    var currentScreen: RallyDestination by remember { mutableStateOf(Overview) }
         Scaffold(
             topBar = {
+                val pageTitle = uiState.collectAsState().value.pageTitle
 
+                TopAppBar(
+                    navigationIcon = {
+                        IconButton(
+                            onClick = { navController.navigateUp() },
+                            content = {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_baseline_home_24),
+                                    contentDescription = "back"
+                                )
+                            }
+                        ) },
+                    title = {
+                        Text(
+                            text = pageTitle,
+                            style = MaterialTheme.typography.headlineLarge)
+                            },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+                )
             },
             bottomBar = {
 
@@ -63,11 +87,17 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     val currentDestination = navBackStackEntry?.destination
                     items.forEach { screen ->
                         BottomNavigationItem(
+                            alwaysShowLabel = false,
                             icon = { Icon(painterResource(screen.iconResourceId), contentDescription = null) },
-                            label = { Text(stringResource(screen.resourceId)) },
+                            label = {
+                                Text(
+                                    stringResource(screen.resourceId),
+                                    color = MaterialTheme.colorScheme.onPrimary)
+                                    },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
                                 navController.navigate(screen.route) {
+
                                     // Pop up to the start destination of the graph to
                                     // avoid building up a large stack of destinations
                                     // on the back stack as users select items
@@ -79,6 +109,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                                     launchSingleTop = true
                                     // Restore state when reselecting a previously selected item
                                     restoreState = true
+                                    //
                                 }
                             }
                         )
@@ -86,8 +117,6 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 }
             }
         ) { innerPadding ->
-
-            val puzzleIdx by remember {mutableStateOf<Int>(0)}
 
             NavHost(
                 navController = navController,
@@ -97,6 +126,9 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 // this is the composable for scanning grids. At somepoint, the viewmodel should
                 // be taken out of the composable and replaced with callbacks.
                 composable(route = "gridScan") {
+                    uiState.update {ui ->
+                        ui.copy(pageTitle = stringResource(id = R.string.gridScan))
+                    }
                     gridScanScreen(
                         uiState = gridScanViewModel.uiGridState.collectAsState(),
                         viewModel = gridScanViewModel
@@ -105,6 +137,9 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
 
                 //
                 composable(route = "clueScan") {
+                    uiState.update {ui ->
+                        ui.copy(pageTitle = stringResource(id = R.string.clueScan))
+                    }
                     ClueScanScreen(
                         uiState = gridScanViewModel.uiState.collectAsState(),
                         setClueScanDirection = {gridScanViewModel.setClueScanDirection(it)},
@@ -117,6 +152,9 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 }
 
                 composable(route = "previewScan") {
+                    uiState.update {ui ->
+                        ui.copy(pageTitle = stringResource(id = R.string.previewGridScan))
+                    }
                     Log.i(TAG, "Navigated to preview screen")
                     puzzlePreviewScreen(
                         uiGridState = gridScanViewModel.uiGridState.collectAsState(),
@@ -129,10 +167,16 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 }
 
                 composable(route = "puzzleSelect"){
+                    uiState.update {ui ->
+                        ui.copy(pageTitle = stringResource(id = R.string.solveMenuItem))
+                    }
+                    Log.i(TAG,"navigated to puzzleSelect")
+
                     puzzleSelectionComposable(
                         uiState = puzzleSelectViewModel.uiState.collectAsState(),
                         navigateToPuzzle = {
                             Log.i(TAG,"Navigating to solve/$it")
+                            navController.popBackStack()
                             navController.navigate("solve/$it")
                         }
                     )
@@ -143,15 +187,11 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     arguments = listOf(navArgument("puzzleId") { type = NavType.IntType }),
                 )
                     {
-
+                        uiState.update {ui ->
+                            ui.copy(pageTitle = "Puzzle")
+                        }
                         val puzzleIdx = it.arguments?.getInt("puzzleId")
-                        //puzzleApplication.
-
-//                        val puzzleSolveViewModel: PuzzleSolveViewModel by   {
-//                            PuzzleSolveViewModelFactory(repository,puzzleIdx!!)
-//                        }
                         val puzzleSolveViewModel: PuzzleSolveViewModel = viewModel(factory = PuzzleSolveViewModelFactory(repository,puzzleIdx!!))
-
 
                         Log.i(TAG,"navigated to solve/$puzzleIdx")
                         SolveScreenWrapper(puzzleSolveViewModel)

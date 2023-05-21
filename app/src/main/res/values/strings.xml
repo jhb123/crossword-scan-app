@@ -4,5 +4,8 @@
     <string name="previewGridScan">Preview</string>
     <string name="clueScan">Scan clues</string>
     <string name="solveMenuItem">Solve</string>
+    <string name="gridScanRoute">gridScan</string>
     <!-- TODO: Remove or change this placeholder text -->
+
+
 </resources>

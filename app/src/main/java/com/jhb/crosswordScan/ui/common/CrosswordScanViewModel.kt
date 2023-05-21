@@ -1,5 +1,6 @@
 package com.jhb.crosswordScan.viewModels
 
+//import com.jhb.learn_opencv.Puzzle
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Build
@@ -14,17 +15,16 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.unit.roundToIntRect
 import androidx.lifecycle.*
-import com.jhb.crosswordScan.CrosswordDetector
-//import com.jhb.learn_opencv.Puzzle
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.jhb.crosswordScan.data.Puzzle
 import com.jhb.crosswordScan.data.PuzzleData
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.GridScanUiState
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.jhb.crosswordScan.util.CrosswordDetector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
