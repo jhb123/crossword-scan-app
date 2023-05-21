@@ -197,9 +197,11 @@ fun clueGrid(
     val labelledClues = labelledClues(uiState.value.currentPuzzle)
 
     Log.i(TAG, "calling puzzle layout")
-    Box(modifier = Modifier
-        .size(width = (gridSize * 25).dp, height = (gridSize * 25).dp)
-        .background(MaterialTheme.colorScheme.primary)
+    Box(contentAlignment = Alignment.TopStart,
+        modifier = Modifier
+        .size(width = (gridSize * 25 + 3).dp, height = (gridSize * 25 + 3).dp)
+        .background(MaterialTheme.colorScheme.secondary)
+        .padding(1.dp)
     ) {
         PuzzleLayout(
             onClueSelect = {
@@ -209,7 +211,7 @@ fun clueGrid(
             },
             uiState = uiState.value,
             grid = grid,
-            labelledClues = labelledClues
+            labelledClues = labelledClues,
         )
     }
 
