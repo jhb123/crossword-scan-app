@@ -36,18 +36,21 @@ fun puzzlePreviewScreen(
             .fillMaxSize(1f)
             .padding(5.dp)//Modifier.padding(5.dp)
     ) {
-        uiGridState.value.gridPicProcessed.let {
-            if (it != null) {
-                Image(
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = "scanned bitmap",
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .width(150.dp)
-                        .height(150.dp)
-                )
+        Box(modifier = Modifier
+            .width(200.dp)
+            .height(200.dp)
+            .padding(5.dp)
+            .background(MaterialTheme.colorScheme.inverseSurface)
+        ){
+            uiGridState.value.gridPicProcessed.let {
+                if (it != null) {
+                    Image(bitmap = it.asImageBitmap(),
+                        contentDescription = "scanned bitmap",
+                        modifier = Modifier.padding(5.dp).fillMaxSize())
+                }
             }
         }
+
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier

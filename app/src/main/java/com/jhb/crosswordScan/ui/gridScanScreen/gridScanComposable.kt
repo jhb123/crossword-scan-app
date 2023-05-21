@@ -65,11 +65,21 @@ fun gridScanScreen(
             },
         )
 
-        uiState.value.gridPicProcessed.let {
-            if (it != null) {
-                Image(bitmap = it.asImageBitmap(), contentDescription = "scanned bitmap")
+        Box(modifier = Modifier
+            .width(200.dp)
+            .height(200.dp)
+            .padding(5.dp)
+            .background(MaterialTheme.colorScheme.inverseSurface)
+        ){
+            uiState.value.gridPicProcessed.let {
+                if (it != null) {
+                    Image(bitmap = it.asImageBitmap(),
+                        contentDescription = "scanned bitmap",
+                    modifier = Modifier.padding(5.dp).fillMaxSize())
+                }
             }
         }
+
 
         //Row(modifier = Modifier.padding(5.dp)) {
             Button(onClick = { viewModel.takeSnapshot = true }) {
