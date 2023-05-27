@@ -109,11 +109,12 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         Log.i(TAG,"inserting new puzzle")
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
-        val icon_uuid = UUID.randomUUID().toString()
-        val fileContents = "Hello world!"
+        val id = UUID.randomUUID().toString()
 
-        val puzzleData = PuzzleData(currentDate, puzzle.value)
+        //val puzzleData = PuzzleData(currentDate, puzzle.value)
+        val puzzleData = PuzzleData(id = id, lastModified = sdf.toString(),puzzle = sdf.toString())
         repository.insert(puzzleData)
+
     }
 
     private val gridImgResize = MutableLiveData<Bitmap>()

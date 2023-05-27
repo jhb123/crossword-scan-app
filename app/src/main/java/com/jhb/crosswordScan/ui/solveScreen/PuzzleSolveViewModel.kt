@@ -3,7 +3,6 @@ package com.jhb.crosswordScan.ui.solveScreen
 import android.util.Log
 import androidx.lifecycle.*
 import com.jhb.crosswordScan.data.Puzzle
-import com.jhb.crosswordScan.data.PuzzleData
 import com.jhb.crosswordScan.data.PuzzleRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -25,26 +24,28 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
                 // of its collectors
                 .collect { puzzleList ->
                     Log.i(TAG, "Collecting puzzles from database")
-                    puzzleList[puzzleIdx].puzzle.clues.forEach{ (key,value) ->
-                        Log.i(TAG, "db clue $key : ${value.clueBoxes}")
-                    }
-                    uiState.value.currentPuzzle.clues.forEach{ (key,value) ->
-                        Log.i(TAG, "ui clue $key : ${value.clueBoxes}")
-                    }
+                    // TODO fix this bit
+//                    puzzleList[puzzleIdx].puzzle.clues.forEach{ (key,value) ->
+//                        Log.i(TAG, "db clue $key : ${value.clueBoxes}")
+//                    }
+//                    uiState.value.currentPuzzle.clues.forEach{ (key,value) ->
+//                        Log.i(TAG, "ui clue $key : ${value.clueBoxes}")
+//                    }
 
+                    // TODO fix this bit
 
-                    if( uiState.value.updateFromRepository) {
-                        _uiState.update {
-                            Log.i(
-                                TAG, "received database puzzle is differnt to current" +
-                                    " so updating current puzzle")
-                            it.copy(
-                                currentPuzzle = puzzleList[puzzleIdx].puzzle,
-                                name = puzzleList[puzzleIdx].id
-                            )
-                        }
-                        Log.i(TAG, "Finished updating current puzzle")
-                    }
+//                    if( uiState.value.updateFromRepository) {
+//                        _uiState.update {
+//                            Log.i(
+//                                TAG, "received database puzzle is differnt to current" +
+//                                    " so updating current puzzle")
+//                            it.copy(
+//                                currentPuzzle = puzzleList[puzzleIdx].puzzle,
+//                                name = puzzleList[puzzleIdx].id
+//                            )
+//                        }
+//                        Log.i(TAG, "Finished updating current puzzle")
+//                    }
                 }
         }
         Log.i(TAG,"Finished initialising ui")
@@ -158,7 +159,9 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
             //update the database with the puzzle.
             Log.i(TAG, "calling updateDatabase")
-            repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
+            // TODO fix this bit
+
+//            repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
             Log.i(TAG, "Finished updatingdatabase")
 
 
@@ -210,7 +213,8 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
             //update the database with the puzzle.
             Log.i(TAG, "calling updateDatabase")
-            repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
+            // TODO fix this bit
+//            repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
             Log.i(TAG, "Finished updatingdatabase")
 
             val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)

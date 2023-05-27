@@ -175,10 +175,11 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     puzzlePreviewScreen(
                         uiGridState = gridScanViewModel.uiGridState.collectAsState(),
                         uiClueState = gridScanViewModel.uiState.collectAsState(),
-                        onSave = {
-                            Log.i(TAG,"inserting...")
-                            gridScanViewModel.insert()
-                        }
+                        puzzle = gridScanViewModel.puzzle.value
+//                        onSave = {
+//                            Log.i(TAG,"inserting...")
+//                            gridScanViewModel.insert()
+//                        }
                     )
                 }
 

@@ -19,6 +19,8 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
     suspend fun insert(puzzle: PuzzleData) {
         Log.i(TAG,"Adding data to database")
         puzzleDao.insert(puzzle)
+
+
     }
 
     @Suppress("RedundantSuspendModifier")

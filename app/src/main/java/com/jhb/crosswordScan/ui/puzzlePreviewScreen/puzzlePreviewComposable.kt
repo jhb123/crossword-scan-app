@@ -12,25 +12,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.jhb.crosswordScan.data.Puzzle
+import com.jhb.crosswordScan.data.insertPuzzle
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.common.clueTextBox
 import com.jhb.crosswordScan.ui.gridScanScreen.GridScanUiState
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 private const val TAG = "puzzlePreviewComposable"
 @Composable
 fun puzzlePreviewScreen(
     uiGridState: State<GridScanUiState>,
     uiClueState: State<ScanUiState>,
-    onSave : () -> Job//() -> Unit
+    puzzle: Puzzle
+    //onSave : () -> Job//() -> Unit
     //viewModel: CrosswordScanViewModel
 ) {
     val context = LocalContext.current
+    val composableScope = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -91,11 +96,32 @@ fun puzzlePreviewScreen(
             }
         }
         Button(onClick = {
+            composableScope.launch{
+                insertPuzzle(puzzle,context)
+            }
             //Log.i(TAG,"Save button clicked")
             Toast.makeText(context,"Saved",Toast.LENGTH_SHORT).show()
-            onSave()
+            //onSave()
         }) {
             Text(text = "Save Puzzle")
         }
     }
 }
+
+//fun insert() = coroutineScope.launch {
+//    Log.i(TAG,"inserting new puzzle")
+//    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+//    val currentDate = sdf.format(Date())
+//    val id = UUID.randomUUID().toString()
+//
+//    //val puzzleData = PuzzleData(currentDate, puzzle.value)
+//    val puzzleData = PuzzleData(id = id, lastModified = sdf.toString(),puzzle = sdf.toString())
+//    repository.insert(puzzleData)
+//    PuzzleToJson(puzzle.value)
+//
+//}
+//
+//fun insert() = Dispatchers.IO{
+//
+//}
+
