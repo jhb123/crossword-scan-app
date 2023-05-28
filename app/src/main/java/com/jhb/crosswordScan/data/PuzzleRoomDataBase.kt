@@ -2,17 +2,17 @@ package com.jhb.crosswordScan.data
 
 import android.content.Context
 import android.util.Log
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 private const val TAG = "PuzzleRoomDataBase"
 
-@Database(entities = arrayOf(PuzzleData::class), version = 1, exportSchema = false)
-@TypeConverters(Converters::class)
+@Database(entities = arrayOf(PuzzleData::class), version = 4, exportSchema = false)
+//@TypeConverters(Converters::class)
 public abstract class PuzzleRoomDataBase : RoomDatabase() {
 
     // Annotates class to be a Room Database with a table (entity) of the Word class
@@ -37,6 +37,7 @@ public abstract class PuzzleRoomDataBase : RoomDatabase() {
                         PuzzleRoomDataBase::class.java,
                         "puzzle_database"
                     )
+                        .fallbackToDestructiveMigration()
                         .addCallback(PuzzleDatabaseCallback(scope))
                         .build()
                     INSTANCE = instance
@@ -74,22 +75,5 @@ public abstract class PuzzleRoomDataBase : RoomDatabase() {
         }
     }
 
-
-}
-
-class Converters {
-
-    @TypeConverter
-    fun PuzzleFromJson(json: String?): Puzzle {
-        val typeToken = object : TypeToken<Puzzle>() {}.type
-        val puzzle = Gson().fromJson<Puzzle>(json, typeToken)
-        return puzzle
-    }
-
-    @TypeConverter
-    fun PuzzleToJson(puzzle: Puzzle?): String {
-        val gson = Gson()
-        return gson.toJson(puzzle)
-    }
 
 }

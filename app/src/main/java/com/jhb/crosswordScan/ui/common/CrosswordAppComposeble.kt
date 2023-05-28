@@ -175,10 +175,11 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     puzzlePreviewScreen(
                         uiGridState = gridScanViewModel.uiGridState.collectAsState(),
                         uiClueState = gridScanViewModel.uiState.collectAsState(),
-                        onSave = {
-                            Log.i(TAG,"inserting...")
-                            gridScanViewModel.insert()
-                        }
+                        puzzle = gridScanViewModel.puzzle.value
+//                        onSave = {
+//                            Log.i(TAG,"inserting...")
+//                            gridScanViewModel.insert()
+//                        }
                     )
                 }
 
@@ -200,16 +201,16 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
 
                 composable(
                     route = "solve/{puzzleId}",
-                    arguments = listOf(navArgument("puzzleId") { type = NavType.IntType }),
+                    arguments = listOf(navArgument("puzzleId") { type = NavType.StringType }),
                 )
                     {
                         uiState.update {ui ->
                             ui.copy(pageTitle = "Puzzle")
                         }
-                        val puzzleIdx = it.arguments?.getInt("puzzleId")
-                        val puzzleSolveViewModel: PuzzleSolveViewModel = viewModel(factory = PuzzleSolveViewModelFactory(repository,puzzleIdx!!))
+                        val puzzleId = it.arguments?.getString("puzzleId")
+                        val puzzleSolveViewModel: PuzzleSolveViewModel = viewModel(factory = PuzzleSolveViewModelFactory(repository,puzzleId!!))
 
-                        Log.i(TAG,"navigated to solve/$puzzleIdx")
+                        Log.i(TAG,"navigated to solve/$puzzleId")
                         SolveScreenWrapper(puzzleSolveViewModel)
 
                 }

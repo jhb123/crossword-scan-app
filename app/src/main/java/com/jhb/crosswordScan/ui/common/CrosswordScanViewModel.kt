@@ -19,7 +19,6 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.jhb.crosswordScan.data.Puzzle
-import com.jhb.crosswordScan.data.PuzzleData
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
@@ -28,12 +27,10 @@ import com.jhb.crosswordScan.util.CrosswordDetector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.imgproc.Imgproc
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -105,16 +102,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         get() = _viewFinderImgWithContour
 
 
-    fun insert() = viewModelScope.launch {
-        Log.i(TAG,"inserting new puzzle")
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = sdf.format(Date())
-        val icon_uuid = UUID.randomUUID().toString()
-        val fileContents = "Hello world!"
-
-        val puzzleData = PuzzleData(currentDate, puzzle.value)
-        repository.insert(puzzleData)
-    }
 
     private val gridImgResize = MutableLiveData<Bitmap>()
     fun getGridImgResize() = gridImgResize

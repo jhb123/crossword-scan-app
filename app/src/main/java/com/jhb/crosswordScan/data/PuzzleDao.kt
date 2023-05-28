@@ -11,6 +11,9 @@ interface PuzzleDao {
     @Query("SELECT * FROM puzzle_table WHERE id=:uid")
     fun getPuzzleByID(uid: String):Flow<PuzzleData>
 
+    @Query("UPDATE puzzle_table SET lastModified=:time WHERE id = :id")
+    fun updatePuzzleEditTime(time: String,  id: String)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(puzzle: PuzzleData)
 
