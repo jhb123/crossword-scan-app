@@ -2,54 +2,41 @@ package com.jhb.crosswordScan.ui.solveScreen
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.jhb.crosswordScan.data.Puzzle
-import com.jhb.crosswordScan.data.PuzzleRepository
+import com.jhb.crosswordScan.data.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.*
 
-class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val puzzleIdx : Int ): ViewModel() {
+class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val puzzleId : String ): ViewModel() {
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
         private const val TAG = "PuzzleSolveViewModel"
     }
+    lateinit var puzzleFilePath : String
 
     init {
         Log.i(TAG,"initialising ui")
         viewModelScope.launch {
-            delay(50)
-            repository.allPuzzles
-                // Writes to the value property of MutableStateFlow,
-                // adding a new element to the flow and updating all
-                // of its collectors
-                .collect { puzzleList ->
-                    Log.i(TAG, "Collecting puzzles from database")
-                    // TODO fix this bit
-//                    puzzleList[puzzleIdx].puzzle.clues.forEach{ (key,value) ->
-//                        Log.i(TAG, "db clue $key : ${value.clueBoxes}")
-//                    }
-//                    uiState.value.currentPuzzle.clues.forEach{ (key,value) ->
-//                        Log.i(TAG, "ui clue $key : ${value.clueBoxes}")
-//                    }
-
-                    // TODO fix this bit
-
-//                    if( uiState.value.updateFromRepository) {
-//                        _uiState.update {
-//                            Log.i(
-//                                TAG, "received database puzzle is differnt to current" +
-//                                    " so updating current puzzle")
-//                            it.copy(
-//                                currentPuzzle = puzzleList[puzzleIdx].puzzle,
-//                                name = puzzleList[puzzleIdx].id
-//                            )
-//                        }
-//                        Log.i(TAG, "Finished updating current puzzle")
-//                    }
+            //delay(50)
+            repository.getPuzzle(puzzleId).collect { puzzleData ->
+                Log.i(TAG, "Collecting puzzle from database")
+                Log.i(TAG, "puzzleData puzzle ${puzzleData.puzzle}")
+                Log.i(TAG, "puzzleData id ${puzzleData.id}")
+                Log.i(TAG, "puzzleData lastModified ${puzzleData.lastModified}")
+                puzzleFilePath = puzzleData.puzzle
+                val puzzle = readFileAsPuzzle(puzzleFilePath)
+                if( uiState.value.updateFromRepository) {
+                    _uiState.update {
+                        it.copy(
+                            puzzleId = puzzleData.id,
+                            currentPuzzle = puzzle!!
+                        )
+                    }
                 }
+            }
         }
         Log.i(TAG,"Finished initialising ui")
-
     }
 
     private val _uiState = MutableStateFlow(PuzzleUiState())
@@ -160,10 +147,13 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             //update the database with the puzzle.
             Log.i(TAG, "calling updateDatabase")
             // TODO fix this bit
+            //viewModelScope.launch {
+            updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
+            //}
+            Log.i(TAG, "Finished updating database")
 
-//            repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
-            Log.i(TAG, "Finished updatingdatabase")
-
+            repository.updatePuzzleEditTime(puzzleId)
+            //repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
 
             //increment active if its not the last cell in the clue
             val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)
@@ -213,8 +203,13 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
             //update the database with the puzzle.
             Log.i(TAG, "calling updateDatabase")
-            // TODO fix this bit
 //            repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
+//            viewModelScope.launch {
+            updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
+//            }
+
+            repository.updatePuzzleEditTime(puzzleId)
+
             Log.i(TAG, "Finished updatingdatabase")
 
             val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)
@@ -242,13 +237,17 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             it.copy(updateFromRepository = true)
         }
     }
+
+    //fun
+    //val puzzleFlow = Flow<Puzzle>
+
 }
 
-class PuzzleSolveViewModelFactory(private val repository: PuzzleRepository, private val puzzleIdx : Int) : ViewModelProvider.Factory {
+class PuzzleSolveViewModelFactory(private val repository: PuzzleRepository, private val puzzleId : String) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(PuzzleSolveViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return PuzzleSolveViewModel(repository,puzzleIdx) as T
+            return PuzzleSolveViewModel(repository,puzzleId) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

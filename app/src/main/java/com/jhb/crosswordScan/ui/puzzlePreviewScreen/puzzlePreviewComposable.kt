@@ -97,7 +97,7 @@ fun puzzlePreviewScreen(
         }
         Button(onClick = {
             composableScope.launch{
-                insertPuzzle(puzzle,context)
+                insertPuzzle(puzzle,context,uiGridState.value.gridPicProcessed)
             }
             //Log.i(TAG,"Save button clicked")
             Toast.makeText(context,"Saved",Toast.LENGTH_SHORT).show()
@@ -107,21 +107,4 @@ fun puzzlePreviewScreen(
         }
     }
 }
-
-//fun insert() = coroutineScope.launch {
-//    Log.i(TAG,"inserting new puzzle")
-//    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-//    val currentDate = sdf.format(Date())
-//    val id = UUID.randomUUID().toString()
-//
-//    //val puzzleData = PuzzleData(currentDate, puzzle.value)
-//    val puzzleData = PuzzleData(id = id, lastModified = sdf.toString(),puzzle = sdf.toString())
-//    repository.insert(puzzleData)
-//    PuzzleToJson(puzzle.value)
-//
-//}
-//
-//fun insert() = Dispatchers.IO{
-//
-//}
 

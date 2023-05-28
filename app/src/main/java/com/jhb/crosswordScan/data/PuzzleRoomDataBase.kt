@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "PuzzleRoomDataBase"
 
-@Database(entities = arrayOf(PuzzleData::class), version = 2, exportSchema = false)
+@Database(entities = arrayOf(PuzzleData::class), version = 4, exportSchema = false)
 //@TypeConverters(Converters::class)
 public abstract class PuzzleRoomDataBase : RoomDatabase() {
 

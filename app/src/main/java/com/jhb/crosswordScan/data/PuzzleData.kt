@@ -8,10 +8,14 @@ import androidx.room.PrimaryKey
 class PuzzleData(
     @PrimaryKey
     val id: String,
+    @ColumnInfo(name="timeCreated")
+    val timeCreated: String,
     @ColumnInfo(name="lastModified")
     val lastModified: String,
     @ColumnInfo(name= "puzzle")
     val puzzle: String,
+    @ColumnInfo(name= "puzzleIcon")
+    val puzzleIcon: String,
 
 
     //@ColumnInfo(name = "puzzle") val puzzle: Puzzle,
