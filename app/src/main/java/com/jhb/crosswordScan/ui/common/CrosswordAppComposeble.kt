@@ -23,6 +23,7 @@ import androidx.navigation.navArgument
 import com.example.compose.AppTheme
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.navigation.Screen
+import com.jhb.crosswordScan.ui.authScreen.AuthScreenComposable
 import com.jhb.crosswordScan.ui.clueScanScreen.ClueScanScreen
 import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
@@ -76,6 +77,43 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                             },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
                     actions = {
+                        //val showSearch = uiState.collectAsState().value.puzzleSearchShown
+
+                        if(
+                            navController.currentDestination
+                            == navController.findDestination(Screen.SelectPuzzle.route)
+                        ){
+                            IconButton(
+                                onClick = {},
+                                content = {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_baseline_search_24),
+                                        contentDescription = "search"
+                                    )
+                                }
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screen.Authenticate.route){
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    // Avoid multiple copies of the same destination when
+                                    // reselecting the same item
+                                    launchSingleTop = true
+                                    // Restore state when reselecting a previously selected item
+                                    restoreState = true
+                                }
+                            },
+                            content = {
+                                Icon(
+                                    painterResource(id = Screen.Authenticate.iconResourceId),
+                                    contentDescription = "Authenticate"
+                                )
+                            }
+                        )
+
                         IconButton(
                         onClick = {darkMode = !darkMode},
                         content = {
@@ -141,7 +179,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
             ) {
                 // this is the composable for scanning grids. At somepoint, the viewmodel should
                 // be taken out of the composable and replaced with callbacks.
-                composable(route = "gridScan") {
+                composable(route = Screen.GridScan.route) {
                     uiState.update {ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.gridScan))
                     }
@@ -149,10 +187,11 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                         uiState = gridScanViewModel.uiGridState.collectAsState(),
                         viewModel = gridScanViewModel
                     )
+
                 }
 
                 //
-                composable(route = "clueScan") {
+                composable(route = Screen.ClueScan.route) {
                     uiState.update {ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.clueScan))
                     }
@@ -167,7 +206,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     )
                 }
 
-                composable(route = "previewScan") {
+                composable(route = Screen.PreviewScan.route) {
                     uiState.update {ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.previewGridScan))
                     }
@@ -183,7 +222,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     )
                 }
 
-                composable(route = "puzzleSelect"){
+                composable(route = Screen.SelectPuzzle.route){
                     uiState.update {ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.solveMenuItem))
                     }
@@ -212,6 +251,17 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
 
                         Log.i(TAG,"navigated to solve/$puzzleId")
                         SolveScreenWrapper(puzzleSolveViewModel)
+
+                }
+
+                composable(route = Screen.Authenticate.route){
+                    uiState.update {ui ->
+                        ui.copy(pageTitle = stringResource(id = Screen.Authenticate.resourceId))
+                    }
+                    Log.i(TAG,"navigated to authentication")
+
+                        AuthScreenComposable()
+                        //uiState = puzzleSelectViewModel.uiState.collectAsState(),
 
                 }
             }

@@ -5,6 +5,9 @@
     <string name="clueScan">Scan clues</string>
     <string name="solveMenuItem">Solve</string>
     <string name="gridScanRoute">gridScan</string>
+    <string name="authenticateMenuItem">authenticate</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 
