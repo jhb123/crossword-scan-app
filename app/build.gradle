@@ -58,6 +58,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     //implementation 'com.google.android.material:material:1.8.0'
     implementation project(path: ':openCV')
+    implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha03'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -113,5 +114,8 @@ dependencies {
     //ml
     implementation 'com.google.mlkit:text-recognition:16.0.0'
 
+    //encryption
+    implementation "net.zetetic:android-database-sqlcipher:4.5.4"
+    implementation "androidx.sqlite:sqlite:2.3.1"
 
 }

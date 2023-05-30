@@ -24,6 +24,7 @@ import com.example.compose.AppTheme
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.navigation.Screen
 import com.jhb.crosswordScan.ui.authScreen.AuthScreenComposable
+import com.jhb.crosswordScan.ui.authScreen.AuthViewModel
 import com.jhb.crosswordScan.ui.clueScanScreen.ClueScanScreen
 import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
@@ -44,6 +45,7 @@ private const val TAG = "CrosswordAppActivity"
 @Composable
 fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                  puzzleSelectViewModel: PuzzleSelectViewModel,
+                 authViewModel: AuthViewModel,
                  repository: PuzzleRepository,
                  takeImage : () -> Unit,
 ) {
@@ -260,7 +262,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     }
                     Log.i(TAG,"navigated to authentication")
 
-                        AuthScreenComposable()
+                        AuthScreenComposable(authViewModel.uiState.collectAsState())
                         //uiState = puzzleSelectViewModel.uiState.collectAsState(),
 
                 }

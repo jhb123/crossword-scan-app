@@ -20,6 +20,9 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.rotationMatrix
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
+import com.jhb.crosswordScan.data.SessionData
+import com.jhb.crosswordScan.ui.authScreen.AuthViewModel
+import com.jhb.crosswordScan.ui.authScreen.AuthViewModelFactory
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
@@ -33,6 +36,14 @@ import java.io.File
 class MainActivity : ComponentActivity() {
 
     private val TAG = "MainActivity"
+
+    //val test = (this.application as PuzzleApplication).userRepository
+    private val authViewModel: AuthViewModel by viewModels {
+        AuthViewModelFactory(
+            (this.application as PuzzleApplication).userRepository
+        )
+    }
+
 
     private val scanViewModel: CrosswordScanViewModel by viewModels {
         CrosswordScanViewModelFactory((this.application as PuzzleApplication).repository)
@@ -99,12 +110,13 @@ class MainActivity : ComponentActivity() {
         startOpenCV()
         Log.i(TAG, "Setting content")
 
-
+        SessionData.setContext(this.applicationContext)
 
         setContent {
             CrosswordApp(
                 scanViewModel,
                 puzzleSelectViewModel,
+                authViewModel,
                 (this.application as PuzzleApplication).repository,
                 takeImage = { takeImage() }
             )

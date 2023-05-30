@@ -24,11 +24,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
+import com.jhb.crosswordScan.data.SessionData
+import kotlin.random.Random
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AuthScreenComposable(){
+fun AuthScreenComposable(uiState: State<AuthUiState>){
 
     Column(
         modifier = Modifier
@@ -40,8 +42,13 @@ fun AuthScreenComposable(){
         val focusManager = LocalFocusManager.current
         var userName by rememberSaveable { mutableStateOf("") }
         var password by rememberSaveable { mutableStateOf("") }
-        var showPassword by remember { mutableStateOf(false)}
+        var showPassword by remember { mutableStateOf(false) }
+        val coroutineScope = rememberCoroutineScope()
+        val randomNumberGenerator = Random(123)
+
         val keyboardController = LocalSoftwareKeyboardController.current
+
+        var userFromFile by rememberSaveable { mutableStateOf(SessionData.getUser()) }
 
         Box(
             contentAlignment = Alignment.Center,
@@ -52,7 +59,7 @@ fun AuthScreenComposable(){
                 .padding(10.dp)
                 .clip(shape = RoundedCornerShape(25))
             //)
-        ){
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.logobackground),
                 contentDescription = "logo",
@@ -85,7 +92,7 @@ fun AuthScreenComposable(){
                 )
             },
 
-        )
+            )
 
         OutlinedTextField(
             value = password,
@@ -102,9 +109,10 @@ fun AuthScreenComposable(){
                 IconButton(onClick = { showPassword = !showPassword }) {
                     Icon(
                         painterResource(
-                            id = if(showPassword) {
+                            id = if (showPassword) {
                                 R.drawable.ic_baseline_visibility_24
-                            } else R.drawable.ic_baseline_visibility_off_24),
+                            } else R.drawable.ic_baseline_visibility_off_24
+                        ),
                         contentDescription = "password visibility"
                     )
                 }
@@ -119,7 +127,8 @@ fun AuthScreenComposable(){
         )
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-            FilledTonalButton(onClick = {},
+            FilledTonalButton(
+                onClick = {},
                 modifier = Modifier
                     .width(150.dp)
                     .padding(10.dp),
@@ -128,16 +137,45 @@ fun AuthScreenComposable(){
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
 
-            ){
+            ) {
                 Text(text = stringResource(R.string.login))
             }
-            OutlinedButton(onClick = {},
+            OutlinedButton(
+                onClick = {},
                 modifier = Modifier
                     .width(150.dp)
                     .padding(10.dp),
-                ){
+            ) {
                 Text(text = stringResource(R.string.register))
             }
+            OutlinedButton(
+                onClick = {
+                    SessionData.setUser(randomNumberGenerator.nextInt())
+                    userFromFile = SessionData.getUser().toString()
+                },
+                modifier = Modifier
+                    .width(150.dp)
+                    .padding(10.dp),
+            ) {
+                Text(text = "debug ")
+            }
         }
+
+        Text(text = userFromFile.toString())
+
     }
+
+//        LazyColumn(contentPadding = PaddingValues(10.dp),
+//            modifier = Modifier
+//                .padding(0.dp)
+//                .background(MaterialTheme.colorScheme.background)
+//                .height(300.dp)
+//        ){
+//            if (uiState.value.users != null){
+//                items(uiState.value.users!!) { user ->
+//                    Text(user.userName)
+//                }
+//            }
+//        }
+//    }
 }
