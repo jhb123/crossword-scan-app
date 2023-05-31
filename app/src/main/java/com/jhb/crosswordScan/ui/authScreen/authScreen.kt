@@ -48,7 +48,10 @@ fun AuthScreenComposable(uiState: State<AuthUiState>){
 
         val keyboardController = LocalSoftwareKeyboardController.current
 
-        var userFromFile by rememberSaveable { mutableStateOf(SessionData.getUser()) }
+
+        SessionData.readUser()
+        val userFromFile = SessionData.userDataState.collectAsState()
+        val tokenFromFile = SessionData.tokenState.collectAsState()
 
         Box(
             contentAlignment = Alignment.Center,
@@ -150,8 +153,9 @@ fun AuthScreenComposable(uiState: State<AuthUiState>){
             }
             OutlinedButton(
                 onClick = {
-                    SessionData.setUser(randomNumberGenerator.nextInt())
-                    userFromFile = SessionData.getUser().toString()
+                    SessionData.writeUser(uiState.value.users!![0])
+                    SessionData.readUser()
+                    //userFromFile = SessionData.readUser()
                 },
                 modifier = Modifier
                     .width(150.dp)
@@ -161,7 +165,10 @@ fun AuthScreenComposable(uiState: State<AuthUiState>){
             }
         }
 
-        Text(text = userFromFile.toString())
+        userFromFile.value?.let { Text(text = it.userName) }
+        userFromFile.value?.let { Text(text = it.password) }
+        userFromFile.value?.let { Text(text = it.email) }
+        tokenFromFile.value?.let { Text(text = it) }
 
     }
 

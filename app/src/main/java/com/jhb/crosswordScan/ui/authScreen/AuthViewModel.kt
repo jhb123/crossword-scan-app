@@ -3,7 +3,6 @@ package com.jhb.crosswordScan.ui.authScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.userData.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,18 +21,24 @@ class AuthViewModel(private val repository: UserRepository)
             repository.allUsers.collect { userList ->
                 _uiState.update {
                     it.copy(
-                        users = userList
+                        users = userList,
+                        //userName =
                     )
                 }
             }
         }
     }
 
-    fun setUser(id: Int){
-        viewModelScope.launch {
-            SessionData.setUser(id)
-        }
+    fun login(username: String, password: String){
+
+        
     }
+
+//    fun setUser(id: Int){
+//        viewModelScope.launch {
+//            SessionData.setUser(id)
+//        }
+//    }
 
     fun getUser(){
         viewModelScope.launch{
