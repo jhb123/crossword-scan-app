@@ -17,6 +17,7 @@ fun AuthScreenComposable(
     loginCallback: (String, String) -> Unit,
     logoutCallback: () -> Unit,
     registerCallback: () -> Unit,
+    testServerCallback: () -> Unit,
     userDataState: StateFlow<UserData?>,
     tokenState: StateFlow<String?>,
 ) {
@@ -35,7 +36,7 @@ fun AuthScreenComposable(
             userNameFieldCallback = { userNameFieldCallback(it) },
             passwordFieldCallback = { passwordFieldCallback(it) },
             loginCallback = { username, password -> loginCallback(username, password) },
-            registerCallback = { /*TODO*/ },
+            registerCallback = { testServerCallback() },
             //userDataState = userFromFile,
             //tokenState =
         )

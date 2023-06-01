@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jhb.crosswordScan.data.SessionData
+import com.jhb.crosswordScan.network.CrosswordApi
 import com.jhb.crosswordScan.userData.UserData
 import com.jhb.crosswordScan.userData.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 
 private const val TAG = "AuthViewModel"
 
@@ -73,6 +75,18 @@ class AuthViewModel(private val repository: UserRepository)
 
     }
 
+    fun testApi(){
+        viewModelScope.launch {
+            try {
+                val serverResponse = CrosswordApi.retrofitService.getHello()
+                Log.i(TAG, serverResponse)
+            }
+            catch (e : ConnectException){
+                Log.i(TAG, "unable to find server")
+            }
+        }
+
+    }
 
 }
 

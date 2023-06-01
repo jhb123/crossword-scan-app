@@ -183,6 +183,9 @@ fun loginComposeable(
             Text(text = stringResource(R.string.register))
         }
     }
+    Button(onClick = { /*TODO*/ }) {
+        Text("debug")
+    }
     userFromFile.value?.let { Text(text = it.userName) }
     userFromFile.value?.let { Text(text = it.password) }
     userFromFile.value?.let { Text(text = it.email) }

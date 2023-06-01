@@ -270,6 +270,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                             loginCallback = {username,password -> authViewModel.login(username,password)},
                             logoutCallback = {SessionData.logOut()},
                             registerCallback = {authViewModel.register()},
+                            testServerCallback = {authViewModel.testApi()},
                             userDataState = SessionData.userDataState,
                             tokenState = SessionData.tokenState
                         )
