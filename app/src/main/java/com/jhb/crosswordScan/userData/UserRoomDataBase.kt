@@ -13,7 +13,7 @@ import net.sqlcipher.database.SupportFactory
 
 private const val TAG = "UserRoomDataBase"
 
-@Database(entities = arrayOf(UserData::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(UserData::class), version = 2, exportSchema = false)
 public abstract class UserRoomDataBase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
@@ -78,6 +78,14 @@ public abstract class UserRoomDataBase : RoomDatabase() {
                 password = "password"
             )
             userDao.insert(user)
+
+            user = UserData(
+                email = "test@gmail.com",
+                userName = "test",
+                password = "test"
+            )
+            userDao.insert(user)
+
         }
     }
 

@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.compose.AppTheme
 import com.jhb.crosswordScan.data.PuzzleRepository
+import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.navigation.Screen
 import com.jhb.crosswordScan.ui.authScreen.AuthScreenComposable
 import com.jhb.crosswordScan.ui.authScreen.AuthViewModel
@@ -262,8 +263,16 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     }
                     Log.i(TAG,"navigated to authentication")
 
-                        AuthScreenComposable(authViewModel.uiState.collectAsState())
-                        //uiState = puzzleSelectViewModel.uiState.collectAsState(),
+                        AuthScreenComposable(
+                            uiState = authViewModel.uiState.collectAsState(),
+                            userNameFieldCallback = { authViewModel.setUserName(it) },
+                            passwordFieldCallback = { authViewModel.setPassword(it) },
+                            loginCallback = {username,password -> authViewModel.login(username,password)},
+                            logoutCallback = {SessionData.logOut()},
+                            registerCallback = {authViewModel.register()},
+                            userDataState = SessionData.userDataState,
+                            tokenState = SessionData.tokenState
+                        )
 
                 }
             }

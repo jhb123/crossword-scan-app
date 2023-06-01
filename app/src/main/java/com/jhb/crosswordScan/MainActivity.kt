@@ -111,6 +111,7 @@ class MainActivity : ComponentActivity() {
         Log.i(TAG, "Setting content")
 
         SessionData.setContext(this.applicationContext)
+        SessionData.readUser()
 
         setContent {
             CrosswordApp(

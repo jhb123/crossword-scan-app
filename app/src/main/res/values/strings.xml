@@ -8,6 +8,7 @@
     <string name="authenticateMenuItem">authenticate</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="logout">logout</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 

@@ -8,7 +8,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -24,34 +23,44 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.data.SessionData
-import kotlin.random.Random
+import com.jhb.crosswordScan.userData.UserData
+import kotlinx.coroutines.flow.StateFlow
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AuthScreenComposable(uiState: State<AuthUiState>){
+fun AuthScreenComposable(
+    uiState: State<AuthUiState>,
+    userNameFieldCallback: (String) -> Unit,
+    passwordFieldCallback: (String) -> Unit,
+    loginCallback: (String, String) -> Unit,
+    logoutCallback: () -> Unit,
+    registerCallback: () -> Unit,
+    userDataState: StateFlow<UserData?>,
+    tokenState: StateFlow<String?>,
+) {
 
     Column(
         modifier = Modifier
             .fillMaxSize(1f),
-            //.padding(50.dp),
+        //.padding(50.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val focusManager = LocalFocusManager.current
-        var userName by rememberSaveable { mutableStateOf("") }
-        var password by rememberSaveable { mutableStateOf("") }
+
         var showPassword by remember { mutableStateOf(false) }
-        val coroutineScope = rememberCoroutineScope()
-        val randomNumberGenerator = Random(123)
 
         val keyboardController = LocalSoftwareKeyboardController.current
 
 
-        SessionData.readUser()
-        val userFromFile = SessionData.userDataState.collectAsState()
-        val tokenFromFile = SessionData.tokenState.collectAsState()
+        //SessionData.readUser()
+        val userFromFile = userDataState.collectAsState()
+        val tokenFromFile = tokenState.collectAsState()
+
+        val userName = uiState.value.userName
+        val password = uiState.value.userPassword
+
 
         Box(
             contentAlignment = Alignment.Center,
@@ -78,9 +87,11 @@ fun AuthScreenComposable(uiState: State<AuthUiState>){
         }
 
         OutlinedTextField(
-            value = userName,
+            value = if (userName != null) {
+                userName
+            } else "",
             modifier = Modifier.padding(10.dp),
-            onValueChange = { userName = it },
+            onValueChange = { userNameFieldCallback(it) },
             label = { Text("Username") },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(
@@ -98,8 +109,10 @@ fun AuthScreenComposable(uiState: State<AuthUiState>){
             )
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = if (password != null) {
+                password
+            } else "",
+            onValueChange = { passwordFieldCallback(it) },
             label = { Text("Password") },
             modifier = Modifier.padding(10.dp),
             leadingIcon = {
@@ -130,47 +143,71 @@ fun AuthScreenComposable(uiState: State<AuthUiState>){
         )
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-            FilledTonalButton(
-                onClick = {},
-                modifier = Modifier
-                    .width(150.dp)
-                    .padding(10.dp),
-                colors = buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
 
-            ) {
-                Text(text = stringResource(R.string.login))
+            if(userFromFile.value == null) {
+                FilledTonalButton(
+                    onClick = {
+                        if (uiState.value.userName != null && uiState.value.userPassword != null) {
+                            loginCallback(uiState.value.userName!!, uiState.value.userPassword!!)
+                        }
+                    },
+                    modifier = Modifier
+                        .width(150.dp)
+                        .padding(10.dp),
+                    colors = buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+
+                ) {
+                    Text(text = stringResource(R.string.login))
+                }
+            }
+            else{
+                FilledTonalButton(
+                    onClick = {logoutCallback()},
+                    modifier = Modifier
+                        .width(150.dp)
+                        .padding(10.dp),
+                    colors = buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+
+                ) {
+                    Text(text = stringResource(R.string.logout))
+                }
             }
             OutlinedButton(
-                onClick = {},
+                onClick = {registerCallback()},
                 modifier = Modifier
                     .width(150.dp)
                     .padding(10.dp),
             ) {
                 Text(text = stringResource(R.string.register))
             }
-            OutlinedButton(
-                onClick = {
-                    SessionData.writeUser(uiState.value.users!![0])
-                    SessionData.readUser()
-                    //userFromFile = SessionData.readUser()
-                },
-                modifier = Modifier
-                    .width(150.dp)
-                    .padding(10.dp),
-            ) {
-                Text(text = "debug ")
-            }
         }
+//                OutlinedButton(
+//                    onClick = {
+//
+//                        SessionData.readUser()
+//                        //userFromFile = SessionData.readUser()
+//                    },
+//                    modifier = Modifier
+//                        .width(150.dp)
+//                        .padding(10.dp),
+//                ) {
+//                    Text(text = "debug ")
+//                }
 
         userFromFile.value?.let { Text(text = it.userName) }
         userFromFile.value?.let { Text(text = it.password) }
         userFromFile.value?.let { Text(text = it.email) }
         tokenFromFile.value?.let { Text(text = it) }
-
     }
+
+}
+
 
 //        LazyColumn(contentPadding = PaddingValues(10.dp),
 //            modifier = Modifier
@@ -185,4 +222,4 @@ fun AuthScreenComposable(uiState: State<AuthUiState>){
 //            }
 //        }
 //    }
-}
+

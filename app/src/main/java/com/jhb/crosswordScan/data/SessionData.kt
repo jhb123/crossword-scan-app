@@ -49,8 +49,21 @@ object SessionData {
             .build();
     }
 
-    fun writeUser(userData: UserData) {
+    fun logOut(){
+        deleteUserData()
+        _userDataState.update { null }
+    }
+
+    private fun deleteUserData(){
+        val file = File(applicationContext.filesDir, userFileName)
+        if (file.exists()) {
+            file.delete()
+        }
+    }
+
+    fun writeUser(userData: UserData?) {
         val fileContent = userToJson(userData)
+        Log.i(TAG,"writing user.txt $fileContent")
         writeEncryptedFile(userFileName,fileContent)
     }
 
@@ -58,6 +71,7 @@ object SessionData {
         val userPlainText = readEncryptedFile(userFileName)
         if(userPlainText!=null){
             userData = userFromJson(userPlainText)
+            Log.i(TAG,"from user.txt $userPlainText")
             _userDataState.update { userData }
             return userData
         } else{

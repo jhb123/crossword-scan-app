@@ -11,11 +11,16 @@ class UserRepository(private val userDao: UserDao)  {
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    fun getUser(id: Int): Flow<UserData> {
+    fun getUser(userName: String, password: String): Flow<UserData?> {
+        Log.i(TAG, "getting user $userName from database")
+        return userDao.getUser(userName)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    fun getUserById(id: Int): Flow<UserData?> {
         Log.i(TAG, "getting user $id from database")
-        //puzzleDao.updatePuzzle(puzzle)
-        val userData : Flow<UserData> = userDao.getUser(id)
-        return userData
+        return userDao.getUserById(id)
     }
 
     val allUsers : Flow<List<UserData>> = userDao.getUsers()
