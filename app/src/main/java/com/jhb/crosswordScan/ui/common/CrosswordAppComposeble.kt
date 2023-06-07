@@ -31,6 +31,9 @@ import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
 import com.jhb.crosswordScan.ui.puzzlePreviewScreen.puzzlePreviewScreen
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionComposable
+import com.jhb.crosswordScan.ui.registerScreen.RegistrationComposeable
+import com.jhb.crosswordScan.ui.registerScreen.RegistrationViewModel
+import com.jhb.crosswordScan.ui.resetPasswordScreen.resetPasswordScreen
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModel
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModelFactory
 import com.jhb.crosswordScan.ui.solveScreen.SolveScreenWrapper
@@ -47,6 +50,7 @@ private const val TAG = "CrosswordAppActivity"
 fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                  puzzleSelectViewModel: PuzzleSelectViewModel,
                  authViewModel: AuthViewModel,
+                 registationViewModel : RegistrationViewModel,
                  repository: PuzzleRepository,
                  takeImage : () -> Unit,
 ) {
@@ -54,9 +58,9 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
     val navController = rememberNavController()
     val uiState = MutableStateFlow(CrosswordAppUiState(pageTitle = ""))
     //val darkMode = uiState.collectAsState().value.darkMode
-    var darkMode by remember{ mutableStateOf(false) }
-    AppTheme(useDarkTheme = darkMode){
-    //    var currentScreen: RallyDestination by remember { mutableStateOf(Overview) }
+    var darkMode by remember { mutableStateOf(false) }
+    AppTheme(useDarkTheme = darkMode) {
+        //    var currentScreen: RallyDestination by remember { mutableStateOf(Overview) }
         Scaffold(
             topBar = {
                 val pageTitle = uiState.collectAsState().value.pageTitle
@@ -71,21 +75,23 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                                     contentDescription = "back"
                                 )
                             }
-                        ) },
+                        )
+                    },
                     title = {
                         Text(
                             text = pageTitle,
                             color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.headlineSmall)
-                            },
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
                     actions = {
                         //val showSearch = uiState.collectAsState().value.puzzleSearchShown
 
-                        if(
+                        if (
                             navController.currentDestination
                             == navController.findDestination(Screen.SelectPuzzle.route)
-                        ){
+                        ) {
                             IconButton(
                                 onClick = {},
                                 content = {
@@ -98,7 +104,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                         }
                         IconButton(
                             onClick = {
-                                navController.navigate(Screen.Authenticate.route){
+                                navController.navigate(Screen.Authenticate.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
                                     }
@@ -118,13 +124,13 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                         )
 
                         IconButton(
-                        onClick = {darkMode = !darkMode},
-                        content = {
-                            Icon(
-                                painterResource(id = R.drawable.ic_baseline_dark_mode_24),
-                                contentDescription = "dark mode"
-                            )
-                        }
+                            onClick = { darkMode = !darkMode },
+                            content = {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_baseline_dark_mode_24),
+                                    contentDescription = "dark mode"
+                                )
+                            }
                         )
                     }
                 )
@@ -144,13 +150,18 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     items.forEach { screen ->
                         NavigationBarItem(
                             alwaysShowLabel = false,
-                            icon = { Icon(painterResource(screen.iconResourceId), contentDescription = null) },
+                            icon = {
+                                Icon(
+                                    painterResource(screen.iconResourceId),
+                                    contentDescription = null
+                                )
+                            },
                             label = {
                                 Text(
                                     stringResource(screen.resourceId),
                                     //color = MaterialTheme.colorScheme.onPrimary
                                 )
-                                    },
+                            },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
                                 navController.navigate(screen.route) {
@@ -177,13 +188,13 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
 
             NavHost(
                 navController = navController,
-                startDestination = "gridScan",
+                startDestination = Screen.Authenticate.route,
                 modifier = Modifier.padding(innerPadding)
             ) {
                 // this is the composable for scanning grids. At somepoint, the viewmodel should
                 // be taken out of the composable and replaced with callbacks.
                 composable(route = Screen.GridScan.route) {
-                    uiState.update {ui ->
+                    uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.gridScan))
                     }
                     gridScanScreen(
@@ -195,22 +206,22 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
 
                 //
                 composable(route = Screen.ClueScan.route) {
-                    uiState.update {ui ->
+                    uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.clueScan))
                     }
                     ClueScanScreen(
                         uiState = gridScanViewModel.uiState.collectAsState(),
-                        setClueScanDirection = {gridScanViewModel.setClueScanDirection(it)},
+                        setClueScanDirection = { gridScanViewModel.setClueScanDirection(it) },
                         takeImage = takeImage,
                         onDragStart = { gridScanViewModel.resetClueHighlightBox(it) },
                         onDrag = { gridScanViewModel.changeClueHighlightBox(it) },
-                        setCanvasSize = {gridScanViewModel.setCanvasSize(it)},
-                        scanClues = {gridScanViewModel.scanClues()}
+                        setCanvasSize = { gridScanViewModel.setCanvasSize(it) },
+                        scanClues = { gridScanViewModel.scanClues() }
                     )
                 }
 
                 composable(route = Screen.PreviewScan.route) {
-                    uiState.update {ui ->
+                    uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.previewGridScan))
                     }
                     Log.i(TAG, "Navigated to preview screen")
@@ -225,16 +236,16 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     )
                 }
 
-                composable(route = Screen.SelectPuzzle.route){
-                    uiState.update {ui ->
+                composable(route = Screen.SelectPuzzle.route) {
+                    uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.solveMenuItem))
                     }
-                    Log.i(TAG,"navigated to puzzleSelect")
+                    Log.i(TAG, "navigated to puzzleSelect")
 
                     puzzleSelectionComposable(
                         uiState = puzzleSelectViewModel.uiState.collectAsState(),
                         navigateToPuzzle = {
-                            Log.i(TAG,"Navigating to solve/$it")
+                            Log.i(TAG, "Navigating to solve/$it")
                             navController.popBackStack()
                             navController.navigate("solve/$it")
                         }
@@ -245,35 +256,67 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     route = "solve/{puzzleId}",
                     arguments = listOf(navArgument("puzzleId") { type = NavType.StringType }),
                 )
-                    {
-                        uiState.update {ui ->
-                            ui.copy(pageTitle = "Puzzle")
-                        }
-                        val puzzleId = it.arguments?.getString("puzzleId")
-                        val puzzleSolveViewModel: PuzzleSolveViewModel = viewModel(factory = PuzzleSolveViewModelFactory(repository,puzzleId!!))
+                {
+                    uiState.update { ui ->
+                        ui.copy(pageTitle = "Puzzle")
+                    }
+                    val puzzleId = it.arguments?.getString("puzzleId")
+                    val puzzleSolveViewModel: PuzzleSolveViewModel =
+                        viewModel(factory = PuzzleSolveViewModelFactory(repository, puzzleId!!))
 
-                        Log.i(TAG,"navigated to solve/$puzzleId")
-                        SolveScreenWrapper(puzzleSolveViewModel)
+                    Log.i(TAG, "navigated to solve/$puzzleId")
+                    SolveScreenWrapper(puzzleSolveViewModel)
 
                 }
 
-                composable(route = Screen.Authenticate.route){
-                    uiState.update {ui ->
+                composable(route = Screen.Authenticate.route) {
+                    uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = Screen.Authenticate.resourceId))
                     }
-                    Log.i(TAG,"navigated to authentication")
+                    Log.i(TAG, "navigated to authentication")
 
-                        AuthScreenComposable(
-                            uiState = authViewModel.uiState.collectAsState(),
-                            userNameFieldCallback = { authViewModel.setUserName(it) },
-                            passwordFieldCallback = { authViewModel.setPassword(it) },
-                            loginCallback = {username,password -> authViewModel.login(username,password)},
-                            logoutCallback = {SessionData.logOut()},
-                            registerCallback = {authViewModel.register()},
-                            testServerCallback = {authViewModel.testApi()},
-                            userDataState = SessionData.userDataState,
-                            tokenState = SessionData.tokenState
-                        )
+                    AuthScreenComposable(
+                        uiState = authViewModel.uiState.collectAsState(),
+                        userNameFieldCallback = { authViewModel.setUserName(it) },
+                        passwordFieldCallback = { authViewModel.setPassword(it) },
+                        loginCallback = { username, password ->
+                            authViewModel.login(
+                                username,
+                                password
+                            )
+                        },
+                        logoutCallback = { SessionData.logOut() },
+                        registerCallback = { navController.navigate(Screen.Registration.route) },
+                        testServerCallback = { authViewModel.testApi() },
+                        forgotPasswordCallback = {navController.navigate(Screen.ResetPassword.route) },
+                        userDataState = SessionData.userDataState,
+                        tokenState = SessionData.tokenState
+                    )
+
+                }
+
+                composable(route = Screen.Registration.route) {
+                    uiState.update { ui ->
+                        ui.copy(pageTitle = stringResource(id = Screen.Registration.resourceId))
+                    }
+                    Log.i(TAG, "navigated to registration")
+                    RegistrationComposeable(
+                        uiState = registationViewModel.uiState.collectAsState(),
+                        registerCallback = {registationViewModel.submit()},
+                        userNameFieldCallback = {registationViewModel.setUserName(it)},
+                        passwordFieldCallback = {registationViewModel.setPassword(it)},
+                        passwordConfirmFieldCallback = {registationViewModel.setConfirmPassword(it)},
+                    )
+
+                }
+
+                composable(
+                    route = "resetPassword"
+                ){
+                    uiState.update { ui ->
+                        ui.copy(pageTitle = stringResource(id = Screen.ResetPassword.resourceId))
+                    }
+                    resetPasswordScreen()
 
                 }
             }

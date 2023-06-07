@@ -5,10 +5,15 @@
     <string name="clueScan">Scan clues</string>
     <string name="solveMenuItem">Solve</string>
     <string name="gridScanRoute">gridScan</string>
-    <string name="authenticateMenuItem">authenticate</string>
+    <string name="authenticateMenuItem">Authenticate</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="logout">logout</string>
+    <string name="registrationScreenMenuItem">Register</string>
+    <string name="resetPasswordMenuItem">Reset Password</string>
+    <string name="forgotPasswordButton">Forgot password?</string>
+    <string name="requestPasswordReset">send code</string>
+    <string name="resetPasswordAction">reset password</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 

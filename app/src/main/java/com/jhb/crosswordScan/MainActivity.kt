@@ -23,6 +23,8 @@ import androidx.lifecycle.lifecycleScope
 import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.ui.authScreen.AuthViewModel
 import com.jhb.crosswordScan.ui.authScreen.AuthViewModelFactory
+import com.jhb.crosswordScan.ui.registerScreen.RegistrationViewModel
+import com.jhb.crosswordScan.ui.registerScreen.RegistrationViewModelFactory
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
@@ -44,6 +46,11 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val registrationViewModel:  RegistrationViewModel by viewModels {
+        RegistrationViewModelFactory(
+            (this.application as PuzzleApplication).userRepository
+        )
+    }
 
     private val scanViewModel: CrosswordScanViewModel by viewModels {
         CrosswordScanViewModelFactory((this.application as PuzzleApplication).repository)
@@ -118,6 +125,7 @@ class MainActivity : ComponentActivity() {
                 scanViewModel,
                 puzzleSelectViewModel,
                 authViewModel,
+                registrationViewModel,
                 (this.application as PuzzleApplication).repository,
                 takeImage = { takeImage() }
             )

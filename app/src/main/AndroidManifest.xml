@@ -24,10 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight"
         tools:targetApi="31"
-        android:usesCleartextTraffic="true"
-        >
-
-
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -35,6 +32,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
 <!--            <intent-filter>-->
 <!--                <action android:name="android.media.action.IMAGE_CAPTURE"/>-->
 <!--                <category android:name="android.intent.category.DEFAULT"/>-->

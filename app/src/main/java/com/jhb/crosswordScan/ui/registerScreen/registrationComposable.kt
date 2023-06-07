@@ -1,4 +1,4 @@
-package com.jhb.crosswordScan.ui.authScreen
+package com.jhb.crosswordScan.ui.registerScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -23,61 +23,39 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.data.SessionData.tokenState
-import com.jhb.crosswordScan.data.SessionData.userDataState
+import com.jhb.crosswordScan.ui.common.Spinner
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun loginComposeable(
-    uiState: State<AuthUiState>,
+fun RegistrationComposeable(
+    uiState: State<RegistrationUiState>,
+    registerCallback: () -> Unit,
     userNameFieldCallback: (String) -> Unit,
     passwordFieldCallback: (String) -> Unit,
-    loginCallback: (String, String) -> Unit,
-    registerCallback: () -> Unit,
-    forgotPasswordCallback: () -> Unit,
+    passwordConfirmFieldCallback: (String) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
 
-    var showPassword by remember { mutableStateOf(false) }
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-
-    //SessionData.readUser()
-    val userFromFile = userDataState.collectAsState()
-    val tokenFromFile = tokenState.collectAsState()
-
-    val userName = uiState.value.userName
-    val password = uiState.value.userPassword
+    val userName = uiState.value.username
+    val password = uiState.value.password
+    val passwordConfirm = uiState.value.passwordConfirm
 
     Column(
         modifier = Modifier
             .fillMaxSize(1f),
         //.padding(50.dp),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val focusManager = LocalFocusManager.current
-
         var showPassword by remember { mutableStateOf(false) }
-
         val keyboardController = LocalSoftwareKeyboardController.current
-
-
-        //SessionData.readUser()
-        val userFromFile = userDataState.collectAsState()
-        val tokenFromFile = tokenState.collectAsState()
-
-        val userName = uiState.value.userName
-        val password = uiState.value.userPassword
-
 
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(200.dp)
-                .width(200.dp)
+                .height(100.dp)
+                .width(100.dp)
                 //.background(color = Color.Red)
                 .padding(10.dp)
                 .clip(shape = RoundedCornerShape(25))
@@ -98,9 +76,7 @@ fun loginComposeable(
         }
 
         OutlinedTextField(
-            value = if (userName != null) {
-                userName
-            } else "",
+            value = userName,
             modifier = Modifier.padding(10.dp),
             onValueChange = { userNameFieldCallback(it) },
             label = { Text("Username") },
@@ -120,11 +96,43 @@ fun loginComposeable(
             )
 
         OutlinedTextField(
-            value = if (password != null) {
-                password
-            } else "",
+            isError = uiState.value.errorState,
+            value = password,
             onValueChange = { passwordFieldCallback(it) },
             label = { Text("Password") },
+            modifier = Modifier.padding(10.dp),
+            leadingIcon = {
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_password_24),
+                    contentDescription = "password icon"
+                )
+            },
+            trailingIcon = {
+                IconButton(onClick = { showPassword = !showPassword }) {
+                    Icon(
+                        painterResource(
+                            id = if (showPassword) {
+                                R.drawable.ic_baseline_visibility_24
+                            } else R.drawable.ic_baseline_visibility_off_24
+                        ),
+                        contentDescription = "password visibility"
+                    )
+                }
+            },
+            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
+        )
+
+        OutlinedTextField(
+            isError = uiState.value.errorState,
+            value = passwordConfirm,
+            onValueChange = { passwordConfirmFieldCallback(it) },
+            label = { Text("Confirm password") },
             modifier = Modifier.padding(10.dp),
             leadingIcon = {
                 Icon(
@@ -149,58 +157,32 @@ fun loginComposeable(
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
+                    focusManager.moveFocus(FocusDirection.Down)
                 },
             ),
         )
 
-        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-
-
-            FilledTonalButton(
-                onClick = {
-                    if (uiState.value.userName != null && uiState.value.userPassword != null) {
-                        loginCallback(uiState.value.userName!!, uiState.value.userPassword!!)
-                    }
-                },
-                modifier = Modifier
-                    .width(250.dp)
-                    .padding(10.dp),
-                colors = buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-
-            ) {
-                Text(text = stringResource(R.string.login))
-            }
-
-        }
-        OutlinedButton(
-            onClick = { registerCallback() },
+        FilledTonalButton(
+            enabled = (!uiState.value.errorState && uiState.value.filledPassword),
+            onClick = { registerCallback()},
             modifier = Modifier
-                .width(250.dp)
+                .width(150.dp)
                 .padding(10.dp),
+            colors = buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Text(text = stringResource(R.string.register))
         }
-
-        OutlinedButton(
-            onClick = { forgotPasswordCallback() },
-            modifier = Modifier
-                .width(250.dp)
-                .padding(10.dp),
-        ) {
-            Text(text = stringResource(R.string.forgotPasswordButton))
+        Text(
+            text = uiState.value.message,
+            color = MaterialTheme.colorScheme.error
+        )
+        if(uiState.value.isLoading) {
+            Spinner()
         }
-
-
-
     }
-
-    userFromFile.value?.let { Text(text = it.userName) }
-    userFromFile.value?.let { Text(text = it.password) }
-    userFromFile.value?.let { Text(text = it.email) }
-    tokenFromFile.value?.let { Text(text = it) }
 }
 
 
