@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -22,23 +23,44 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.ui.common.Spinner
 
+@Composable
+fun RegistrationScreen(
+    registrationViewModel: RegistrationViewModel = viewModel(
+        factory = RegistrationViewModelFactory(
+            (LocalContext.current.applicationContext as PuzzleApplication).userRepository)
+    )
+){
+
+    val uiState by registrationViewModel.uiState.collectAsState()
+
+    RegistrationComposeable(
+        uiState = uiState,
+        registerCallback = {registrationViewModel.submit()},
+        userNameFieldCallback = {registrationViewModel.setUserName(it)},
+        passwordFieldCallback = {registrationViewModel.setPassword(it)},
+        passwordConfirmFieldCallback = {registrationViewModel.setConfirmPassword(it)},
+    )
+
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegistrationComposeable(
-    uiState: State<RegistrationUiState>,
+    uiState: RegistrationUiState,
     registerCallback: () -> Unit,
     userNameFieldCallback: (String) -> Unit,
     passwordFieldCallback: (String) -> Unit,
     passwordConfirmFieldCallback: (String) -> Unit,
 ) {
 
-    val userName = uiState.value.username
-    val password = uiState.value.password
-    val passwordConfirm = uiState.value.passwordConfirm
+    val userName = uiState.username
+    val password = uiState.password
+    val passwordConfirm = uiState.passwordConfirm
 
     Column(
         modifier = Modifier
@@ -95,8 +117,28 @@ fun RegistrationComposeable(
 
             )
 
+
         OutlinedTextField(
-            isError = uiState.value.errorState,
+            value = userName,
+            modifier = Modifier.padding(10.dp),
+            onValueChange = { userNameFieldCallback(it) },
+            label = { Text("Username") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
+            leadingIcon = {
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_person_24),
+                    contentDescription = "username icon"
+                )
+            },
+            )
+
+        OutlinedTextField(
+            isError = uiState.errorState,
             value = password,
             onValueChange = { passwordFieldCallback(it) },
             label = { Text("Password") },
@@ -129,7 +171,7 @@ fun RegistrationComposeable(
         )
 
         OutlinedTextField(
-            isError = uiState.value.errorState,
+            isError = uiState.errorState,
             value = passwordConfirm,
             onValueChange = { passwordConfirmFieldCallback(it) },
             label = { Text("Confirm password") },
@@ -163,7 +205,7 @@ fun RegistrationComposeable(
         )
 
         FilledTonalButton(
-            enabled = (!uiState.value.errorState && uiState.value.filledPassword),
+            enabled = (!uiState.errorState && uiState.filledPassword),
             onClick = { registerCallback()},
             modifier = Modifier
                 .width(150.dp)
@@ -176,10 +218,10 @@ fun RegistrationComposeable(
             Text(text = stringResource(R.string.register))
         }
         Text(
-            text = uiState.value.message,
+            text = uiState.message,
             color = MaterialTheme.colorScheme.error
         )
-        if(uiState.value.isLoading) {
+        if(uiState.isLoading) {
             Spinner()
         }
     }

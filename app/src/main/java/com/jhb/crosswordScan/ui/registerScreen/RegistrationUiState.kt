@@ -2,6 +2,7 @@ package com.jhb.crosswordScan.ui.registerScreen
 
 data class RegistrationUiState(
     val username: String = "",
+    val email: String = "",
     val password: String = "",
     val passwordConfirm: String = "",
     val message: String = "",

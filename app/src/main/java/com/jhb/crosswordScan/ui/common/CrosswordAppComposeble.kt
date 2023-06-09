@@ -31,7 +31,7 @@ import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
 import com.jhb.crosswordScan.ui.puzzlePreviewScreen.puzzlePreviewScreen
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionComposable
-import com.jhb.crosswordScan.ui.registerScreen.RegistrationComposeable
+import com.jhb.crosswordScan.ui.registerScreen.RegistrationScreen
 import com.jhb.crosswordScan.ui.registerScreen.RegistrationViewModel
 import com.jhb.crosswordScan.ui.resetPasswordScreen.resetPasswordScreen
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModel
@@ -300,13 +300,7 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                         ui.copy(pageTitle = stringResource(id = Screen.Registration.resourceId))
                     }
                     Log.i(TAG, "navigated to registration")
-                    RegistrationComposeable(
-                        uiState = registationViewModel.uiState.collectAsState(),
-                        registerCallback = {registationViewModel.submit()},
-                        userNameFieldCallback = {registationViewModel.setUserName(it)},
-                        passwordFieldCallback = {registationViewModel.setPassword(it)},
-                        passwordConfirmFieldCallback = {registationViewModel.setConfirmPassword(it)},
-                    )
+                    RegistrationScreen()
 
                 }
 

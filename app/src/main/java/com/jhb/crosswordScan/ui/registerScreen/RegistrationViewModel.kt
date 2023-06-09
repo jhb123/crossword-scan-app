@@ -4,9 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jhb.crosswordScan.network.CrosswordApi
 import com.jhb.crosswordScan.userData.UserRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -71,10 +69,10 @@ class RegistrationViewModel(private val repository: UserRepository) : ViewModel(
             _uiState.update {
                 it.copy(isLoading = true)
             }
-            delay(3000)
             try {
-                val serverResponse = CrosswordApi.retrofitService.getHello()
-                Log.i(TAG, serverResponse)
+
+//                val serverResponse = CrosswordApi.retrofitService.register(body)
+//                Log.i(TAG, serverResponse)
             }
             catch (e : ConnectException){
                 Log.i(TAG, "unable to find server")

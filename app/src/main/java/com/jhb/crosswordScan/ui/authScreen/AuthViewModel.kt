@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jhb.crosswordScan.data.SessionData
+import com.google.gson.Gson
 import com.jhb.crosswordScan.network.CrosswordApi
 import com.jhb.crosswordScan.userData.UserData
 import com.jhb.crosswordScan.userData.UserRepository
@@ -12,7 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import java.net.ConnectException
+
 
 private const val TAG = "AuthViewModel"
 
@@ -25,25 +28,24 @@ class AuthViewModel(private val repository: UserRepository)
     fun login(username: String, password: String){
         Log.i(TAG,"Logging in")
         viewModelScope.launch {
-//            repository.allUsers.collect{
-            repository.getUser(username, password).collect {
-//            repository.getUserById(0).collect{
+            //CrosswordAppRequest(status = 200,message="ok")
+            val gson = Gson()
+            val loginMessage = mapOf(
+                "username" to uiState.value.userName!!.trim(),
+                "password" to uiState.value.userPassword!!
+            )
+            val payload = gson.toJson(loginMessage)
+            val requestBody = RequestBody.create(MediaType.get("application/json"), payload)
 
-                if (it != null) {
-                    Log.i(TAG,"Valid User")
-                    SessionData.writeUser(it)
-                    SessionData.readUser()
-//            _uiState.update {
-//                it.copy(
-//                    userName = user.userName,
-//                    userPassword = user.password,
-//                    userEmail = user.email
-//                )
-//            }
-                }
-            }
+            Log.i(TAG, "request body made")
+
+            val response = CrosswordApi.retrofitService.login(requestBody)
+
+            val responseJson = gson.fromJson(response.string(), MutableMap::class.java)
+            Log.i(TAG, "Token ${responseJson["token"]}")
+
+            Log.i(TAG,"Finished logging in")
         }
-
     }
 
     fun setUserName(name: String){
@@ -85,8 +87,8 @@ class AuthViewModel(private val repository: UserRepository)
                 Log.i(TAG, "unable to find server")
             }
         }
-
     }
+
 
 }
 
