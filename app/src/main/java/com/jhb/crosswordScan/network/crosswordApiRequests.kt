@@ -3,7 +3,6 @@ package com.jhb.crosswordScan.network
 
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -32,8 +31,11 @@ interface CrosswordApiService {
     @GET("auth/resetPassword")
     suspend fun getResetPassword(@Query("email") apiKey: String): String
 
+    @POST("auth/resetPassword")
+    suspend fun postResetPassword(@Body request: RequestBody): ResponseBody
+
     @POST("auth/register")
-    suspend fun register(@Body request: CrosswordAppRequest): Call<Unit>
+    suspend fun register(@Body request: RequestBody): ResponseBody
 
     @POST("auth/login2")
     suspend fun login(@Body requestBody: RequestBody): ResponseBody

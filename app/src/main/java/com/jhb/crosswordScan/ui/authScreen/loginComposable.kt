@@ -24,8 +24,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.data.SessionData.tokenState
-import com.jhb.crosswordScan.data.SessionData.userDataState
+import com.jhb.crosswordScan.data.Session.sessionDataState
+import com.jhb.crosswordScan.data.Session.tokenState
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -45,8 +45,8 @@ fun loginComposeable(
     val keyboardController = LocalSoftwareKeyboardController.current
 
 
-    //SessionData.readUser()
-    val userFromFile = userDataState.collectAsState()
+    //Session.readUser()
+    val userFromFile = sessionDataState.collectAsState()
     val tokenFromFile = tokenState.collectAsState()
 
     val userName = uiState.value.userName
@@ -66,8 +66,8 @@ fun loginComposeable(
         val keyboardController = LocalSoftwareKeyboardController.current
 
 
-        //SessionData.readUser()
-        val userFromFile = userDataState.collectAsState()
+        //Session.readUser()
+        val userFromFile = sessionDataState.collectAsState()
         val tokenFromFile = tokenState.collectAsState()
 
         val userName = uiState.value.userName
@@ -195,14 +195,20 @@ fun loginComposeable(
             Text(text = stringResource(R.string.forgotPasswordButton))
         }
 
+        uiState.value.serverErrorText?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
 
+        userFromFile.value?.let { it.username?.let { it1 -> Text(text = it1) } }
+        userFromFile.value?.let { it.password?.let { it1 -> Text(text = it1) } }
+        tokenFromFile.value?.let { Text(text = it) }
 
     }
 
-    userFromFile.value?.let { Text(text = it.userName) }
-    userFromFile.value?.let { Text(text = it.password) }
-    userFromFile.value?.let { Text(text = it.email) }
-    tokenFromFile.value?.let { Text(text = it) }
+
 }
 
 

@@ -45,7 +45,8 @@ fun resetPasswordScreen(resetPasswordViewModel: ResetPasswordViewModel = viewMod
         setEmailCallback = {resetPasswordViewModel.setEmail(it)},
         setNewPasswordCallback = {resetPasswordViewModel.setNewPassword(it)},
         setResetCodeCallback = {resetPasswordViewModel.setResetCode(it)},
-        requestReset = {resetPasswordViewModel.requestPasswordReset()}
+        requestReset = {resetPasswordViewModel.requestPasswordReset()},
+        resetCallback = {resetPasswordViewModel.setNewPassword()}
     )
 
 }
@@ -60,8 +61,8 @@ fun resetPasswordComposable(
     setEmailCallback: (String) -> Unit,
     setNewPasswordCallback: (String) -> Unit,
     setResetCodeCallback: (String) -> Unit,
-    requestReset: () -> Unit
-
+    requestReset: () -> Unit,
+    resetCallback: () -> Unit
 ){
 
     Column(
@@ -103,7 +104,7 @@ fun resetPasswordComposable(
             value = email,
             modifier = Modifier.padding(10.dp),
             onValueChange = { setEmailCallback(it) },
-            label = { Text("Username") },
+            label = { Text("Email") },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(
                 onNext = {
@@ -112,7 +113,7 @@ fun resetPasswordComposable(
             ),
             leadingIcon = {
                 Icon(
-                    painterResource(id = R.drawable.ic_baseline_person_24),
+                    painterResource(id = R.drawable.ic_baseline_email_24),
                     contentDescription = "username icon"
                 )
             },
@@ -178,7 +179,7 @@ fun resetPasswordComposable(
         )
 
         FilledTonalButton(
-            onClick = { },
+            onClick = { resetCallback()},
             modifier = Modifier
                 .width(250.dp)
                 .padding(10.dp),

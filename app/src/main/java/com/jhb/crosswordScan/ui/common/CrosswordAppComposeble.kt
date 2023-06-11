@@ -22,7 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.compose.AppTheme
 import com.jhb.crosswordScan.data.PuzzleRepository
-import com.jhb.crosswordScan.data.SessionData
+import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.navigation.Screen
 import com.jhb.crosswordScan.ui.authScreen.AuthScreenComposable
 import com.jhb.crosswordScan.ui.authScreen.AuthViewModel
@@ -285,12 +285,12 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                                 password
                             )
                         },
-                        logoutCallback = { SessionData.logOut() },
+                        logoutCallback = { Session.logOut() },
                         registerCallback = { navController.navigate(Screen.Registration.route) },
                         testServerCallback = { authViewModel.testApi() },
                         forgotPasswordCallback = {navController.navigate(Screen.ResetPassword.route) },
-                        userDataState = SessionData.userDataState,
-                        tokenState = SessionData.tokenState
+                        sessionDataState = Session.sessionDataState,
+                        tokenState = Session.tokenState
                     )
 
                 }

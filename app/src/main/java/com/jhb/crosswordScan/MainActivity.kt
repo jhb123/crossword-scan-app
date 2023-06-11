@@ -20,7 +20,7 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.rotationMatrix
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
-import com.jhb.crosswordScan.data.SessionData
+import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.ui.authScreen.AuthViewModel
 import com.jhb.crosswordScan.ui.authScreen.AuthViewModelFactory
 import com.jhb.crosswordScan.ui.registerScreen.RegistrationViewModel
@@ -117,8 +117,8 @@ class MainActivity : ComponentActivity() {
         startOpenCV()
         Log.i(TAG, "Setting content")
 
-        SessionData.setContext(this.applicationContext)
-        SessionData.readUser()
+        Session.setContext(this.applicationContext)
+        Session.readSession()
 
         setContent {
             CrosswordApp(

@@ -7,4 +7,5 @@ data class AuthUiState(
     val userPassword : String? = null,
     val userEmail : String? = null,
     val users : List<UserData>? = null,
+    val serverErrorText : String? = null
 )

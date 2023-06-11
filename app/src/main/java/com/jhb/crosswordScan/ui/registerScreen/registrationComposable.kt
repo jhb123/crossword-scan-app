@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,8 @@ fun RegistrationScreen(
     registrationViewModel: RegistrationViewModel = viewModel(
         factory = RegistrationViewModelFactory(
             (LocalContext.current.applicationContext as PuzzleApplication).userRepository)
-    )
+    ),
+    //navigationOnSuccess : (String) -> Unit
 ){
 
     val uiState by registrationViewModel.uiState.collectAsState()
@@ -42,6 +44,7 @@ fun RegistrationScreen(
         uiState = uiState,
         registerCallback = {registrationViewModel.submit()},
         userNameFieldCallback = {registrationViewModel.setUserName(it)},
+        emailFieldCallback = {registrationViewModel.setEmail(it)},
         passwordFieldCallback = {registrationViewModel.setPassword(it)},
         passwordConfirmFieldCallback = {registrationViewModel.setConfirmPassword(it)},
     )
@@ -53,6 +56,7 @@ fun RegistrationScreen(
 fun RegistrationComposeable(
     uiState: RegistrationUiState,
     registerCallback: () -> Unit,
+    emailFieldCallback: (String) -> Unit,
     userNameFieldCallback: (String) -> Unit,
     passwordFieldCallback: (String) -> Unit,
     passwordConfirmFieldCallback: (String) -> Unit,
@@ -61,6 +65,7 @@ fun RegistrationComposeable(
     val userName = uiState.username
     val password = uiState.password
     val passwordConfirm = uiState.passwordConfirm
+    val email = uiState.email
 
     Column(
         modifier = Modifier
@@ -98,11 +103,14 @@ fun RegistrationComposeable(
         }
 
         OutlinedTextField(
-            value = userName,
+            value = email,
             modifier = Modifier.padding(10.dp),
-            onValueChange = { userNameFieldCallback(it) },
-            label = { Text("Username") },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            onValueChange = { emailFieldCallback(it) },
+            label = { Text(stringResource(R.string.emailLabel)) },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -110,7 +118,7 @@ fun RegistrationComposeable(
             ),
             leadingIcon = {
                 Icon(
-                    painterResource(id = R.drawable.ic_baseline_person_24),
+                    painterResource(id = R.drawable.ic_baseline_email_24),
                     contentDescription = "username icon"
                 )
             },
@@ -138,7 +146,7 @@ fun RegistrationComposeable(
             )
 
         OutlinedTextField(
-            isError = uiState.errorState,
+            isError = !uiState.passwordsMatch,
             value = password,
             onValueChange = { passwordFieldCallback(it) },
             label = { Text("Password") },
@@ -171,7 +179,7 @@ fun RegistrationComposeable(
         )
 
         OutlinedTextField(
-            isError = uiState.errorState,
+            isError = !uiState.passwordsMatch,
             value = passwordConfirm,
             onValueChange = { passwordConfirmFieldCallback(it) },
             label = { Text("Confirm password") },
@@ -205,7 +213,7 @@ fun RegistrationComposeable(
         )
 
         FilledTonalButton(
-            enabled = (!uiState.errorState && uiState.filledPassword),
+            enabled = (!uiState.errorState && uiState.passwordsMatch),
             onClick = { registerCallback()},
             modifier = Modifier
                 .width(150.dp)
@@ -226,19 +234,3 @@ fun RegistrationComposeable(
         }
     }
 }
-
-
-//        LazyColumn(contentPadding = PaddingValues(10.dp),
-//            modifier = Modifier
-//                .padding(0.dp)
-//                .background(MaterialTheme.colorScheme.background)
-//                .height(300.dp)
-//        ){
-//            if (uiState.value.users != null){
-//                items(uiState.value.users!!) { user ->
-//                    Text(user.userName)
-//                }
-//            }
-//        }
-//    }
-

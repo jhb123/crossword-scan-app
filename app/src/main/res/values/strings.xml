@@ -14,6 +14,7 @@
     <string name="forgotPasswordButton">Forgot password?</string>
     <string name="requestPasswordReset">send code</string>
     <string name="resetPasswordAction">reset password</string>
+    <string name="emailLabel">Email</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 

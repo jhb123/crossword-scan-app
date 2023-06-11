@@ -6,7 +6,6 @@ import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jhb.crosswordScan.userData.UserData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -15,29 +14,29 @@ import java.io.File
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-private const val TAG = "SessionData"
+private const val TAG = "Session"
 
-object SessionData {
+object Session {
 
     @Volatile
     lateinit var applicationContext: Context
     lateinit var masterKey: MasterKey
     lateinit var encryptedFile: EncryptedFile
 
-    private lateinit var userData: UserData
-    private lateinit var token: String
+    //private lateinit var sessionData: SessionData
+    //private lateinit var token: String
 
-    private val userFileName = "user.txt"
+    private val sessionFileName = "session.txt"
     private val tokenFileName = "token.txt"
 
-    val _tokenState = MutableStateFlow<String?>(null)
+    private val _tokenState = MutableStateFlow<String?>(null)
     val tokenState: StateFlow<String?> = _tokenState
 
-    val _userDataState = MutableStateFlow<UserData?>(null)
-    val userDataState: StateFlow<UserData?> = _userDataState
+    private val _sessionDataState = MutableStateFlow<SessionData?>(null)
+    val sessionDataState: StateFlow<SessionData?> = _sessionDataState
 
 
-    //val flowTest = Flow<UserData>
+    //val flowTest = Flow<>
 
     fun setContext(context: Context) {
         applicationContext = context
@@ -50,47 +49,54 @@ object SessionData {
     }
 
     fun logOut(){
-        deleteUserData()
-        _userDataState.update { null }
+        deleteSessionData()
+        _sessionDataState.update { null }
     }
 
-    private fun deleteUserData(){
-        val file = File(applicationContext.filesDir, userFileName)
+    private fun deleteSessionData(){
+        val file = File(applicationContext.filesDir, sessionFileName)
         if (file.exists()) {
             file.delete()
         }
     }
 
-    fun writeUser(userData: UserData?) {
-        val fileContent = userToJson(userData)
-        Log.i(TAG,"writing user.txt $fileContent")
-        writeEncryptedFile(userFileName,fileContent)
+    fun updateSession(sessionData: SessionData?){
+        if(sessionData!=null){
+            writeSession(sessionData)
+            _sessionDataState.update { sessionData }
+        }
     }
 
-    fun readUser(): UserData? {
-        val userPlainText = readEncryptedFile(userFileName)
-        if(userPlainText!=null){
-            userData = userFromJson(userPlainText)
-            Log.i(TAG,"from user.txt $userPlainText")
-            _userDataState.update { userData }
-            return userData
+    fun writeSession(sessionData: SessionData?) {
+        val fileContent = sessionDataToJson(sessionData)
+        Log.i(TAG,"writing $sessionFileName $fileContent")
+        writeEncryptedFile(sessionFileName,fileContent)
+    }
+
+    fun readSession(): SessionData? {
+        val sessionPlainText = readEncryptedFile(sessionFileName)
+        if(sessionPlainText!=null){
+            val sessionData = sessionDataFromJson(sessionPlainText)
+            Log.i(TAG,"from $sessionFileName $sessionPlainText")
+            _sessionDataState.update { sessionData }
+            return sessionData
         } else{
             return null
         }
     }
 
-    fun writeToken(userData: UserData) {
-        val fileContent = userToJson(userData)
+    fun writeToken(sessionData: SessionData) {
+        val fileContent = sessionDataToJson(sessionData)
         writeEncryptedFile(tokenFileName,fileContent)
     }
 
     fun readToken(): String? {
         val tokenPlainText = readEncryptedFile(tokenFileName)
         if(tokenPlainText!=null){
-            token = tokenPlainText
-            _tokenState.update { token }
+            //token = tokenPlainText
+            _tokenState.update { tokenPlainText }
 
-            return token
+            return tokenPlainText
         } else{
             return null
         }
@@ -145,15 +151,21 @@ object SessionData {
         }
     }
 
-    private fun userFromJson(json: String): UserData {
-        val typeToken = object : TypeToken<UserData>() {}.type
+    private fun sessionDataFromJson(json: String): SessionData {
+        val typeToken = object : TypeToken<SessionData>() {}.type
         return Gson().fromJson(json, typeToken)
     }
 
-    private fun userToJson(user: UserData?): String {
+    private fun sessionDataToJson(sessiondata: SessionData?): String {
         val gson = Gson()
-        return gson.toJson(user)
+        return gson.toJson(sessiondata)
     }
 
 
 }
+
+data class SessionData(
+    val username : String?,
+    val password : String?,
+    val token : String?,
+)

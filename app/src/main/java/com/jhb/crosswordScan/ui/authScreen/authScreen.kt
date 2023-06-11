@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
-import com.jhb.crosswordScan.userData.UserData
+import com.jhb.crosswordScan.data.SessionData
 import kotlinx.coroutines.flow.StateFlow
 
 
@@ -19,19 +19,19 @@ fun AuthScreenComposable(
     registerCallback: () -> Unit,
     testServerCallback: () -> Unit,
     forgotPasswordCallback: () -> Unit,
-    userDataState: StateFlow<UserData?>,
+    sessionDataState : StateFlow<SessionData?>,
     tokenState: StateFlow<String?>,
 ) {
 
 
-    //SessionData.readUser()
-    val userFromFile = userDataState.collectAsState()
+    //Session.readUser()
+    val sessionFromFile = sessionDataState.collectAsState()
     val tokenFromFile = tokenState.collectAsState()
 
     val userName = uiState.value.userName
     val password = uiState.value.userPassword
 
-    if (userFromFile.value == null) {
+    if (sessionFromFile.value == null) {
         loginComposeable(
             uiState = uiState,
             userNameFieldCallback = { userNameFieldCallback(it) },
