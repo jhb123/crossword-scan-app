@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -25,18 +24,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.ui.common.Spinner
 
 @Composable
 fun RegistrationScreen(
-    registrationViewModel: RegistrationViewModel = viewModel(
-        factory = RegistrationViewModelFactory(
-            (LocalContext.current.applicationContext as PuzzleApplication).userRepository)
-    ),
-    //navigationOnSuccess : (String) -> Unit
+    navigateOnSuccess : () -> Unit
 ){
+
+    val registrationViewModel: RegistrationViewModel = viewModel(
+    factory = RegistrationViewModelFactory(navigateOnSuccess))
 
     val uiState by registrationViewModel.uiState.collectAsState()
 

@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -27,14 +28,27 @@ import com.jhb.crosswordScan.ui.common.Spinner
 
 
 @Composable
-fun resetPasswordScreen(resetPasswordViewModel: ResetPasswordViewModel = viewModel()){
+fun resetPasswordScreen(
+    navigateOnSuccess: ()->Unit
+){
+    val resetPasswordViewModel: ResetPasswordViewModel = viewModel(factory =
+    ResetPasswordViewModelFactory(navigateOnSuccess)
+    )
 
     val uiState by resetPasswordViewModel.uiState.collectAsState()
+    //val resetState by resetPasswordViewModel.resetState.collectAsState()
+
+//    if(resetState){
+//
+//        navigateOnSuccess()
+//    }
 
     val email = uiState.email
     val newpassword = uiState.newpassword
     val resetCode = uiState.resetCode
     val isLoading = uiState.isLoading
+    val serverMessage = uiState.serverMessage
+
 
 
     resetPasswordComposable(
@@ -42,11 +56,12 @@ fun resetPasswordScreen(resetPasswordViewModel: ResetPasswordViewModel = viewMod
         newpassword = newpassword,
         resetCode = resetCode,
         isLoading = isLoading,
+        serverMessage = serverMessage,
         setEmailCallback = {resetPasswordViewModel.setEmail(it)},
         setNewPasswordCallback = {resetPasswordViewModel.setNewPassword(it)},
         setResetCodeCallback = {resetPasswordViewModel.setResetCode(it)},
         requestReset = {resetPasswordViewModel.requestPasswordReset()},
-        resetCallback = {resetPasswordViewModel.setNewPassword()}
+        resetCallback = {resetPasswordViewModel.setNewPassword()},
     )
 
 }
@@ -58,16 +73,20 @@ fun resetPasswordComposable(
     newpassword : String,
     resetCode : String,
     isLoading : Boolean,
+    serverMessage: String,
     setEmailCallback: (String) -> Unit,
     setNewPasswordCallback: (String) -> Unit,
     setResetCodeCallback: (String) -> Unit,
     requestReset: () -> Unit,
-    resetCallback: () -> Unit
+    resetCallback: () -> Unit,
 ){
 
     Column(
         modifier = Modifier
+            //.fillMaxHeight(1f)
+            //.width(350.dp),
             .fillMaxSize(1f),
+
         //.padding(50.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -75,6 +94,8 @@ fun resetPasswordComposable(
         val focusManager = LocalFocusManager.current
         var showPassword by remember { mutableStateOf(false) }
         val keyboardController = LocalSoftwareKeyboardController.current
+
+        val textBoxWidth = 300.dp
 
         Box(
             contentAlignment = Alignment.Center,
@@ -102,10 +123,13 @@ fun resetPasswordComposable(
 
         OutlinedTextField(
             value = email,
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(10.dp).width(textBoxWidth),
             onValueChange = { setEmailCallback(it) },
             label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -136,7 +160,8 @@ fun resetPasswordComposable(
             value = resetCode,
             onValueChange = { setResetCodeCallback(it) },
             label = { Text("reset code") },
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(10.dp).width(textBoxWidth),
+            singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(
                 onNext = {
@@ -169,7 +194,7 @@ fun resetPasswordComposable(
                 }
             },
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions(
                 onNext = {
                     keyboardController?.hide()
@@ -190,9 +215,10 @@ fun resetPasswordComposable(
         ) {
             Text(text = stringResource(R.string.resetPasswordAction))
         }
+        Text(text = serverMessage,color = MaterialTheme.colorScheme.error)
+
         if(isLoading){
             Spinner()
         }
     }
-
 }

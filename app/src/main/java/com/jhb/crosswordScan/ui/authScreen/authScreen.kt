@@ -4,9 +4,38 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.data.SessionData
 import kotlinx.coroutines.flow.StateFlow
 
+
+@Composable
+fun AuthScreen(
+    navigateToRegistration: () -> Unit,
+    navigateToReset: () -> Unit
+
+){
+    val authViewModel : AuthViewModel = viewModel()
+
+    AuthScreenComposable(
+        uiState = authViewModel.uiState.collectAsState(),
+        userNameFieldCallback = { authViewModel.setUserName(it) },
+        passwordFieldCallback = { authViewModel.setPassword(it) },
+        loginCallback = { username, password ->
+            authViewModel.login(
+                username,
+                password
+            )
+        },
+        logoutCallback = { Session.logOut() },
+        registerCallback = { navigateToRegistration() },
+        forgotPasswordCallback = { navigateToReset() },
+        sessionDataState = Session.sessionDataState,
+        tokenState = Session.tokenState
+    )
+
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -17,7 +46,6 @@ fun AuthScreenComposable(
     loginCallback: (String, String) -> Unit,
     logoutCallback: () -> Unit,
     registerCallback: () -> Unit,
-    testServerCallback: () -> Unit,
     forgotPasswordCallback: () -> Unit,
     sessionDataState : StateFlow<SessionData?>,
     tokenState: StateFlow<String?>,

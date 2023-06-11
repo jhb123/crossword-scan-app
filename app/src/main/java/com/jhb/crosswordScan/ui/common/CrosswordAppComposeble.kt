@@ -5,12 +5,17 @@ package com.jhb.crosswordScan
 //import androidx.compose.material3.BottomNavigation
 //import androidx.compose.material.BottomNavigationItem
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -24,15 +29,13 @@ import com.example.compose.AppTheme
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.navigation.Screen
-import com.jhb.crosswordScan.ui.authScreen.AuthScreenComposable
-import com.jhb.crosswordScan.ui.authScreen.AuthViewModel
+import com.jhb.crosswordScan.ui.authScreen.AuthScreen
 import com.jhb.crosswordScan.ui.clueScanScreen.ClueScanScreen
 import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
 import com.jhb.crosswordScan.ui.puzzlePreviewScreen.puzzlePreviewScreen
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionComposable
 import com.jhb.crosswordScan.ui.registerScreen.RegistrationScreen
-import com.jhb.crosswordScan.ui.registerScreen.RegistrationViewModel
 import com.jhb.crosswordScan.ui.resetPasswordScreen.resetPasswordScreen
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModel
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModelFactory
@@ -49,14 +52,16 @@ private const val TAG = "CrosswordAppActivity"
 @Composable
 fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                  puzzleSelectViewModel: PuzzleSelectViewModel,
-                 authViewModel: AuthViewModel,
-                 registationViewModel : RegistrationViewModel,
+                 //authViewModel: AuthViewModel,
+                 //registationViewModel : RegistrationViewModel,
                  repository: PuzzleRepository,
                  takeImage : () -> Unit,
 ) {
 
     val navController = rememberNavController()
     val uiState = MutableStateFlow(CrosswordAppUiState(pageTitle = ""))
+    val sessionDataState by Session.sessionDataState.collectAsState()
+
     //val darkMode = uiState.collectAsState().value.darkMode
     var darkMode by remember { mutableStateOf(false) }
     AppTheme(useDarkTheme = darkMode) {
@@ -68,7 +73,16 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                 TopAppBar(
                     navigationIcon = {
                         IconButton(
-                            onClick = { navController.navigateUp() },
+                            onClick = { navController.navigate(Screen.SelectPuzzle.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                // Avoid multiple copies of the same destination when
+                                // reselecting the same item
+                                launchSingleTop = true
+                                // Restore state when reselecting a previously selected item
+                                restoreState = true
+                            } },
                             content = {
                                 Icon(
                                     painterResource(id = R.drawable.ic_baseline_home_24),
@@ -102,26 +116,40 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                                 }
                             )
                         }
-                        IconButton(
-                            onClick = {
-                                navController.navigate(Screen.Authenticate.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate(Screen.Authenticate.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        // Avoid multiple copies of the same destination when
+                                        // reselecting the same item
+                                        launchSingleTop = true
+                                        // Restore state when reselecting a previously selected item
+                                        restoreState = true
                                     }
-                                    // Avoid multiple copies of the same destination when
-                                    // reselecting the same item
-                                    launchSingleTop = true
-                                    // Restore state when reselecting a previously selected item
-                                    restoreState = true
+                                },
+                                content = {
+                                    Icon(
+                                        painterResource(id = Screen.Authenticate.iconResourceId),
+                                        contentDescription = "Authenticate"
+                                    )
                                 }
-                            },
-                            content = {
-                                Icon(
-                                    painterResource(id = Screen.Authenticate.iconResourceId),
-                                    contentDescription = "Authenticate"
+                            )
+                            sessionDataState?.username?.let {
+                                Text(it,
+                                    modifier = Modifier
+                                        .padding(0.dp)
+                                        .offset(y = -15.dp)
                                 )
                             }
-                        )
+
+                        }
+
 
                         IconButton(
                             onClick = { darkMode = !darkMode },
@@ -274,33 +302,30 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                         ui.copy(pageTitle = stringResource(id = Screen.Authenticate.resourceId))
                     }
                     Log.i(TAG, "navigated to authentication")
-
-                    AuthScreenComposable(
-                        uiState = authViewModel.uiState.collectAsState(),
-                        userNameFieldCallback = { authViewModel.setUserName(it) },
-                        passwordFieldCallback = { authViewModel.setPassword(it) },
-                        loginCallback = { username, password ->
-                            authViewModel.login(
-                                username,
-                                password
-                            )
-                        },
-                        logoutCallback = { Session.logOut() },
-                        registerCallback = { navController.navigate(Screen.Registration.route) },
-                        testServerCallback = { authViewModel.testApi() },
-                        forgotPasswordCallback = {navController.navigate(Screen.ResetPassword.route) },
-                        sessionDataState = Session.sessionDataState,
-                        tokenState = Session.tokenState
+                    AuthScreen(
+                        navigateToRegistration = {navController.navigate(Screen.Registration.route)},
+                        navigateToReset = {navController.navigate(Screen.ResetPassword.route)}
                     )
-
                 }
 
                 composable(route = Screen.Registration.route) {
                     uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = Screen.Registration.resourceId))
                     }
+
                     Log.i(TAG, "navigated to registration")
-                    RegistrationScreen()
+                    RegistrationScreen(
+                        navigateOnSuccess = {
+                        Log.i(TAG, "Navigating to ${Screen.SelectPuzzle.route}")
+                        navController.popBackStack()
+                        navController.navigate(Screen.SelectPuzzle.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    })
 
                 }
 
@@ -310,8 +335,19 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = Screen.ResetPassword.resourceId))
                     }
-                    resetPasswordScreen()
-
+                    resetPasswordScreen(
+                        navigateOnSuccess = {
+                            Log.i(TAG, "Navigating to ${Screen.SelectPuzzle.route}")
+                            navController.popBackStack()
+                            navController.navigate(Screen.SelectPuzzle.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    )
                 }
             }
         }

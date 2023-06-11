@@ -8,7 +8,6 @@ import com.google.gson.Gson
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.network.CrosswordApi
-import com.jhb.crosswordScan.userData.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -20,8 +19,9 @@ import java.net.ConnectException
 
 private const val TAG = "RegistrationViewModel"
 
-class RegistrationViewModel(private val repository: UserRepository) : ViewModel() {
+class RegistrationViewModel(navigateOnSuccess: ()-> Unit ) : ViewModel() {
 
+    private val navigateOnSuccess = navigateOnSuccess
     private val _uiState = MutableStateFlow(RegistrationUiState())
     val uiState : StateFlow<RegistrationUiState> = _uiState
 
@@ -95,6 +95,7 @@ class RegistrationViewModel(private val repository: UserRepository) : ViewModel(
                 Session.updateSession(sessionData)
 
                 Log.i(TAG, "Finished registration")
+                navigateOnSuccess()
             }
             catch(e : HttpException){
                 Log.e(TAG,e.message())
@@ -149,11 +150,11 @@ class RegistrationViewModel(private val repository: UserRepository) : ViewModel(
     }
 }
 
-class RegistrationViewModelFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
+class RegistrationViewModelFactory(private val navigateOnSuccess: ()->Unit) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return RegistrationViewModel(repository) as T
+            return RegistrationViewModel(navigateOnSuccess) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

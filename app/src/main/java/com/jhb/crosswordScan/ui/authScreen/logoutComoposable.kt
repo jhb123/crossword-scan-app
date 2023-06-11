@@ -84,9 +84,17 @@ fun logoutComposeable(
             }
             //tokenFromFile.value?.let { Text(text = it) }
         }
-        userFromFile.value?.let { it.username?.let { it1 -> Text(text = it1) } }
-        userFromFile.value?.let { it.password?.let { it1 -> Text(text = it1) } }
-        userFromFile.value?.let { it.token?.let { it1 -> Text(text = it1) } }
+        userFromFile.value?.let {
+            it.username?.let {
+                    it1 -> Text(
+                text = "Welcome, $it1!",
+                style = MaterialTheme.typography.displaySmall
+            )
+            }
+        }
+        //userFromFile.value?.let { it.username?.let { it1 -> Text(text = it1) } }
+        //userFromFile.value?.let { it.password?.let { it1 -> Text(text = it1) } }
+        //userFromFile.value?.let { it.token?.let { it1 -> Text(text = it1) } }
 
     }
 
