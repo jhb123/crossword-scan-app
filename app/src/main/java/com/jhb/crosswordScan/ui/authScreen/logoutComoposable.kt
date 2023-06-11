@@ -18,8 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.data.SessionData.tokenState
-import com.jhb.crosswordScan.data.SessionData.userDataState
+import com.jhb.crosswordScan.data.Session.sessionDataState
+import com.jhb.crosswordScan.data.Session.tokenState
 
 @Composable
 fun logoutComposeable(
@@ -28,8 +28,8 @@ fun logoutComposeable(
 ) {
 
 
-    //SessionData.readUser()
-    val userFromFile = userDataState.collectAsState()
+    //Session.readUser()
+    val userFromFile = sessionDataState.collectAsState()
     val tokenFromFile = tokenState.collectAsState()
 
     val userName = uiState.value.userName
@@ -82,12 +82,20 @@ fun logoutComposeable(
             ) {
                 Text(text = stringResource(R.string.logout))
             }
+            //tokenFromFile.value?.let { Text(text = it) }
         }
+        userFromFile.value?.let {
+            it.username?.let {
+                    it1 -> Text(
+                text = "Welcome, $it1!",
+                style = MaterialTheme.typography.displaySmall
+            )
+            }
+        }
+        //userFromFile.value?.let { it.username?.let { it1 -> Text(text = it1) } }
+        //userFromFile.value?.let { it.password?.let { it1 -> Text(text = it1) } }
+        //userFromFile.value?.let { it.token?.let { it1 -> Text(text = it1) } }
 
-        userFromFile.value?.let { Text(text = it.userName) }
-        userFromFile.value?.let { Text(text = it.password) }
-        userFromFile.value?.let { Text(text = it.email) }
-        tokenFromFile.value?.let { Text(text = it) }
     }
 
 }

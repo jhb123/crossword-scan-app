@@ -19,12 +19,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.data.SessionData.tokenState
-import com.jhb.crosswordScan.data.SessionData.userDataState
+import com.jhb.crosswordScan.data.Session.sessionDataState
+import com.jhb.crosswordScan.data.Session.tokenState
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -35,6 +36,7 @@ fun loginComposeable(
     passwordFieldCallback: (String) -> Unit,
     loginCallback: (String, String) -> Unit,
     registerCallback: () -> Unit,
+    forgotPasswordCallback: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -43,8 +45,8 @@ fun loginComposeable(
     val keyboardController = LocalSoftwareKeyboardController.current
 
 
-    //SessionData.readUser()
-    val userFromFile = userDataState.collectAsState()
+    //Session.readUser()
+    val userFromFile = sessionDataState.collectAsState()
     val tokenFromFile = tokenState.collectAsState()
 
     val userName = uiState.value.userName
@@ -64,8 +66,8 @@ fun loginComposeable(
         val keyboardController = LocalSoftwareKeyboardController.current
 
 
-        //SessionData.readUser()
-        val userFromFile = userDataState.collectAsState()
+        //Session.readUser()
+        val userFromFile = sessionDataState.collectAsState()
         val tokenFromFile = tokenState.collectAsState()
 
         val userName = uiState.value.userName
@@ -103,11 +105,12 @@ fun loginComposeable(
             modifier = Modifier.padding(10.dp),
             onValueChange = { userNameFieldCallback(it) },
             label = { Text("Username") },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, autoCorrect = false),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
                 },
+
             ),
             leadingIcon = {
                 Icon(
@@ -144,7 +147,7 @@ fun loginComposeable(
                 }
             },
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
@@ -162,7 +165,7 @@ fun loginComposeable(
                     }
                 },
                 modifier = Modifier
-                    .width(150.dp)
+                    .width(250.dp)
                     .padding(10.dp),
                 colors = buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -177,16 +180,35 @@ fun loginComposeable(
         OutlinedButton(
             onClick = { registerCallback() },
             modifier = Modifier
-                .width(150.dp)
+                .width(250.dp)
                 .padding(10.dp),
         ) {
             Text(text = stringResource(R.string.register))
         }
+
+        OutlinedButton(
+            onClick = { forgotPasswordCallback() },
+            modifier = Modifier
+                .width(250.dp)
+                .padding(10.dp),
+        ) {
+            Text(text = stringResource(R.string.forgotPasswordButton))
+        }
+
+        uiState.value.serverErrorText?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+        userFromFile.value?.let { it.username?.let { it1 -> Text(text = it1) } }
+        userFromFile.value?.let { it.password?.let { it1 -> Text(text = it1) } }
+        tokenFromFile.value?.let { Text(text = it) }
+
     }
-    userFromFile.value?.let { Text(text = it.userName) }
-    userFromFile.value?.let { Text(text = it.password) }
-    userFromFile.value?.let { Text(text = it.email) }
-    tokenFromFile.value?.let { Text(text = it) }
+
+
 }
 
 
