@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.HttpException
+import java.net.ConnectException
 
 
 private const val TAG = "AuthViewModel"
@@ -55,6 +56,10 @@ class AuthViewModel() : ViewModel() {
             catch(e : HttpException){
                 Log.e(TAG,e.message())
                 serverMessage = "Error ${e.code()} : ${e.message()}"
+            }
+            catch (e : ConnectException){
+                Log.e(TAG, "unable to find server")
+                serverMessage = "Unable to find server"
             }
             finally {
                 _uiState.update {

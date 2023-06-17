@@ -2,10 +2,15 @@ package com.jhb.crosswordScan.ui.solveScreen
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.gson.Gson
 import com.jhb.crosswordScan.data.*
+import com.jhb.crosswordScan.network.CrosswordApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import java.util.*
+
 
 class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val puzzleId : String ): ViewModel() {
 
@@ -14,6 +19,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         private const val TAG = "PuzzleSolveViewModel"
     }
     lateinit var puzzleFilePath : String
+    lateinit var iconImageFilePath : String
 
     init {
         Log.i(TAG,"initialising ui")
@@ -25,6 +31,8 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
                 Log.i(TAG, "puzzleData id ${puzzleData.id}")
                 Log.i(TAG, "puzzleData lastModified ${puzzleData.lastModified}")
                 puzzleFilePath = puzzleData.puzzle
+                iconImageFilePath = puzzleData.puzzleIcon
+
                 val puzzle = readFileAsPuzzle(puzzleFilePath)
                 if( uiState.value.updateFromRepository) {
                     _uiState.update {
@@ -50,6 +58,63 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             }
         }
         return cellSet
+    }
+
+    fun cloudSync(){
+
+        viewModelScope.launch {
+
+            //uploadPuzzle()
+            //update the local puzzle
+            //updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
+        }
+
+        // step1, pass the puzzle to the server.
+        // Use the servers response as the new grid.
+    }
+
+    private fun continuousUpdate(){
+        // keep calling the sync puzzle function while you're in the puzzle.
+        // do this every 0.5s or something.
+    }
+
+    private suspend fun syncPuzzle(){
+        //do this immediately when opening the puzzle to check for the latest version.
+
+        //check if the puzzle needs syncing by looking at its last modified time
+
+        // if the server's puzzle has been updated more recently than the local version
+        // get the newest version and replace the local version with it
+
+        //if the client's puzzle has been updated more recently than the server's version
+        // then upload the clients puzzle to the server
+    }
+
+    private suspend fun checkServerPuzzleUpate(){
+        // obtain the lastmodified time of the current puzzle.
+
+    }
+
+    private suspend fun uploadPuzzle(){
+        val puzzlePayload = mapOf(
+            "id" to _uiState.value.puzzleId,
+            "puzzle" to _uiState.value.currentPuzzle
+        )
+        val payload = Gson().toJson(puzzlePayload)
+        val requestBody = RequestBody.create(MediaType.get("application/json"), payload)
+        if( Session.sessionDataState.value != null ) {
+            val Authorization = "Bearer ${Session.sessionDataState.value?.token}"
+            Log.i(TAG,"uploading with $Authorization")
+            val message = CrosswordApi.retrofitService.upload( Authorization,requestBody)
+            Log.i(TAG,message.string())
+        }
+    }
+
+    private fun getGuid(){
+        viewModelScope.launch {
+            val guid = CrosswordApi.retrofitService.getGuid()
+
+        }
     }
 
     fun getLabelledCells(puzzle : Puzzle) : Map<Triple<Int, Int, String>,String > {
@@ -237,6 +302,8 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             it.copy(updateFromRepository = true)
         }
     }
+
+
 
     //fun
     //val puzzleFlow = Flow<Puzzle>

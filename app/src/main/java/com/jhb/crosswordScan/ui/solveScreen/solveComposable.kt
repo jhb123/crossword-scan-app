@@ -51,7 +51,8 @@ fun SolveScreenWrapper(puzzleSolveViewModel : PuzzleSolveViewModel){//repository
         updateCurrentCell = { puzzleSolveViewModel.updateCurrentCell(it) },
         updateCurrentClue = {puzzleSolveViewModel.updateactiveClue2(it)},
         cellSetFromPuzzle = {puzzleSolveViewModel.convertPuzzleToCellSet(it)},//should this be immutable?
-        labelledClues = {puzzleSolveViewModel.getLabelledCells(it)} //should these even be functions!?
+        labelledClues = {puzzleSolveViewModel.getLabelledCells(it)}, //should these even be functions!?
+        syncFun = { puzzleSolveViewModel.cloudSync()}
     )
 
 
@@ -66,7 +67,8 @@ fun SolveScreen(
     updateCurrentCell : (Triple<Int, Int, String>) -> Unit,
     updateCurrentClue :  (Triple<Int, Int, String>) -> Unit,
     cellSetFromPuzzle : (Puzzle) -> MutableSet<Triple<Int, Int, String>>,//should this be immutable?
-    labelledClues : (Puzzle) ->  Map<Triple<Int, Int, String>, String> //should these even be functions!?
+    labelledClues : (Puzzle) ->  Map<Triple<Int, Int, String>, String>, //should these even be functions!?
+    syncFun: () -> Unit
 ) {
 
     //val uiState = uiState.collectAsState()
@@ -95,13 +97,14 @@ fun SolveScreen(
                 labelledClues = labelledClues
             )
             clueTextArea(clues, onClueSelect = onClueSelect, activeClue = activeClue)
-            keyBoard(setLetter = setLetter, delLetter = delLetter)
+            keyBoard(setLetter = setLetter, delLetter = delLetter, syncFun = syncFun)
         }
     }
 }
 @Composable
 fun keyBoard(setLetter : (String) -> Unit,
-             delLetter : () -> Unit
+             delLetter : () -> Unit,
+             syncFun: () -> Unit
 ){
     Log.i(TAG,"Composing button ")
     val configuration = LocalConfiguration.current
@@ -149,12 +152,25 @@ fun keyBoard(setLetter : (String) -> Unit,
             horizontalArrangement = Arrangement.SpaceBetween,
 
         ){
+            FilledTonalButton(
+                onClick = { syncFun() },
+                shape = RoundedCornerShape(2.dp),
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier
+                    .width(screenWidth / 9)
+                    .padding(2.dp)
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_cloud_24),
+                    contentDescription = "search"
+                )
+            }
             "ZXCVBNM".forEach {
                 FilledTonalButton(onClick = { setLetter(it.toString()) },
                     shape = RoundedCornerShape(2.dp),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
-                        .width(screenWidth / 8)
+                        .width(screenWidth / 9)
                         .padding(2.dp)
 
                 ) {
@@ -170,7 +186,7 @@ fun keyBoard(setLetter : (String) -> Unit,
                 shape = RoundedCornerShape(2.dp),
                 contentPadding = PaddingValues(0.dp),
                 modifier = Modifier
-                    .width(screenWidth / 8)
+                    .width(screenWidth / 9)
                     .padding(2.dp)
             ) {
                 Icon(painter = painterResource(R.drawable.ic_baseline_keyboard_backspace_24),

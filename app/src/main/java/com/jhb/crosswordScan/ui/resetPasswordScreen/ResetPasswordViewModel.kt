@@ -126,9 +126,15 @@ class ResetPasswordViewModel(navigateOnSuccess : ()->Unit) : ViewModel() {
                     else -> "Error ${e.code()} : ${e.message()}}"
                 }
             }
-        }
-        _uiState.update {
-            it.copy(isLoading = false)
+            catch (e : ConnectException){
+                Log.e(TAG, "unable to find server")
+                serverMessage = "Unable to find server"
+            }
+            finally {
+                _uiState.update {
+                    it.copy(isLoading = false, serverMessage = serverMessage)
+                }
+            }
         }
     }
 }

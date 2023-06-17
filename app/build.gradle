@@ -125,5 +125,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-scalars:2.9.0"
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
 
+    //serialising json strings.
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+
 
 }

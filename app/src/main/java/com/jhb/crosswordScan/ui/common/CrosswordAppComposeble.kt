@@ -34,14 +34,13 @@ import com.jhb.crosswordScan.ui.clueScanScreen.ClueScanScreen
 import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
 import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
 import com.jhb.crosswordScan.ui.puzzlePreviewScreen.puzzlePreviewScreen
-import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionComposable
+import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionScreen
 import com.jhb.crosswordScan.ui.registerScreen.RegistrationScreen
 import com.jhb.crosswordScan.ui.resetPasswordScreen.resetPasswordScreen
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModel
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModelFactory
 import com.jhb.crosswordScan.ui.solveScreen.SolveScreenWrapper
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
-import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -51,7 +50,7 @@ private const val TAG = "CrosswordAppActivity"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
-                 puzzleSelectViewModel: PuzzleSelectViewModel,
+                 //puzzleSelectViewModel: PuzzleSelectViewModel,
                  //authViewModel: AuthViewModel,
                  //registationViewModel : RegistrationViewModel,
                  repository: PuzzleRepository,
@@ -101,21 +100,9 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
                     actions = {
                         //val showSearch = uiState.collectAsState().value.puzzleSearchShown
-
-                        if (
-                            navController.currentDestination
-                            == navController.findDestination(Screen.SelectPuzzle.route)
-                        ) {
-                            IconButton(
-                                onClick = {},
-                                content = {
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_baseline_search_24),
-                                        contentDescription = "search"
-                                    )
-                                }
-                            )
-                        }
+//                        Button(onClick = { websocket.webtest.send("test")}){
+//                            Text("WS")
+//                        }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -269,15 +256,20 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                         ui.copy(pageTitle = stringResource(id = R.string.solveMenuItem))
                     }
                     Log.i(TAG, "navigated to puzzleSelect")
-
-                    puzzleSelectionComposable(
-                        uiState = puzzleSelectViewModel.uiState.collectAsState(),
-                        navigateToPuzzle = {
+                    puzzleSelectionScreen(navigateToPuzzle = {
                             Log.i(TAG, "Navigating to solve/$it")
                             navController.popBackStack()
                             navController.navigate("solve/$it")
-                        }
-                    )
+                        })
+
+//                    puzzleSelectionComposable(
+//                        uiState = puzzleSelectViewModel.uiState.collectAsState(),
+//                        navigateToPuzzle = {
+//                            Log.i(TAG, "Navigating to solve/$it")
+//                            navController.popBackStack()
+//                            navController.navigate("solve/$it")
+//                        }
+//                    )
                 }
 
                 composable(

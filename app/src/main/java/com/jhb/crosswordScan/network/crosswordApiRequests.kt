@@ -28,8 +28,24 @@ interface CrosswordApiService {
     @GET("hello")
     suspend fun getHello(): String
 
+    //@GET("hello")
+    suspend fun getGuid(): String
+
     @GET("auth/resetPassword")
     suspend fun getResetPassword(@Query("email") apiKey: String): String
+
+    @POST("puzzles/upload")
+    suspend fun upload(@Header("Authorization") token : String, @Body request: RequestBody): ResponseBody
+//    suspend fun upload(@Body request: RequestBody): ResponseBody
+
+    @POST("puzzles/search")
+    suspend fun search(
+//        @Header("Authorization") token : String,
+        @Header("Authorization") token : String,
+        @Body request: RequestBody
+    ): ResponseBody
+//    suspend fun upload(@Body request: RequestBody): ResponseBody
+
 
     @POST("auth/resetPassword")
     suspend fun postResetPassword(@Body request: RequestBody): ResponseBody

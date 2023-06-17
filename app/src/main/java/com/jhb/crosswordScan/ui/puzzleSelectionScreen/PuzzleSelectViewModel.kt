@@ -1,13 +1,25 @@
 package com.jhb.crosswordScan.viewModels
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.*
-import com.jhb.crosswordScan.data.PuzzleRepository
+import com.google.gson.Gson
+import com.jhb.crosswordScan.data.*
+import com.jhb.crosswordScan.network.CrosswordApi
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.PuzzleSelectionUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import retrofit2.HttpException
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileWriter
+import java.net.ConnectException
+import java.util.zip.ZipInputStream
 
 private const val TAG = "PuzzleSelectViewModel"
 
@@ -31,6 +43,107 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                     )
                 }
             }
+        }
+    }
+
+    //@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun getPuzzle(filesDir : File) {
+
+        viewModelScope.launch {
+
+            //check if theres a conflict with your database
+
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    errorText = null
+                )
+            }
+            val guid = _uiState.value.searchGuid!!.trim()
+            //delay(1000)
+            val gson = Gson()
+            val search = mapOf(
+                "id" to guid,
+            )
+            val payload = gson.toJson(search)
+            val requestBody = RequestBody.create(MediaType.get("application/json"), payload)
+
+            try{
+                val response = Session.sessionDataState.value?.let { session->
+                    session.token?.let {
+                        CrosswordApi.retrofitService.search(
+                            "Bearer $it",
+                            requestBody
+                        )
+                    }
+                }
+                if(response != null){
+                    //decode the zip files contents
+                    val zf = ZipInputStream(response.byteStream())
+                    val files = unzipPuzzleFiles(zf)
+
+                    val image = files["image"]?.let { processImageFile(it) }
+                    val puzzleTxt = files["puzzleJson"]?.let { processPuzzleFile(it) }
+                    val puzzleData = files["metaData"]?.let { processMetaDataFile(it,filesDir.toString()) }
+
+                    //val filesDir = LocalContext.current.filesDir
+                    val puzzleFile = File(filesDir,"$guid.json")
+                    val imageFile = File(filesDir,"$guid.png")
+
+
+                    // Create a BufferedWriter instance to write to the file
+                    val writer = BufferedWriter(FileWriter(puzzleFile))
+
+                    // Write the data to the file
+                    writer.write(puzzleTxt)
+
+                    //save the image
+                    val imageStream = FileOutputStream(imageFile)
+                    image!!.compress(Bitmap.CompressFormat.PNG,100,imageStream)
+
+                    // Flush and close the writer to ensure the data is written successfully
+                    writer.flush()
+                    writer.close()
+                    imageStream.flush()
+                    imageStream.close()
+
+                    if (puzzleData != null) {
+                        repository.insert(puzzleData)
+                    }
+
+                }
+            }
+            catch(e : HttpException){
+                Log.e(TAG,e.message())
+                _uiState.update {
+                    it.copy(
+                        errorText = e.message()
+                    )
+                }
+            }
+            catch (e : ConnectException){
+                Log.e(TAG, "unable to find server")
+                _uiState.update {
+                    it.copy(
+                        errorText = "Unable to find server"
+                    )
+                }
+            }
+            finally {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateSearch(text: String){
+        _uiState.update {
+            it.copy(
+                searchGuid = text
+            )
         }
     }
 

@@ -23,8 +23,6 @@ import androidx.lifecycle.lifecycleScope
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
-import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
-import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
 import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.LoaderCallbackInterface
 import org.opencv.android.OpenCVLoader
@@ -51,10 +49,10 @@ class MainActivity : ComponentActivity() {
     private val scanViewModel: CrosswordScanViewModel by viewModels {
         CrosswordScanViewModelFactory((this.application as PuzzleApplication).repository)
     }
-
-    private val puzzleSelectViewModel: PuzzleSelectViewModel by viewModels {
-        PuzzleSelectViewModelFactory((this.application as PuzzleApplication).repository)
-    }
+//
+//    private val puzzleSelectViewModel: PuzzleSelectViewModel by viewModels {
+//        PuzzleSelectViewModelFactory((this.application as PuzzleApplication).repository)
+//    }
 
 //    private val puzzleSolveViewModel : PuzzleSolveViewModel by viewModels {
 //        PuzzleSolveViewModelFactory((this.application as PuzzleApplication).repository)
@@ -116,10 +114,12 @@ class MainActivity : ComponentActivity() {
         Session.setContext(this.applicationContext)
         Session.readSession()
 
+
+
         setContent {
             CrosswordApp(
                 scanViewModel,
-                puzzleSelectViewModel,
+                //puzzleSelectViewModel,
                 //authViewModel,
                 //registrationViewModel,
                 (this.application as PuzzleApplication).repository,
