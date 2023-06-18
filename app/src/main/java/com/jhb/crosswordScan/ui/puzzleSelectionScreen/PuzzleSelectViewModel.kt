@@ -7,11 +7,14 @@ import com.google.gson.Gson
 import com.jhb.crosswordScan.data.*
 import com.jhb.crosswordScan.network.CrosswordApi
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.PuzzleSelectionUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.io.BufferedWriter
@@ -46,7 +49,6 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
         }
     }
 
-    //@RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun getPuzzle(filesDir : File) {
 
         viewModelScope.launch {
@@ -135,6 +137,43 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                         isLoading = false
                     )
                 }
+            }
+        }
+    }
+
+    fun uploadNewPuzzle(puzzleData: PuzzleData,repository: PuzzleRepository){
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val puzzleFile = File(puzzleData.puzzle)
+                val imageFile = File(puzzleData.puzzleIcon)
+
+                val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart(
+                        "image",
+                        "${puzzleData.id}.png",
+                        RequestBody.create(MediaType.get("application/octet-stream"), imageFile)
+                    )
+                    .addFormDataPart(
+                        "puzzle",
+                        "${puzzleData.id}.json",
+                        RequestBody.create(MediaType.get("application/octet-stream"), puzzleFile)
+                    )
+                    .addFormDataPart("id", puzzleData.id)
+                    .addFormDataPart("timeCreated", puzzleData.timeCreated)
+                    .addFormDataPart("lastModified", puzzleData.lastModified)
+                    .build()
+                if (Session.sessionDataState.value != null) {
+                    val Authorization = "Bearer ${Session.sessionDataState.value?.token}"
+                    Log.i(TAG, "uploading with $Authorization")
+                    val message = CrosswordApi.retrofitService.upload(Authorization, requestBody)
+                    Log.i(TAG, message.string())
+                }
+                puzzleData.isShared = true
+                Log.i(TAG, puzzleData.puzzle)
+                Log.i(TAG, puzzleData.puzzleIcon)
+
+                repository.update(puzzleData)
             }
         }
     }

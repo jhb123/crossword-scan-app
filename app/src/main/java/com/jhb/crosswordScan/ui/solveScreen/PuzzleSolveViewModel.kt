@@ -20,12 +20,19 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     }
     lateinit var puzzleFilePath : String
     lateinit var iconImageFilePath : String
+    lateinit var repoPuzzleData : PuzzleData
+    // lateinit var puzzle : Puzzle
+
+    private val _uiState = MutableStateFlow(PuzzleUiState())
+    val uiState : StateFlow<PuzzleUiState> = _uiState
 
     init {
         Log.i(TAG,"initialising ui")
+
         viewModelScope.launch {
             //delay(50)
-            repository.getPuzzle(puzzleId).collect { puzzleData ->
+            withContext(Dispatchers.IO) {
+                val puzzleData = repository.getPuzzle(puzzleId)
                 Log.i(TAG, "Collecting puzzle from database")
                 Log.i(TAG, "puzzleData puzzle ${puzzleData.puzzle}")
                 Log.i(TAG, "puzzleData id ${puzzleData.id}")
@@ -34,21 +41,17 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
                 iconImageFilePath = puzzleData.puzzleIcon
 
                 val puzzle = readFileAsPuzzle(puzzleFilePath)
-                if( uiState.value.updateFromRepository) {
-                    _uiState.update {
-                        it.copy(
-                            puzzleId = puzzleData.id,
-                            currentPuzzle = puzzle!!
-                        )
-                    }
+                _uiState.update {
+                    it.copy(
+                        puzzleId = puzzleData.id,
+                        currentPuzzle = puzzle!!
+                    )
                 }
             }
         }
         Log.i(TAG,"Finished initialising ui")
     }
 
-    private val _uiState = MutableStateFlow(PuzzleUiState())
-    val uiState : StateFlow<PuzzleUiState> = _uiState
 
     fun convertPuzzleToCellSet(puzzle : Puzzle) : MutableSet<Triple<Int, Int, String>>{
         val cellSet = mutableSetOf<Triple<Int, Int, String>>()
@@ -177,14 +180,25 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         //go through the current puzzle and add the new cell to all the clues
         var clue_box_idx = -1
         uiState.value.currentPuzzle.clues.forEach { (key, clue) ->
-            val idx = clue.clueBoxes.indexOf(_uiState.value.currentCell)
-            Log.i(TAG, "clue ${clue.clueName} idx is: $idx")
-            if (idx >= 0) {
-                clue.clueBoxes[idx] = cell
+            try {
+                val idx = clue.clueBoxes.indexOf(_uiState.value.currentCell)
+                Log.i(TAG, "clue ${clue.clueName} idx is: $idx")
+                if (idx >= 0) {
+                    clue.clueBoxes[idx] = cell
+                }
+                if (clue == _uiState.value.currentClue) {
+                    clue_box_idx = idx
+                    _uiState.value.currentClue.clueBoxes[clue_box_idx] = cell
+                }
             }
-            if (clue == _uiState.value.currentClue) {
-                clue_box_idx = idx
-                _uiState.value.currentClue.clueBoxes[clue_box_idx] = cell
+            catch(exception : ArrayIndexOutOfBoundsException){
+                if(clue_box_idx == -1 ) {
+                    Log.w(TAG, "Tried using an Index of -1")
+                    exception.message?.let { Log.w(TAG, it) }
+                }
+                else{
+                    throw exception
+                }
             }
         }
 
@@ -195,10 +209,6 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
     fun setLetter(letter: String){
         viewModelScope.launch(Dispatchers.IO) {
-            //prevent the ui updating from the repository until local changes have taken effect
-            _uiState.update {
-                it.copy(updateFromRepository = false)
-            }
 
             //make a new cell to update the grid with
             val newCell = Triple(
@@ -218,34 +228,29 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             Log.i(TAG, "Finished updating database")
 
             repository.updatePuzzleEditTime(puzzleId)
-            //repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
 
             //increment active if its not the last cell in the clue
             val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)
 
             Log.i(TAG,"current clue index: $clue_box_idx")
-            if(clue_box_idx < _uiState.value.currentClue.clueBoxes.size - 1 ) {
-                Log.i(TAG,"updating position in clue : ${clue_box_idx+1}")
-                _uiState.update { ui ->
-                    ui.copy(
-                        currentCell = _uiState.value.currentClue.clueBoxes[clue_box_idx+1],
-                    )
-                }
-            }
-            else{
-                Log.i(TAG,"Last cell")
-                _uiState.update { ui ->
-                    ui.copy(
-                        currentCell = newCell,
-                    )
-                }
-            }
-        }
 
-        //allow the the ui to update from the repository as the UI is now ready for new inputs
-        //by the user.
-        _uiState.update {
-            it.copy(updateFromRepository = true)
+                if(clue_box_idx < _uiState.value.currentClue.clueBoxes.size - 1 ) {
+                    Log.i(TAG,"updating position in clue : ${clue_box_idx+1}")
+                    _uiState.update { ui ->
+                        ui.copy(
+                            currentCell = _uiState.value.currentClue.clueBoxes[clue_box_idx+1],
+                        )
+                    }
+                }
+                else{
+                    Log.i(TAG,"Last cell")
+                    _uiState.update { ui ->
+                        ui.copy(
+                            currentCell = newCell,
+                        )
+                    }
+                }
+
         }
     }
 
@@ -253,9 +258,6 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     fun delLetter(){
         viewModelScope.launch(Dispatchers.IO) {
 
-            _uiState.update {
-                it.copy(updateFromRepository = false)
-            }
 
             //make a new cell to update the grid with
             val newCell = Triple(
@@ -268,10 +270,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
             //update the database with the puzzle.
             Log.i(TAG, "calling updateDatabase")
-//            repository.update(PuzzleData(uiState.value.name, uiState.value.currentPuzzle))
-//            viewModelScope.launch {
             updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
-//            }
 
             repository.updatePuzzleEditTime(puzzleId)
 
@@ -298,16 +297,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
                 }
             }
         }
-        _uiState.update {
-            it.copy(updateFromRepository = true)
-        }
     }
-
-
-
-    //fun
-    //val puzzleFlow = Flow<Puzzle>
-
 }
 
 class PuzzleSolveViewModelFactory(private val repository: PuzzleRepository, private val puzzleId : String) : ViewModelProvider.Factory {

@@ -9,7 +9,7 @@ interface PuzzleDao {
     fun getPuzzles(): Flow<List<PuzzleData>>
 
     @Query("SELECT * FROM puzzle_table WHERE id=:uid")
-    fun getPuzzleByID(uid: String):Flow<PuzzleData>
+    fun getPuzzleByID(uid: String): PuzzleData
 
     @Query("UPDATE puzzle_table SET lastModified=:time WHERE id = :id")
     fun updatePuzzleEditTime(time: String,  id: String)

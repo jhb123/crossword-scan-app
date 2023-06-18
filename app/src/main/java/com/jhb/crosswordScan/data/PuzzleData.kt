@@ -16,7 +16,8 @@ class PuzzleData(
     val puzzle: String,
     @ColumnInfo(name= "puzzleIcon")
     val puzzleIcon: String,
-
+    @ColumnInfo(name = "isShared")
+    var isShared: Boolean = false,
 
     //@ColumnInfo(name = "puzzle") val puzzle: Puzzle,
     //@ColumnInfo(name = "icon") val icon_uuid: String

@@ -13,12 +13,20 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
     val allPuzzles: Flow<List<PuzzleData>> = puzzleDao.getPuzzles()
 
 
+//    @Suppress("RedundantSuspendModifier")
+//    @WorkerThread
+//    fun getPuzzle(id: String): Flow<PuzzleData>{
+//        Log.i(TAG, "getting puzzle $id from database")
+//        //puzzleDao.updatePuzzle(puzzle)
+//        val puzzleData : Flow<PuzzleData> = puzzleDao.getPuzzleByID(id)
+//        return puzzleData
+//    }
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    fun getPuzzle(id: String): Flow<PuzzleData>{
+    fun getPuzzle(id: String): PuzzleData {
         Log.i(TAG, "getting puzzle $id from database")
         //puzzleDao.updatePuzzle(puzzle)
-        val puzzleData : Flow<PuzzleData> = puzzleDao.getPuzzleByID(id)
+        val puzzleData : PuzzleData = puzzleDao.getPuzzleByID(id)
         return puzzleData
     }
 

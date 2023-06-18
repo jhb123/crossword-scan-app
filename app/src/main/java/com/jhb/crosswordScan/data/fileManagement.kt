@@ -91,6 +91,7 @@ suspend fun insertPuzzle(puzzle: Puzzle, context: Context,image: Bitmap?):Boolea
 }
 
 suspend fun updatePuzzleFile(filePath: String, puzzle: Puzzle):Boolean = withContext(Dispatchers.IO) {
+    Log.i(TAG,"Updating puzzle: $filePath")
     return@withContext try {
         val puzzleTxt = PuzzleToJson(puzzle)
 
@@ -182,6 +183,12 @@ fun processMetaDataFile(metaData : ByteArray, filePath: String) : PuzzleData{
         throw Exception("meta data not valid")
     }
 
+    Log.i(TAG,metaData["id"].toString())
+    Log.i(TAG,metaData["puzzle"].toString())
+    Log.i(TAG,metaData["puzzleIcon"].toString())
+    Log.i(TAG,metaData["timeCreated"].toString())
+    Log.i(TAG,metaData["lastModified"].toString())
+
     //at this point, we are sure there is valid meta data.
     val puzzleData = PuzzleData(
         id = metaData["id"].toString().let {
@@ -198,7 +205,9 @@ fun processMetaDataFile(metaData : ByteArray, filePath: String) : PuzzleData{
         },
         lastModified = metaData["lastModified"].toString().let {
             it.substring(1, it.length - 1)
-        }
+        },
+        isShared = true
+
     )
     return puzzleData
 }

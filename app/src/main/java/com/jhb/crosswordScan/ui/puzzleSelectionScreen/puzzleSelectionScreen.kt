@@ -16,13 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
+import com.jhb.crosswordScan.data.PuzzleData
 import com.jhb.crosswordScan.ui.common.Spinner
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
@@ -41,14 +44,17 @@ fun puzzleSelectionScreen(navigateToPuzzle: (String)->Unit){
 
     val uiState by puzzleSelectViewModel.uiState.collectAsState()
     val filesDir = LocalContext.current.applicationContext.filesDir
+    val repository = (LocalContext.current.applicationContext as PuzzleApplication).repository
+    //val composableScope = rememberCoroutineScope()
 
     puzzleSelectionComposable(
         uiState = uiState,
         navigateToPuzzle = navigateToPuzzle,
         searchPuzzle = {puzzleSelectViewModel.getPuzzle(filesDir)},
-        setSearchText = {puzzleSelectViewModel.updateSearch(it)}
+        setSearchText = {puzzleSelectViewModel.updateSearch(it)},
+        uploadNewPuzzle = {
+                puzzleSelectViewModel.uploadNewPuzzle(it,repository)}
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,10 +63,12 @@ fun puzzleSelectionComposable(
     uiState : PuzzleSelectionUiState,
     navigateToPuzzle : (String) ->  Unit,
     searchPuzzle : () -> Unit,
-    setSearchText : (String) -> Unit
+    setSearchText : (String) -> Unit,
+    uploadNewPuzzle: (PuzzleData) -> Unit
 ){
 
     val puzzles = uiState.puzzles
+    val clipboardManager = LocalClipboardManager.current
 
     LazyColumn(contentPadding = PaddingValues(10.dp),
         modifier = Modifier
@@ -168,12 +176,29 @@ fun puzzleSelectionComposable(
                         //Text(puzzleData.id, Modifier.align(CenterHorizontally))
                     }
 
-                    IconButton(onClick = { /*TODO*/ },modifier = Modifier.padding(10.dp)
+                    IconButton(
+                        onClick = {
+                            if(puzzleData.isShared){
+                                clipboardManager.setText(AnnotatedString(text = puzzleData.id))
+                            }
+                            else {
+                                uploadNewPuzzle(puzzleData)
+                            }
+                                  },
+                        modifier = Modifier.padding(10.dp)
                     ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_baseline_file_upload_24),
-                            contentDescription = "upload"
-                        )
+                        if(puzzleData.isShared){
+                            Icon(
+                                painterResource(id = R.drawable.ic_baseline_content_copy_24),
+                                contentDescription = "copy GUID"
+                            )
+                        }
+                        else {
+                            Icon(
+                                painterResource(id = R.drawable.ic_baseline_file_upload_24),
+                                contentDescription = "upload Puzzle"
+                            )
+                        }
                     }
 
                 }
