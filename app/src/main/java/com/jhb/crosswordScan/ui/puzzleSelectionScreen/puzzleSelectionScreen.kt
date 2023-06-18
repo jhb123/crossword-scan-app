@@ -106,7 +106,9 @@ fun puzzleSelectionComposable(
                 supportingText = {
                     uiState.errorText?.let { Text(it) }
                 },
-                isError = uiState.errorText != null
+                isError = uiState.errorText != null,
+                singleLine = true,
+
 
             )
         }
@@ -226,13 +228,8 @@ fun puzzleSelectionComposable(
                             )
                         }
                     }
-
                 }
-                    //Image(painter = puzzleData.i, contentDescription = "puzzle icon" )
-
-                //}
             }
-
         }
     }
 
