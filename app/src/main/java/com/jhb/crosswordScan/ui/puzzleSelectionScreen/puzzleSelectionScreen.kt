@@ -107,9 +107,7 @@ fun puzzleSelectionComposable(
                     uiState.errorText?.let { Text(it) }
                 },
                 isError = uiState.errorText != null,
-                singleLine = true,
-
-
+                singleLine = true
             )
         }
         if(uiState.imageTest != null){
@@ -232,5 +230,4 @@ fun puzzleSelectionComposable(
             }
         }
     }
-
 }
