@@ -220,14 +220,15 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             updateGridCell(newCell)
 
             //update the database with the puzzle.
-            Log.i(TAG, "calling updateDatabase")
-            // TODO fix this bit
-            //viewModelScope.launch {
-            updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
-            //}
-            Log.i(TAG, "Finished updating database")
-
-            repository.updatePuzzleEditTime(puzzleId)
+//            Log.i(TAG, "calling updateDatabase")
+//            // TODO fix this bit
+//            //viewModelScope.launch {
+//            updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
+//            //}
+//            Log.i(TAG, "Finished updating database")
+//
+//            repository.updatePuzzleEditTime(puzzleId)
+            updatePuzzleData()
 
             //increment active if its not the last cell in the clue
             val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)
@@ -268,16 +269,17 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
             updateGridCell(newCell)
 
-            //update the database with the puzzle.
-            Log.i(TAG, "calling updateDatabase")
-            updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
+            // update the database with the puzzle.
+            // Log.i(TAG, "calling updateDatabase")
+            // updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
 
-            repository.updatePuzzleEditTime(puzzleId)
+            // repository.updatePuzzleEditTime(puzzleId)
 
-            Log.i(TAG, "Finished updatingdatabase")
+            // Log.i(TAG, "Finished updating database")
+            updatePuzzleData()
 
+            //update the grids ui state to move the selected clue box to the next one.
             val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)
-
             Log.i(TAG,"current position in clue : $clue_box_idx. Clue's size ${_uiState.value.currentClue.clueBoxes.size}")
             //increment active if its not the last cell in the clue
             if(clue_box_idx > 0 ) {
@@ -298,6 +300,14 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             }
         }
     }
+
+    private suspend fun updatePuzzleData(){
+        Log.i(TAG, "Updating Puzzle file")
+        updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
+        Log.i(TAG, "Updating puzzle database with last edit time")
+        repository.updatePuzzleEditTime(puzzleId)
+    }
+
 }
 
 class PuzzleSolveViewModelFactory(private val repository: PuzzleRepository, private val puzzleId : String) : ViewModelProvider.Factory {

@@ -8,6 +8,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jhb.crosswordScan.PuzzleApplication
+import com.jhb.crosswordScan.util.TimeStampFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -16,7 +17,6 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipInputStream
 
@@ -51,9 +51,10 @@ suspend fun insertPuzzle(puzzle: Puzzle, context: Context,image: Bitmap?):Boolea
         val puzzleFile = File(filesDir,"$id.json")
         val imageFile = File(filesDir,"$id.png")
 
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = sdf.format(Date())
-
+        //val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:SSS:ZZZZZ")
+        //val currentDateString = sdf.format(Date())
+        //val currentDateString = date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        val currentTime = TimeStampFormatter().generateTimeStamp()
         val puzzleTxt = PuzzleToJson(puzzle)
 
 
@@ -76,8 +77,8 @@ suspend fun insertPuzzle(puzzle: Puzzle, context: Context,image: Bitmap?):Boolea
 
         val puzzleData = PuzzleData(
             id = id,
-            timeCreated = currentDate,
-            lastModified = currentDate,
+            timeCreated = currentTime,
+            lastModified = currentTime,
             puzzle = puzzleFile.toString(),
             puzzleIcon = imageFile.toString()
         )
@@ -86,6 +87,7 @@ suspend fun insertPuzzle(puzzle: Puzzle, context: Context,image: Bitmap?):Boolea
 
         true
     } catch (e: Exception) {
+        e.message?.let { Log.w(TAG, it) }
         false
     }
 }

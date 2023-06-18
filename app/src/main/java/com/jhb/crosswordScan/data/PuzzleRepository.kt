@@ -2,8 +2,8 @@ package com.jhb.crosswordScan.data
 
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.jhb.crosswordScan.util.TimeStampFormatter
 import kotlinx.coroutines.flow.Flow
-import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "PuzzleRepository"
@@ -47,10 +47,9 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     fun updatePuzzleEditTime(id: String){
-        Log.i(TAG, "updating database")
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = sdf.format(Date())
-        puzzleDao.updatePuzzleEditTime(currentDate,id)
+        Log.i(TAG, "updating last edit time in database")
+        val currentTime = TimeStampFormatter().generateTimeStamp()
+        puzzleDao.updatePuzzleEditTime(currentTime,id)
     }
 
 

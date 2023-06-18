@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,9 +28,11 @@ import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.PuzzleData
 import com.jhb.crosswordScan.ui.common.Spinner
+import com.jhb.crosswordScan.util.TimeStampFormatter
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
 import java.io.File
+import java.time.format.DateTimeFormatter
 
 
 private val TAG = "puzzleSelectionScreen"
@@ -70,6 +72,8 @@ fun puzzleSelectionComposable(
 
     val puzzles = uiState.puzzles
     val clipboardManager = LocalClipboardManager.current
+    val formatter = DateTimeFormatter.ofPattern("MMM dd hh:mm:ss");
+
 
     LazyColumn(contentPadding = PaddingValues(10.dp),
         modifier = Modifier
@@ -159,25 +163,43 @@ fun puzzleSelectionComposable(
                         }
                     }
                     Column(
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier.height(100.dp).padding(10.dp)
                     ) {
+                        val timeStampFormatter = TimeStampFormatter()
+                        val timeCreated = timeStampFormatter.friendlyTimeStamp(puzzleData.timeCreated)
+                        val timeModified = timeStampFormatter.friendlyTimeStamp(puzzleData.lastModified)
+
                         Text(
-                            text ="Created",
-                            style = MaterialTheme.typography.labelLarge
+                            buildAnnotatedString {
+                                withStyle(
+                                    SpanStyle(
+                                        fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
+                                        fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                        fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
+                                    )
+                                ){
+                                    append("Created: ")
+                                }
+                                append(timeCreated)
+                            }
                         )
+
                         Text(
-                            text = puzzleData.timeCreated,
-                            style = MaterialTheme.typography.bodyLarge
+                            buildAnnotatedString {
+                                withStyle(
+                                    SpanStyle(
+                                        fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
+                                        fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                        fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
+                                    )
+                                ){
+                                    append("Modified: ")
+                                }
+                                append(timeModified)
+                            }
                         )
-                        Text(
-                            text ="Modified",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                        Text(
-                            text = puzzleData.lastModified,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        //Text(puzzleData.id, Modifier.align(CenterHorizontally))
                     }
 
                     IconButton(
