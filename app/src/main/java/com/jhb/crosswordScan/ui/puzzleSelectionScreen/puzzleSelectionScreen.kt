@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -83,7 +84,10 @@ fun puzzleSelectionComposable(
                     .fillParentMaxWidth(1f),
                 onValueChange = { setSearchText(it) },
                 label = { Text("Puzzle ID") },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, autoCorrect = false),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search, autoCorrect = false),
+                keyboardActions = KeyboardActions(
+                    onSearch = {searchPuzzle()}
+                ),
                 leadingIcon = {
                     IconButton(onClick = { searchPuzzle() }) {
                         Icon(painterResource(id = R.drawable.ic_baseline_search_24),
