@@ -78,7 +78,7 @@ fun puzzleSelectionComposable(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, autoCorrect = false),
                 leadingIcon = {
                     IconButton(onClick = { searchPuzzle() }) {
-                        Icon(painterResource(id = R.drawable.ic_baseline_add_box_24),
+                        Icon(painterResource(id = R.drawable.ic_baseline_search_24),
                             contentDescription = "search")
                     }
                 },
@@ -120,18 +120,19 @@ fun puzzleSelectionComposable(
                     //navigateToPuzzle(puzzles.indexOf(puzzleData))
                           },
                 modifier = Modifier
-                    .height(100.dp)
+                    .height(120.dp)
                     .fillParentMaxWidth(1f)
                     .padding(5.dp)
             ) {
                 //Box(Modifier.fillMaxSize()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxSize(1f)
                 ) {
                     Column(modifier = Modifier
-                        .fillMaxWidth(0.3f)
-                        .fillMaxHeight(1f)) {
+                        .width(100.dp)
+                        ) {
                         val file = File(puzzleData.puzzleIcon)
                         val bmOptions = BitmapFactory.Options()
                         val bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions)
@@ -146,13 +147,35 @@ fun puzzleSelectionComposable(
                         }
                     }
                     Column(
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize(1f)
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Text("Created: ${puzzleData.timeCreated}")
-                        Text("Modified: ${puzzleData.lastModified}")
+                        Text(
+                            text ="Created",
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        Text(
+                            text = puzzleData.timeCreated,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text ="Modified",
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        Text(
+                            text = puzzleData.lastModified,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                         //Text(puzzleData.id, Modifier.align(CenterHorizontally))
                     }
+
+                    IconButton(onClick = { /*TODO*/ },modifier = Modifier.padding(10.dp)
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_baseline_file_upload_24),
+                            contentDescription = "upload"
+                        )
+                    }
+
                 }
                     //Image(painter = puzzleData.i, contentDescription = "puzzle icon" )
 
