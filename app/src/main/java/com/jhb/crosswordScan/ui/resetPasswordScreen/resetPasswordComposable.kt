@@ -141,6 +141,7 @@ fun resetPasswordComposable(
                     contentDescription = "username icon"
                 )
             },
+            singleLine = true
 
             )
         FilledTonalButton(
@@ -168,13 +169,13 @@ fun resetPasswordComposable(
                     focusManager.moveFocus(FocusDirection.Down)
                 },
             ),
+
         )
 
         OutlinedTextField(
             value = newpassword,
             onValueChange = { setNewPasswordCallback(it) },
             label = { Text("New password") },
-            modifier = Modifier.padding(10.dp),
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_password_24),
@@ -201,6 +202,9 @@ fun resetPasswordComposable(
                     focusManager.moveFocus(FocusDirection.Down)
                 },
             ),
+            singleLine = true,
+            modifier = Modifier.padding(10.dp).width(textBoxWidth)
+
         )
 
         FilledTonalButton(

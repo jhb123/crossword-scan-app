@@ -53,7 +53,7 @@ interface CrosswordApiService {
     @POST("auth/register")
     suspend fun register(@Body request: RequestBody): ResponseBody
 
-    @POST("auth/login2")
+    @POST("auth/login")
     suspend fun login(@Body requestBody: RequestBody): ResponseBody
 
 }
