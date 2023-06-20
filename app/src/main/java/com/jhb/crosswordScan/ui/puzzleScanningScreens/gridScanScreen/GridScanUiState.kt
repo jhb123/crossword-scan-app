@@ -1,4 +1,4 @@
-package com.jhb.crosswordScan.ui.gridScanScreen
+package com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen
 
 import android.graphics.Bitmap
 

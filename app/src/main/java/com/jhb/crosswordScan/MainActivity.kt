@@ -118,7 +118,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CrosswordApp(
-                scanViewModel,
+                //scanViewModel,
                 //puzzleSelectViewModel,
                 //authViewModel,
                 //registrationViewModel,

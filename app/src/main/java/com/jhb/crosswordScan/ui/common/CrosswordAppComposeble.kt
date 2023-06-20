@@ -30,17 +30,16 @@ import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.navigation.Screen
 import com.jhb.crosswordScan.ui.authScreen.AuthScreen
-import com.jhb.crosswordScan.ui.clueScanScreen.ClueScanScreen
 import com.jhb.crosswordScan.ui.common.CrosswordAppUiState
-import com.jhb.crosswordScan.ui.gridScanScreen.gridScanScreen
-import com.jhb.crosswordScan.ui.puzzlePreviewScreen.puzzlePreviewScreen
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.clueScanScreen.clueScanScreen
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.gridScanScreen
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.puzzlePreviewScreen.puzzlePreviewScreen
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionScreen
 import com.jhb.crosswordScan.ui.registerScreen.RegistrationScreen
 import com.jhb.crosswordScan.ui.resetPasswordScreen.resetPasswordScreen
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModel
 import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModelFactory
 import com.jhb.crosswordScan.ui.solveScreen.SolveScreenWrapper
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -49,10 +48,7 @@ private const val TAG = "CrosswordAppActivity"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
-                 //puzzleSelectViewModel: PuzzleSelectViewModel,
-                 //authViewModel: AuthViewModel,
-                 //registationViewModel : RegistrationViewModel,
+fun CrosswordApp(
                  repository: PuzzleRepository,
                  takeImage : () -> Unit,
 ) {
@@ -212,10 +208,11 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.gridScan))
                     }
-                    gridScanScreen(
-                        uiState = gridScanViewModel.uiGridState.collectAsState(),
-                        viewModel = gridScanViewModel
-                    )
+                    gridScanScreen()
+//                    gridScanComposable(
+//                        uiState = gridScanViewModel.uiGridState.collectAsState(),
+//                        viewModel = gridScanViewModel
+//                    )
 
                 }
 
@@ -224,31 +221,33 @@ fun CrosswordApp(gridScanViewModel: CrosswordScanViewModel,
                     uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.clueScan))
                     }
-                    ClueScanScreen(
-                        uiState = gridScanViewModel.uiState.collectAsState(),
-                        setClueScanDirection = { gridScanViewModel.setClueScanDirection(it) },
-                        takeImage = takeImage,
-                        onDragStart = { gridScanViewModel.resetClueHighlightBox(it) },
-                        onDrag = { gridScanViewModel.changeClueHighlightBox(it) },
-                        setCanvasSize = { gridScanViewModel.setCanvasSize(it) },
-                        scanClues = { gridScanViewModel.scanClues() }
-                    )
+                    clueScanScreen(takeImage = takeImage)
+//                    ClueScanComposable(
+//                        uiState = gridScanViewModel.uiState.collectAsState(),
+//                        setClueScanDirection = { gridScanViewModel.setClueScanDirection(it) },
+//                        takeImage = takeImage,
+//                        onDragStart = { gridScanViewModel.resetClueHighlightBox(it) },
+//                        onDrag = { gridScanViewModel.changeClueHighlightBox(it) },
+//                        setCanvasSize = { gridScanViewModel.setCanvasSize(it) },
+//                        scanClues = { gridScanViewModel.scanClues() }
+//                    )
                 }
 
                 composable(route = Screen.PreviewScan.route) {
                     uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.previewGridScan))
                     }
+                    puzzlePreviewScreen()
                     Log.i(TAG, "Navigated to preview screen")
-                    puzzlePreviewScreen(
-                        uiGridState = gridScanViewModel.uiGridState.collectAsState(),
-                        uiClueState = gridScanViewModel.uiState.collectAsState(),
-                        puzzle = gridScanViewModel.puzzle.value
+//                    puzzlePreviewComposable(
+//                        uiGridState = gridScanViewModel.uiGridState.collectAsState(),
+//                        uiClueState = gridScanViewModel.uiState.collectAsState(),
+//                        puzzle = gridScanViewModel.puzzle.value
 //                        onSave = {
 //                            Log.i(TAG,"inserting...")
 //                            gridScanViewModel.insert()
 //                        }
-                    )
+//                    )
                 }
 
                 composable(route = Screen.SelectPuzzle.route) {

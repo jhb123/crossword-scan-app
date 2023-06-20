@@ -22,7 +22,7 @@ import com.jhb.crosswordScan.data.Puzzle
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
-import com.jhb.crosswordScan.ui.gridScanScreen.GridScanUiState
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.GridScanUiState
 import com.jhb.crosswordScan.util.CrosswordDetector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -87,7 +87,10 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private val _currentClueName = mutableStateOf("")
     val currentClueName : State<String> = _currentClueName
 
-    var takeSnapshot = false
+    private val _takeSnapShot = mutableStateOf(false)
+    val takeSnapShot : State<Boolean> = _takeSnapShot
+    //var takeSnapshot = false
+    //val takeSnapShot = mutableStateOf(false)
 
     //private lateinit var gridImg : Bitmap
     private lateinit var _viewFinderImg : Mat // we want this to be set by the camera input
@@ -117,9 +120,10 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         cwContourIndex = contourInfo.second
         crosswordDetector.draw_crossword_contour(_viewFinderImgWithContour,contours,cwContourIndex)
 
-        if (takeSnapshot && contours.isNotEmpty()) {
+        if (takeSnapShot.value && contours.isNotEmpty()) {
+            Log.i(TAG,"Processing puzzle")
             Log.d(TAG,"Contours size ${contours.size}, Contours index $cwContourIndex")
-            takeSnapshot = false
+            _takeSnapShot.value = false
             val imArea = Imgproc.contourArea(contours[cwContourIndex])
             Log.d(TAG,"Contour area $imArea")
             // if the area is bigger than 100x100 pixels, then set the preprocessed images
@@ -378,6 +382,11 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                 previewHeight = height
             )
         }
+    }
+
+    fun setSnapShotTrue(){
+        Log.i(TAG,"Setting snapshot to true")
+        _takeSnapShot.value = true
     }
 
 }

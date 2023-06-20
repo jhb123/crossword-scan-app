@@ -8,7 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
 
-private const val BASE_URL = "http://192.168.0.34:5000"
+//private const val BASE_URL = "http://192.168.0.34:5000"
+private const val BASE_URL = "https://joehb123.pythonanywhere.com"
 private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .addConverterFactory(ScalarsConverterFactory.create())

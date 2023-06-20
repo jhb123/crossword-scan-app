@@ -1,7 +1,8 @@
-package com.jhb.crosswordScan.ui.gridScanScreen
+package com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen
 
 import android.util.Log
 import android.view.SurfaceView
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,26 +11,53 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
+import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.android.JavaCamera2View
 import org.opencv.core.Mat
 
 private const val TAG = "gridScanComposable"
+
 @Composable
 fun gridScanScreen(
-    uiState: State<GridScanUiState>,
-    viewModel: CrosswordScanViewModel
-    ) {
+    viewModel: CrosswordScanViewModel = viewModel(
+        factory = CrosswordScanViewModelFactory(
+        (LocalContext.current.applicationContext as PuzzleApplication).repository
+        ),
+        viewModelStoreOwner = (LocalContext.current as ComponentActivity)
+    )
+){
 
-    val backgroundColour = MaterialTheme.colorScheme.background.toArgb() // this is for the cameraView
+    val uiState by viewModel.uiGridState.collectAsState()
+
+    val openCVlogic = OpenCVlogic(viewModel)
+    gridScanComposable(
+        uiState = uiState,
+        openCVlogic = openCVlogic,
+        takePic = {viewModel.setSnapShotTrue()}
+    )
+
+}
+
+@Composable
+fun gridScanComposable(
+    uiState: GridScanUiState,
+    //viewModel: CrosswordScanViewModel,
+    openCVlogic: OpenCVlogic,
+    takePic : ()->Unit,
+
+    ) {
 
 
     Column(
@@ -52,7 +80,7 @@ fun gridScanScreen(
                 mOpenCvCameraView
             },
             update = { mOpenCvCameraView ->
-                val openCVlogic = OpenCVlogic(viewModel)
+                //val openCVlogic = OpenCVlogic(viewModel)
                 mOpenCvCameraView.enableView()
                 mOpenCvCameraView.setCameraPermissionGranted() // this is essential!!!
                 mOpenCvCameraView.setUserRotation(90)
@@ -68,23 +96,28 @@ fun gridScanScreen(
 
         Card(
             modifier = Modifier
-            .width(200.dp)
-            .height(200.dp)
-            .padding(5.dp)
+                .width(200.dp)
+                .height(200.dp)
+                .padding(5.dp)
             //.background(MaterialTheme.colorScheme.secondary)
         ){
-            uiState.value.gridPicProcessed.let {
+            uiState.gridPicProcessed.let {
                 if (it != null) {
                     Image(bitmap = it.asImageBitmap(),
                         contentDescription = "scanned bitmap",
-                    modifier = Modifier.padding(5.dp).fillMaxSize())
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxSize())
                 }
             }
         }
 
 
         //Row(modifier = Modifier.padding(5.dp)) {
-            Button(onClick = { viewModel.takeSnapshot = true }) {
+            Button(
+                //onClick = { viewModel.takeSnapshot = true }
+                onClick = takePic
+            ) {
                 Text("Scan")
             }
         //}

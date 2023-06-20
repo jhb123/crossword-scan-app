@@ -1,8 +1,9 @@
-package com.jhb.crosswordScan.ui.clueScanScreen
+package com.jhb.crosswordScan.ui.puzzleScanningScreens.clueScanScreen
 
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,7 +15,8 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,20 +27,51 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.common.clueTextBox
+import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
+import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
+import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
 import kotlin.math.max
 import kotlin.math.min
 
 private const val TAG = "clueScanComposable"
 
+@Composable
+fun clueScanScreen(
+    viewModel: CrosswordScanViewModel = viewModel(
+        factory = CrosswordScanViewModelFactory(
+            (LocalContext.current.applicationContext as PuzzleApplication).repository
+        ),
+        viewModelStoreOwner = (LocalContext.current as ComponentActivity)
+    ),
+    takeImage : () -> Unit
+){
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    ClueScanComposable(
+        uiState = uiState,
+        setClueScanDirection = { viewModel.setClueScanDirection(it) },
+        takeImage = takeImage,
+        onDragStart = { viewModel.resetClueHighlightBox(it) },
+        onDrag = { viewModel.changeClueHighlightBox(it) },
+        setCanvasSize = { viewModel.setCanvasSize(it) },
+        scanClues = { viewModel.scanClues() }
+    )
+
+}
+
 
 @Composable
-fun ClueScanScreen(
-    uiState: State<ScanUiState>,
+fun ClueScanComposable(
+    uiState: ScanUiState,
     setClueScanDirection : (ClueDirection) -> Unit,
     takeImage : () -> Unit,
     onDragStart : (Offset) -> Offset,
@@ -49,13 +82,13 @@ fun ClueScanScreen(
 )
 {
 
-    val cluePicDebug = uiState.value.cluePicDebug
-    val canvasOffset = uiState.value.canvasOffset
-    uiState.value.croppedCluePic
-    uiState.value.clueScanDirection
-    uiState.value.gridPic
-    uiState.value.canvasSize
-    uiState.value.isScrollingCanvas
+    val cluePicDebug = uiState.cluePicDebug
+    val canvasOffset = uiState.canvasOffset
+    uiState.croppedCluePic
+    uiState.clueScanDirection
+    uiState.gridPic
+    uiState.canvasSize
+    uiState.isScrollingCanvas
     //val points = remember{ uiState.value.selectedPoints }
 
     val editAreaWidth = 300
@@ -99,11 +132,11 @@ fun ClueScanScreen(
 
                     //Text("Canvas Size ${uiState.value.canvasSize}")
 
-                    if(uiState.value.selectedPoints.isNotEmpty()){
-                        val x1 = min(uiState.value.selectedPoints.first().x,uiState.value.selectedPoints.last().x)
-                        val y1 = min(uiState.value.selectedPoints.first().y,uiState.value.selectedPoints.last().y)
-                        val x2 = max(uiState.value.selectedPoints.first().x,uiState.value.selectedPoints.last().x)
-                        val y2 = max(uiState.value.selectedPoints.toList().first().y,uiState.value.selectedPoints.last().y)
+                    if(uiState.selectedPoints.isNotEmpty()){
+                        val x1 = min(uiState.selectedPoints.first().x,uiState.selectedPoints.last().x)
+                        val y1 = min(uiState.selectedPoints.first().y,uiState.selectedPoints.last().y)
+                        val x2 = max(uiState.selectedPoints.first().x,uiState.selectedPoints.last().x)
+                        val y2 = max(uiState.selectedPoints.toList().first().y,uiState.selectedPoints.last().y)
 
                         val rectPaint = Paint()
                         rectPaint.style = Paint.Style.FILL
@@ -179,7 +212,7 @@ fun ClueScanScreen(
                     .padding(5.dp)
                     .fillMaxWidth(0.5f)
             ){
-                items(uiState.value.acrossClues){ clue->
+                items(uiState.acrossClues){ clue->
                     clueTextBox(clueData = clue,
                         //backgroundColor = MaterialTheme.colorScheme.secondary,
                         //textColor = MaterialTheme.colorScheme.onSecondary
@@ -191,7 +224,7 @@ fun ClueScanScreen(
                     .padding(5.dp)
                     .fillMaxWidth(1f)
             ){
-                items(uiState.value.downClues){ clue->
+                items(uiState.downClues){ clue->
                     clueTextBox(clueData = clue,
                         //backgroundColor = MaterialTheme.colorScheme.secondary,
                         //textColor = MaterialTheme.colorScheme.onSecondary
