@@ -22,11 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.Clue
 import com.jhb.crosswordScan.data.Puzzle
@@ -35,15 +38,21 @@ import com.jhb.crosswordScan.ui.common.dynamicClueTextBox
 private const val TAG = "solveComposable"
 
 @Composable
-fun SolveScreenWrapper(puzzleSolveViewModel : PuzzleSolveViewModel){//repository: PuzzleRepository,index: Int){
+fun SolveScreenWrapper(puzzleId: String){//repository: PuzzleRepository,index: Int){
 
+    val puzzleSolveViewModel: PuzzleSolveViewModel = viewModel(
+        factory = PuzzleSolveViewModelFactory(
+            (LocalContext.current.applicationContext as PuzzleApplication).repository,
+            puzzleId
+        )
+    )
     //var puzzleSolveViewModel = PuzzleSolveViewModel(repository)
     //val count by viewModel.counter.collectAsStateWithLifecycle()
     //puzzleSolveViewModel.setup(index)
     //val puzzleSolveViewModel = PuzzleSolveViewModelFactory(repository,index)
 
 
-    SolveScreen(
+    SolveComposable(
         uiState = puzzleSolveViewModel.uiState.collectAsState(),
         onClueSelect = {puzzleSolveViewModel.updateactiveClue(it)},
         setLetter = {puzzleSolveViewModel.setLetter(it)},
@@ -59,7 +68,7 @@ fun SolveScreenWrapper(puzzleSolveViewModel : PuzzleSolveViewModel){//repository
 }
 
 @Composable
-fun SolveScreen(
+fun SolveComposable(
     uiState: State<PuzzleUiState>,//StateFlow<PuzzleUiState>,
     onClueSelect: (String) -> Unit,
     setLetter: (String) -> Unit,

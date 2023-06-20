@@ -45,7 +45,7 @@ fun gridScanScreen(
     gridScanComposable(
         uiState = uiState,
         openCVlogic = openCVlogic,
-        takePic = {viewModel.setSnapShotTrue()}
+        takePic = {viewModel.setSnapShotTrue() }
     )
 
 }

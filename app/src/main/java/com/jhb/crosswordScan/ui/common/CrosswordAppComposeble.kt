@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -37,8 +36,6 @@ import com.jhb.crosswordScan.ui.puzzleScanningScreens.puzzlePreviewScreen.puzzle
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionScreen
 import com.jhb.crosswordScan.ui.registerScreen.RegistrationScreen
 import com.jhb.crosswordScan.ui.resetPasswordScreen.resetPasswordScreen
-import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModel
-import com.jhb.crosswordScan.ui.solveScreen.PuzzleSolveViewModelFactory
 import com.jhb.crosswordScan.ui.solveScreen.SolveScreenWrapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -48,10 +45,7 @@ private const val TAG = "CrosswordAppActivity"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordApp(
-                 repository: PuzzleRepository,
-                 takeImage : () -> Unit,
-) {
+fun CrosswordApp(repository: PuzzleRepository) {
 
     val navController = rememberNavController()
     val uiState = MutableStateFlow(CrosswordAppUiState(pageTitle = ""))
@@ -209,11 +203,6 @@ fun CrosswordApp(
                         ui.copy(pageTitle = stringResource(id = R.string.gridScan))
                     }
                     gridScanScreen()
-//                    gridScanComposable(
-//                        uiState = gridScanViewModel.uiGridState.collectAsState(),
-//                        viewModel = gridScanViewModel
-//                    )
-
                 }
 
                 //
@@ -221,16 +210,7 @@ fun CrosswordApp(
                     uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = R.string.clueScan))
                     }
-                    clueScanScreen(takeImage = takeImage)
-//                    ClueScanComposable(
-//                        uiState = gridScanViewModel.uiState.collectAsState(),
-//                        setClueScanDirection = { gridScanViewModel.setClueScanDirection(it) },
-//                        takeImage = takeImage,
-//                        onDragStart = { gridScanViewModel.resetClueHighlightBox(it) },
-//                        onDrag = { gridScanViewModel.changeClueHighlightBox(it) },
-//                        setCanvasSize = { gridScanViewModel.setCanvasSize(it) },
-//                        scanClues = { gridScanViewModel.scanClues() }
-//                    )
+                    clueScanScreen()
                 }
 
                 composable(route = Screen.PreviewScan.route) {
@@ -239,15 +219,6 @@ fun CrosswordApp(
                     }
                     puzzlePreviewScreen()
                     Log.i(TAG, "Navigated to preview screen")
-//                    puzzlePreviewComposable(
-//                        uiGridState = gridScanViewModel.uiGridState.collectAsState(),
-//                        uiClueState = gridScanViewModel.uiState.collectAsState(),
-//                        puzzle = gridScanViewModel.puzzle.value
-//                        onSave = {
-//                            Log.i(TAG,"inserting...")
-//                            gridScanViewModel.insert()
-//                        }
-//                    )
                 }
 
                 composable(route = Screen.SelectPuzzle.route) {
@@ -261,14 +232,7 @@ fun CrosswordApp(
                             navController.navigate("solve/$it")
                         })
 
-//                    puzzleSelectionComposable(
-//                        uiState = puzzleSelectViewModel.uiState.collectAsState(),
-//                        navigateToPuzzle = {
-//                            Log.i(TAG, "Navigating to solve/$it")
-//                            navController.popBackStack()
-//                            navController.navigate("solve/$it")
-//                        }
-//                    )
+
                 }
 
                 composable(
@@ -280,12 +244,13 @@ fun CrosswordApp(
                         ui.copy(pageTitle = "Puzzle")
                     }
                     val puzzleId = it.arguments?.getString("puzzleId")
-                    val puzzleSolveViewModel: PuzzleSolveViewModel =
-                        viewModel(factory = PuzzleSolveViewModelFactory(repository, puzzleId!!))
 
                     Log.i(TAG, "navigated to solve/$puzzleId")
-                    SolveScreenWrapper(puzzleSolveViewModel)
-
+                    if (puzzleId != null) {
+                        SolveScreenWrapper(puzzleId)
+                    } else {
+                        Log.e(TAG, "puzzle id in route is null")
+                    }
                 }
 
                 composable(route = Screen.Authenticate.route) {

@@ -53,30 +53,17 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
-//    val croppedCluePic = MutableLiveData<Bitmap>()
-//    val acrossClues =  SnapshotStateList<Pair<String, String>>()
-//    val downClues =  SnapshotStateList<Pair<String, String>>()
+    val cluePicDebug = mutableStateOf<Bitmap?>(null)
+    private val cluePicDebugCropped = mutableStateOf<Bitmap?>(null)
 
-//    val isAcross = mutableStateOf(true)
-
-//    private val _cluePicDebug = MutableLiveData<Bitmap>()
-//    val cluePicDebug : LiveData<Bitmap> = _cluePicDebug
-//    fun updateCluePicDebug(bitmap: Bitmap){
-//        _cluePicDebug.postValue(bitmap)
-//    }
 
     private var TAG = "CrosswordScanViewModel"
 
     private val _puzzle = mutableStateOf(Puzzle())
     val puzzle : State<Puzzle> = _puzzle
 
-//    private val _currentClueName = mutableStateOf("")
-//    val currentClueName : State<String> = _currentClueName
-
     private val _takeSnapShot = mutableStateOf(false)
     val takeSnapShot : State<Boolean> = _takeSnapShot
-    //var takeSnapshot = false
-    //val takeSnapShot = mutableStateOf(false)
 
     //private lateinit var gridImg : Bitmap
     private lateinit var _viewFinderImg : Mat // we want this to be set by the camera input
@@ -165,8 +152,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     fun resetClueHighlightBox(point : Offset) : Offset {
         Log.i(TAG,"start: ${point}")
         val newPoints = mutableListOf(point)
-//        _uiState.value.selectedPoints.clear()
-//        _uiState.value.selectedPoints.add(point)
         _uiState.update {
             it.copy(
                 selectedPoints = newPoints
@@ -190,7 +175,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     }
 
     fun scanClues() {
-        uiState.value.cluePicDebug?.let { originalImage->
+        cluePicDebug.value?.let { originalImage->
             var x1 = 0f
             var x2 = 0f//originalImage.width.toFloat()
             var y1 = 0f
@@ -243,17 +228,14 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                     originalImage.height.toFloat() - y1 - y2)
             ).roundToIntRect()
 
-
-            _uiState.update {
-                it.copy(
-                    croppedCluePic = Bitmap.createBitmap(
-                        originalImage,
-                        cropRect.left,
-                        cropRect.top,
-                        cropRect.width,
-                        cropRect.height)
+            cluePicDebugCropped.value =
+                Bitmap.createBitmap(
+                    originalImage,
+                    cropRect.left,
+                    cropRect.top,
+                    cropRect.width,
+                    cropRect.height
                 )
-            }
 
             ocrClues()
         }
@@ -276,18 +258,9 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
     }
 
-    fun setCluePicDebug(image : Bitmap?){
-        _uiState.update {
-            it.copy(
-                cluePicDebug = image
-            )
-        }
-
-    }
-
     fun ocrClues()  {
 
-        val imageForProcessing = uiState.value.croppedCluePic //croppedCluePic.value
+        val imageForProcessing = cluePicDebugCropped.value //croppedCluePic.value
         if(imageForProcessing != null) {
             val image = InputImage.fromBitmap(imageForProcessing, 0)
             val result = recognizer.process(image)

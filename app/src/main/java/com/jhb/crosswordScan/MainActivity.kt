@@ -2,104 +2,25 @@ package com.jhb.crosswordScan
 
 import android.Manifest.permission.CAMERA
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.ContentResolver
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
-import androidx.core.graphics.rotationMatrix
-import androidx.exifinterface.media.ExifInterface
-import androidx.lifecycle.lifecycleScope
 import com.jhb.crosswordScan.data.Session
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
 import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.LoaderCallbackInterface
 import org.opencv.android.OpenCVLoader
-import java.io.File
 
 
 class MainActivity : ComponentActivity() {
 
     private val TAG = "MainActivity"
 
-    //val test = (this.application as PuzzleApplication).userRepository
-//    private val authViewModel: AuthViewModel by viewModels {
-//        AuthViewModelFactory(
-//            (this.application as PuzzleApplication).userRepository
-//        )
-//    }
-
-//    private val registrationViewModel:  RegistrationViewModel by viewModels {
-//        RegistrationViewModelFactory(
-//            (this.application as PuzzleApplication).userRepository
-//        )
-//    }
-
-    private val scanViewModel: CrosswordScanViewModel by viewModels {
-        CrosswordScanViewModelFactory((this.application as PuzzleApplication).repository)
-    }
-//
-//    private val puzzleSelectViewModel: PuzzleSelectViewModel by viewModels {
-//        PuzzleSelectViewModelFactory((this.application as PuzzleApplication).repository)
-//    }
-
-//    private val puzzleSolveViewModel : PuzzleSolveViewModel by viewModels {
-//        PuzzleSolveViewModelFactory((this.application as PuzzleApplication).repository)
-//    }
-
-
-    private var latestTmpUri: Uri? = null
-
-    private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
-        if (isSuccess) {
-            val bitmap: Bitmap? = null
-            val contentResolver: ContentResolver = this.contentResolver
-
-            latestTmpUri?.let { uri ->
-                var rotationMatrix = rotationMatrix(0f,0f,0f)
-                val exif = contentResolver.openInputStream(uri)?.let { ExifInterface(it) }
-                if(exif != null){
-                    Log.i(TAG,"input image rotation ${exif.rotationDegrees.toFloat()}")
-                    rotationMatrix = rotationMatrix(exif.rotationDegrees.toFloat(),0f,0f)
-                }
-                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                val rotatedBitmap = Bitmap.createBitmap(bitmap,0,0, bitmap.width,bitmap.height,rotationMatrix,true)
-                //viewModel.updateCluePicDebug(rotatedBitmap)
-                scanViewModel.setCluePicDebug(rotatedBitmap)
-            }
-        }
-    }
-
-    private fun takeImage() {
-        lifecycleScope.launchWhenStarted {
-            getTmpFileUri().let { uri ->
-                latestTmpUri = uri
-                takeImageResult.launch(uri)
-            }
-        }
-    }
-
-    private fun getTmpFileUri(): Uri {
-        val cacheDir = this.getCacheDir()
-        val tmpFile = File.createTempFile("tmp_image_file", ".bmp", cacheDir).apply {
-            createNewFile()
-            deleteOnExit()
-        }
-
-        return FileProvider.getUriForFile(this, this.packageName +  ".provider", tmpFile)
-    }
-
+    val photoLauncher = PhotoLauncher(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,17 +35,8 @@ class MainActivity : ComponentActivity() {
         Session.setContext(this.applicationContext)
         Session.readSession()
 
-
-
         setContent {
-            CrosswordApp(
-                //scanViewModel,
-                //puzzleSelectViewModel,
-                //authViewModel,
-                //registrationViewModel,
-                (this.application as PuzzleApplication).repository,
-                takeImage = { takeImage() }
-            )
+            CrosswordApp((this.application as PuzzleApplication).repository)
         }
     }
 

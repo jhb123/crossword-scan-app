@@ -6,8 +6,8 @@ import androidx.compose.ui.geometry.Size
 
 data class ScanUiState(
     //clue scanning
-    val cluePicDebug : Bitmap? = null, // = Bitmap.createBitmap(),
-    val croppedCluePic : Bitmap? = null, // = Bitmap.createBitmap(),
+    //val cluePicDebug : Bitmap? = null, // = Bitmap.createBitmap(),
+    //val croppedCluePic : Bitmap? = null, // = Bitmap.createBitmap(),
     val gridPic : Bitmap? = null,
     val selectedPoints : MutableList<Offset> = mutableListOf<Offset>(), //
     val canvasOffset: Offset =  Offset(0f,0f),

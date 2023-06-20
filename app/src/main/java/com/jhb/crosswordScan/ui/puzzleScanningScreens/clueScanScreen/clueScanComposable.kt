@@ -1,5 +1,6 @@
 package com.jhb.crosswordScan.ui.puzzleScanningScreens.clueScanScreen
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,13 +33,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jhb.crosswordScan.MainActivity
 import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.common.clueTextBox
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
-import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
+import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 
@@ -50,16 +53,27 @@ fun clueScanScreen(
             (LocalContext.current.applicationContext as PuzzleApplication).repository
         ),
         viewModelStoreOwner = (LocalContext.current as ComponentActivity)
-    ),
-    takeImage : () -> Unit
+    )
 ){
 
+    //we need this to get the intent to launch taking a photo
+    //val mainActivity = (LocalContext.current as MainActivity)
+    val photoLauncher = (LocalContext.current as MainActivity).photoLauncher
+
+    photoLauncher.bitmap = viewModel.cluePicDebug
+
     val uiState by viewModel.uiState.collectAsState()
+    val composableScope = rememberCoroutineScope()
+
+    val bitmap = viewModel.cluePicDebug.value
 
     ClueScanComposable(
         uiState = uiState,
+        cluePicDebug = bitmap,
         setClueScanDirection = { viewModel.setClueScanDirection(it) },
-        takeImage = takeImage,
+        takeImage = {
+            composableScope.launch { photoLauncher.takeImage() }
+        },
         onDragStart = { viewModel.resetClueHighlightBox(it) },
         onDrag = { viewModel.changeClueHighlightBox(it) },
         setCanvasSize = { viewModel.setCanvasSize(it) },
@@ -68,10 +82,10 @@ fun clueScanScreen(
 
 }
 
-
 @Composable
 fun ClueScanComposable(
     uiState: ScanUiState,
+    cluePicDebug : Bitmap?,
     setClueScanDirection : (ClueDirection) -> Unit,
     takeImage : () -> Unit,
     onDragStart : (Offset) -> Offset,
@@ -82,14 +96,8 @@ fun ClueScanComposable(
 )
 {
 
-    val cluePicDebug = uiState.cluePicDebug
+    //val cluePicDebug = uiState.cluePicDebug
     val canvasOffset = uiState.canvasOffset
-    uiState.croppedCluePic
-    uiState.clueScanDirection
-    uiState.gridPic
-    uiState.canvasSize
-    uiState.isScrollingCanvas
-    //val points = remember{ uiState.value.selectedPoints }
 
     val editAreaWidth = 300
     val editAreaHeight = 400
@@ -235,3 +243,4 @@ fun ClueScanComposable(
         }
     }
 }
+
