@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -39,20 +38,7 @@ import kotlin.properties.Delegates
 class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewModel(
 ) {
 
-    private val _uiState = MutableStateFlow(
-        ScanUiState(
-            canvasOffset = Offset(0f,0f),
-            canvasSize = Size(0f,0f),
-            cluePicDebug = null,
-            croppedCluePic = null,
-            clueScanDirection = ClueDirection.ACROSS,
-            isScrollingCanvas = false,
-            selectedPoints = mutableListOf<Offset>(),
-            gridPic = null,
-            acrossClues = listOf<Pair<String,String>>(),
-            downClues = listOf<Pair<String,String>>()
-        )
-    )
+    private val _uiState = MutableStateFlow(ScanUiState())
 
     val uiState : StateFlow<ScanUiState> = _uiState
 
@@ -67,25 +53,25 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
-    val croppedCluePic = MutableLiveData<Bitmap>()
-    val acrossClues =  SnapshotStateList<Pair<String, String>>()
-    val downClues =  SnapshotStateList<Pair<String, String>>()
+//    val croppedCluePic = MutableLiveData<Bitmap>()
+//    val acrossClues =  SnapshotStateList<Pair<String, String>>()
+//    val downClues =  SnapshotStateList<Pair<String, String>>()
 
-    val isAcross = mutableStateOf(true)
+//    val isAcross = mutableStateOf(true)
 
-    private val _cluePicDebug = MutableLiveData<Bitmap>()
-    val cluePicDebug : LiveData<Bitmap> = _cluePicDebug
-    fun updateCluePicDebug(bitmap: Bitmap){
-        _cluePicDebug.postValue(bitmap)
-    }
+//    private val _cluePicDebug = MutableLiveData<Bitmap>()
+//    val cluePicDebug : LiveData<Bitmap> = _cluePicDebug
+//    fun updateCluePicDebug(bitmap: Bitmap){
+//        _cluePicDebug.postValue(bitmap)
+//    }
 
     private var TAG = "CrosswordScanViewModel"
 
     private val _puzzle = mutableStateOf(Puzzle())
     val puzzle : State<Puzzle> = _puzzle
 
-    private val _currentClueName = mutableStateOf("")
-    val currentClueName : State<String> = _currentClueName
+//    private val _currentClueName = mutableStateOf("")
+//    val currentClueName : State<String> = _currentClueName
 
     private val _takeSnapShot = mutableStateOf(false)
     val takeSnapShot : State<Boolean> = _takeSnapShot
@@ -106,11 +92,11 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
 
 
-    private val gridImgResize = MutableLiveData<Bitmap>()
-    fun getGridImgResize() = gridImgResize
+    //private val gridImgResize = MutableLiveData<Bitmap>()
+    //fun getGridImgResize() = gridImgResize
 
     private val gridImg = MutableLiveData<Bitmap>()
-    fun getGridImg() = gridImg
+    //fun getGridImg() = gridImg
 
     fun processPreview(inputImg : Mat) {
         _viewFinderImg = inputImg
@@ -170,6 +156,8 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         }
 
         _puzzle.value = crosswordDetector.assembleClues()
+
+        _uiState.update {ScanUiState()}
         //_puzzle.value.setGridSize(gridBitmap)
 
     }
