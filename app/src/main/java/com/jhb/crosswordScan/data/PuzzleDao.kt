@@ -20,6 +20,9 @@ interface PuzzleDao {
     @Query("DELETE FROM puzzle_table")
     suspend fun deleteAll()
 
+    @Query("DELETE FROM puzzle_table WHERE id = :id")
+    fun deletePuzzle(id: String)
+
     @Update(onConflict = OnConflictStrategy.IGNORE)
     fun updatePuzzle(puzzle: PuzzleData)
 
