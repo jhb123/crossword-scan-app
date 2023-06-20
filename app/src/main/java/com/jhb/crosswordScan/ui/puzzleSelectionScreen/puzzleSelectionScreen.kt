@@ -31,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.PuzzleData
+import com.jhb.crosswordScan.data.deletePuzzleFiles
 import com.jhb.crosswordScan.ui.common.Spinner
 import com.jhb.crosswordScan.util.TimeStampFormatter
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
@@ -53,6 +54,7 @@ fun puzzleSelectionScreen(navigateToPuzzle: (String)->Unit){
     val uiState by puzzleSelectViewModel.uiState.collectAsState()
     val filesDir = LocalContext.current.applicationContext.filesDir
     val repository = (LocalContext.current.applicationContext as PuzzleApplication).repository
+    val composableScope = rememberCoroutineScope()
 
     puzzleSelectionComposable(
         uiState = uiState,
@@ -61,7 +63,12 @@ fun puzzleSelectionScreen(navigateToPuzzle: (String)->Unit){
         setSearchText = {puzzleSelectViewModel.updateSearch(it)},
         uploadNewPuzzle = {
                 puzzleSelectViewModel.uploadNewPuzzle(it,repository)},
-        deletePuzzle = { repository.deletePuzzle(it)}
+        deletePuzzle = {
+            composableScope.launch(Dispatchers.IO) {
+                deletePuzzleFiles(it)
+                repository.deletePuzzle(it)
+            }
+        }
     )
 }
 
@@ -73,14 +80,14 @@ fun puzzleSelectionComposable(
     searchPuzzle : () -> Unit,
     setSearchText : (String) -> Unit,
     uploadNewPuzzle: (PuzzleData) -> Unit,
-    deletePuzzle: (String) -> Unit
+    deletePuzzle: (PuzzleData) -> Unit
 ) {
 
     val puzzles = uiState.puzzles
     val clipboardManager = LocalClipboardManager.current
-    val composableScope = rememberCoroutineScope()
+    // val composableScope = rememberCoroutineScope()
     val openDialog = remember { mutableStateOf(false) }
-    val puzzleToDeleteID = remember { mutableStateOf("") }
+    val puzzleToDelete = remember { mutableStateOf<PuzzleData?>(null) }
 
     if (openDialog.value) {
         AlertDialog(
@@ -100,10 +107,10 @@ fun puzzleSelectionComposable(
                 ) {
                     OutlinedButton(
                         onClick = {
-                            composableScope.launch(Dispatchers.IO) {
-                                deletePuzzle(puzzleToDeleteID.value)
+                            //composableScope.launch(Dispatchers.IO) {
+                                puzzleToDelete.value?.let { deletePuzzle(it) }
                                 openDialog.value = false
-                            }
+                            //}
                         },
                         colors = ButtonDefaults.outlinedButtonColors(
                             containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -194,7 +201,7 @@ fun puzzleSelectionComposable(
                         },
                         onLongClick = {
                             Log.i(TAG, "detected long click")
-                            puzzleToDeleteID.value = puzzleData.id
+                            puzzleToDelete.value = puzzleData
                             openDialog.value = true
                         }
                     ),

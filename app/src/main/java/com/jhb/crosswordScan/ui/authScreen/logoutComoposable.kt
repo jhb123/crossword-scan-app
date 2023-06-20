@@ -8,7 +8,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,21 +18,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.Session.sessionDataState
-import com.jhb.crosswordScan.data.Session.tokenState
 
 @Composable
-fun logoutComposeable(
-    uiState: State<AuthUiState>,
+fun LogoutComposable(
     logoutCallback: () -> Unit,
 ) {
 
 
     //Session.readUser()
     val userFromFile = sessionDataState.collectAsState()
-    val tokenFromFile = tokenState.collectAsState()
-
-    val userName = uiState.value.userName
-    val password = uiState.value.userPassword
 
     Column(
         modifier = Modifier
@@ -87,17 +80,12 @@ fun logoutComposeable(
         userFromFile.value?.let {
             it.username?.let {
                     it1 -> Text(
-                text = "Welcome, $it1!",
+                text = "Welcome, ${it1.trim()}!",
                 style = MaterialTheme.typography.displaySmall
             )
             }
         }
-        //userFromFile.value?.let { it.username?.let { it1 -> Text(text = it1) } }
-        //userFromFile.value?.let { it.password?.let { it1 -> Text(text = it1) } }
-        //userFromFile.value?.let { it.token?.let { it1 -> Text(text = it1) } }
-
     }
-
 }
 
 

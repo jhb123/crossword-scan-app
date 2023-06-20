@@ -92,6 +92,24 @@ suspend fun insertPuzzle(puzzle: Puzzle, context: Context,image: Bitmap?):Boolea
     }
 }
 
+suspend fun deletePuzzleFiles(puzzleData: PuzzleData):Boolean = withContext(Dispatchers.IO)  {
+    return@withContext try {
+
+        Log.i(TAG,"Deleting ${puzzleData.puzzleIcon}")
+        Log.i(TAG,"Deleting ${puzzleData.puzzle}")
+        val iconFile = File(puzzleData.puzzleIcon)
+        val puzzleFile = File(puzzleData.puzzle)
+        iconFile.delete()
+        puzzleFile.delete()
+        Log.i(TAG,"Deleted ${puzzleData.puzzleIcon}")
+        Log.i(TAG,"Deleted ${puzzleData.puzzle}")
+
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
+
 suspend fun updatePuzzleFile(filePath: String, puzzle: Puzzle):Boolean = withContext(Dispatchers.IO) {
     Log.i(TAG,"Updating puzzle: $filePath")
     return@withContext try {

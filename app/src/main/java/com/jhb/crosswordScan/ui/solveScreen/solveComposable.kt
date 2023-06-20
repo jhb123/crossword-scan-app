@@ -161,25 +161,13 @@ fun keyBoard(setLetter : (String) -> Unit,
             horizontalArrangement = Arrangement.SpaceBetween,
 
         ){
-            FilledTonalButton(
-                onClick = { syncFun() },
-                shape = RoundedCornerShape(2.dp),
-                contentPadding = PaddingValues(0.dp),
-                modifier = Modifier
-                    .width(screenWidth / 9)
-                    .padding(2.dp)
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_cloud_24),
-                    contentDescription = "search"
-                )
-            }
+
             "ZXCVBNM".forEach {
                 FilledTonalButton(onClick = { setLetter(it.toString()) },
                     shape = RoundedCornerShape(2.dp),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
-                        .width(screenWidth / 9)
+                        .width(screenWidth / 8)
                         .padding(2.dp)
 
                 ) {
@@ -195,7 +183,7 @@ fun keyBoard(setLetter : (String) -> Unit,
                 shape = RoundedCornerShape(2.dp),
                 contentPadding = PaddingValues(0.dp),
                 modifier = Modifier
-                    .width(screenWidth / 9)
+                    .width(screenWidth / 8)
                     .padding(2.dp)
             ) {
                 Icon(painter = painterResource(R.drawable.ic_baseline_keyboard_backspace_24),

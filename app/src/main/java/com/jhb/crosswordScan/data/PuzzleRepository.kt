@@ -55,9 +55,10 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    fun deletePuzzle(id: String){
-        Log.i(TAG, "deleting $id database")
-        puzzleDao.deletePuzzle(id)
+    fun deletePuzzle(puzzleData: PuzzleData){
+
+        Log.i(TAG, "deleting ${puzzleData.id} database")
+        puzzleDao.deletePuzzle(puzzleData.id)
     }
 
 

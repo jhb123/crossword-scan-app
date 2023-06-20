@@ -24,33 +24,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.data.Session.sessionDataState
-import com.jhb.crosswordScan.data.Session.tokenState
+import com.jhb.crosswordScan.ui.common.Spinner
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun loginComposeable(
-    uiState: State<AuthUiState>,
+fun LoginComposable(
+    uiState: AuthUiState,
     userNameFieldCallback: (String) -> Unit,
     passwordFieldCallback: (String) -> Unit,
     loginCallback: (String, String) -> Unit,
     registerCallback: () -> Unit,
     forgotPasswordCallback: () -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-
-    var showPassword by remember { mutableStateOf(false) }
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-
-    //Session.readUser()
-    val userFromFile = sessionDataState.collectAsState()
-    val tokenFromFile = tokenState.collectAsState()
-
-    val userName = uiState.value.userName
-    val password = uiState.value.userPassword
 
     Column(
         modifier = Modifier
@@ -64,14 +50,6 @@ fun loginComposeable(
         var showPassword by remember { mutableStateOf(false) }
 
         val keyboardController = LocalSoftwareKeyboardController.current
-
-
-        //Session.readUser()
-        val userFromFile = sessionDataState.collectAsState()
-        val tokenFromFile = tokenState.collectAsState()
-
-        val userName = uiState.value.userName
-        val password = uiState.value.userPassword
 
 
         Box(
@@ -99,9 +77,7 @@ fun loginComposeable(
         }
 
         OutlinedTextField(
-            value = if (userName != null) {
-                userName
-            } else "",
+            value = uiState.userName ?: "",
             modifier = Modifier.padding(10.dp),
             onValueChange = { userNameFieldCallback(it) },
             label = { Text("Username") },
@@ -111,7 +87,7 @@ fun loginComposeable(
                     focusManager.moveFocus(FocusDirection.Down)
                 },
 
-            ),
+                ),
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_person_24),
@@ -122,9 +98,7 @@ fun loginComposeable(
             )
 
         OutlinedTextField(
-            value = if (password != null) {
-                password
-            } else "",
+            value = uiState.userPassword ?: "",
             onValueChange = { passwordFieldCallback(it) },
             label = { Text("Password") },
             modifier = Modifier.padding(10.dp),
@@ -147,7 +121,10 @@ fun loginComposeable(
                 }
             },
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Password
+            ),
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
@@ -160,9 +137,12 @@ fun loginComposeable(
 
             FilledTonalButton(
                 onClick = {
-                    if (uiState.value.userName != null && uiState.value.userPassword != null) {
-                        loginCallback(uiState.value.userName!!, uiState.value.userPassword!!)
-                    }
+                    //composableScope.launch {
+                        if (uiState.userName != null && uiState.userPassword != null) {
+                            loginCallback(uiState.userName, uiState.userPassword)
+
+                        }
+                    //}
                 },
                 modifier = Modifier
                     .width(250.dp)
@@ -195,16 +175,16 @@ fun loginComposeable(
             Text(text = stringResource(R.string.forgotPasswordButton))
         }
 
-        uiState.value.serverErrorText?.let {
+        uiState.serverErrorText?.let {
             Text(
                 text = it,
                 color = MaterialTheme.colorScheme.error
             )
         }
 
-        userFromFile.value?.let { it.username?.let { it1 -> Text(text = it1) } }
-        userFromFile.value?.let { it.password?.let { it1 -> Text(text = it1) } }
-        tokenFromFile.value?.let { Text(text = it) }
+        if(uiState.isLoading) {
+            Spinner()
+        }
 
     }
 
