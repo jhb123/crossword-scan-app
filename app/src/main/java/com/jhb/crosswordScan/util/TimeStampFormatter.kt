@@ -23,7 +23,7 @@ class TimeStampFormatter {
     }
 
 
-    private fun getDateTime(timeStamp: String) : ZonedDateTime {
+    fun getDateTime(timeStamp: String) : ZonedDateTime {
         return ZonedDateTime.parse(timeStamp, formatter)
     }
 
