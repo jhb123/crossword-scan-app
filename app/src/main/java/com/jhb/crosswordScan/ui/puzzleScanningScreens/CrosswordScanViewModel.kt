@@ -353,18 +353,26 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     fun replaceClueText(old : Pair<String, String>, new : Pair<String, String>){
         puzzle.value.updateClueTxt(old.first,new.second)
         val downClues = puzzle.value.clues.filterKeys { it.last() == 'd' }
-        val downCluePairs = downClues.map {
+        var downCluePairs = downClues.map {
             Pair(it.value.clueName ,it.value.clue)
         }
+        downCluePairs = downCluePairs.sortedBy {
+            (it.first.dropLast(1)).toInt()
+        }
+
         val acrossClues = puzzle.value.clues.filterKeys { it.last() == 'a' }
-        val acrossCluesPairs = acrossClues.map {
+        var acrossCluesPairs = acrossClues.map {
             Pair(it.value.clueName ,it.value.clue)
+        }
+
+        acrossCluesPairs = acrossCluesPairs.sortedBy {
+            (it.first.dropLast(1)).toInt()
         }
 
         _uiState.update {
             it.copy(
-                downClues = downCluePairs,
-                acrossClues = acrossCluesPairs
+                downClues = downCluePairs.filter { it.second != "" },
+                acrossClues = acrossCluesPairs.filter{ it.second != "" }
             )
         }
     }

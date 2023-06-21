@@ -33,7 +33,6 @@ import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.ui.common.ClickableClueTextBox
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
-import com.jhb.crosswordScan.ui.common.clueTextBox
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
 import kotlinx.coroutines.launch
@@ -300,10 +299,15 @@ fun ClueScanComposable(
                     .fillMaxWidth(1f)
             ){
                 items(uiState.downClues){ clue->
-                    clueTextBox(clueData = clue,
-                        //backgroundColor = MaterialTheme.colorScheme.secondary,
-                        //textColor = MaterialTheme.colorScheme.onSecondary
-                )
+                    ClickableClueTextBox(
+                        clueData = clue,
+                        onClick =  {
+                            openDialog = true
+                            oldClue = clue
+                            newClue = clue
+
+                        }
+                    )
                 }
             }
 
