@@ -12,13 +12,8 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.MainActivity
 import com.jhb.crosswordScan.PuzzleApplication
+import com.jhb.crosswordScan.ui.common.ClickableClueTextBox
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.common.clueTextBox
@@ -77,11 +73,13 @@ fun clueScanScreen(
         onDragStart = { viewModel.resetClueHighlightBox(it) },
         onDrag = { viewModel.changeClueHighlightBox(it) },
         setCanvasSize = { viewModel.setCanvasSize(it) },
-        scanClues = { viewModel.scanClues() }
+        scanClues = { viewModel.scanClues() },
+        updateClueText = { oldClue, newClue -> viewModel.replaceClueText(oldClue, newClue)}
     )
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClueScanComposable(
     uiState: ScanUiState,
@@ -92,6 +90,7 @@ fun ClueScanComposable(
     onDrag : (PointerInputChange) -> PointerInputChange,
     setCanvasSize : (Size) -> Unit,
     scanClues : () -> Unit,
+    updateClueText : ( Pair<String,String>,Pair<String,String> ) -> Unit
     //points: () -> List<Offset>
 )
 {
@@ -215,16 +214,84 @@ fun ClueScanComposable(
                 .fillMaxWidth(1f)
                 .padding(10.dp)
         ){
+            var openDialog by remember { mutableStateOf(false) }
+            var oldClue by remember { mutableStateOf(Pair("","")) }
+            var newClue by remember { mutableStateOf(Pair("","")) }
+
+
+            if (openDialog) {
+                AlertDialog(
+                    onDismissRequest = { openDialog = false }
+                )
+                {
+                    Surface(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .wrapContentHeight(),
+                        shape = MaterialTheme.shapes.large
+                    ) {
+                        Column() {
+
+                            Text(
+                                text = "Edit ${oldClue.first}",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier
+                                    .padding(20.dp)
+                            )
+                            OutlinedTextField(
+                                value = newClue.second,
+                                onValueChange = {newClue = Pair(newClue.first, it)},
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth(),
+                                minLines = 6,
+                                maxLines = 6,
+                            )
+
+                            Row(
+                                modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                OutlinedButton(
+                                    onClick = {
+                                        //composableScope.launch(Dispatchers.IO) {
+                                        updateClueText( oldClue , newClue )
+                                        openDialog = false
+                                        //}
+                                    },
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.primary
+                                    )
+
+                                ) {
+                                    Text(text = "Confirm")
+                                }
+                                OutlinedButton(onClick = { openDialog = false }) {
+                                    Text(text = "Cancel")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             LazyColumn(
                 modifier = Modifier
                     .padding(5.dp)
                     .fillMaxWidth(0.5f)
             ){
                 items(uiState.acrossClues){ clue->
-                    clueTextBox(clueData = clue,
-                        //backgroundColor = MaterialTheme.colorScheme.secondary,
-                        //textColor = MaterialTheme.colorScheme.onSecondary
-                )
+                    //clueTextBox(clueData = clue)
+                    ClickableClueTextBox(
+                        clueData = clue,
+                        onClick =  {
+                            openDialog = true
+                            oldClue = clue
+                            newClue = clue
+
+                        }
+                    )
                 }
             }
             LazyColumn(

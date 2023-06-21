@@ -350,6 +350,25 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         _takeSnapShot.value = true
     }
 
+    fun replaceClueText(old : Pair<String, String>, new : Pair<String, String>){
+        puzzle.value.updateClueTxt(old.first,new.second)
+        val downClues = puzzle.value.clues.filterKeys { it.last() == 'd' }
+        val downCluePairs = downClues.map {
+            Pair(it.value.clueName ,it.value.clue)
+        }
+        val acrossClues = puzzle.value.clues.filterKeys { it.last() == 'a' }
+        val acrossCluesPairs = acrossClues.map {
+            Pair(it.value.clueName ,it.value.clue)
+        }
+
+        _uiState.update {
+            it.copy(
+                downClues = downCluePairs,
+                acrossClues = acrossCluesPairs
+            )
+        }
+    }
+
 }
 
 class CrosswordScanViewModelFactory(private val repository: PuzzleRepository) : ViewModelProvider.Factory {
