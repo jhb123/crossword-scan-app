@@ -30,11 +30,12 @@ class MainActivity : ComponentActivity() {
         }
 
         startOpenCV()
-        Log.i(TAG, "Setting content")
 
+        Log.i(TAG, "Reading session")
         Session.setContext(this.applicationContext)
         Session.readSession()
 
+        Log.i(TAG, "Setting content")
         setContent {
             CrosswordApp((this.application as PuzzleApplication).repository)
         }

@@ -19,23 +19,33 @@ private const val TAG = "Session"
 object Session {
 
     @Volatile
-    private lateinit var applicationContext: Context
-    private  lateinit var masterKey: MasterKey
+    lateinit var applicationContext: Context
+    lateinit var masterKey: MasterKey
+    lateinit var encryptedFile: EncryptedFile
 
-    private const val sessionFileName = "session.txt"
+    //private lateinit var sessionData: SessionData
+    //private lateinit var token: String
 
+    private val sessionFileName = "session.txt"
+    private val tokenFileName = "token.txt"
+
+    private val _tokenState = MutableStateFlow<String?>(null)
+    val tokenState: StateFlow<String?> = _tokenState
 
     private val _sessionDataState = MutableStateFlow<SessionData?>(null)
     val sessionDataState: StateFlow<SessionData?> = _sessionDataState
 
+
+    //val flowTest = Flow<>
+
     fun setContext(context: Context) {
         applicationContext = context
-        masterKey = MasterKey.Builder(
+        masterKey = androidx.security.crypto.MasterKey.Builder(
             applicationContext,
-            MasterKey.DEFAULT_MASTER_KEY_ALIAS
+            androidx.security.crypto.MasterKey.DEFAULT_MASTER_KEY_ALIAS
         )
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+            .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
+            .build();
     }
 
     fun logOut(){
@@ -57,7 +67,7 @@ object Session {
         }
     }
 
-    private fun writeSession(sessionData: SessionData?) {
+    fun writeSession(sessionData: SessionData?) {
         val fileContent = sessionDataToJson(sessionData)
         Log.i(TAG,"writing $sessionFileName $fileContent")
         writeEncryptedFile(sessionFileName,fileContent)
@@ -65,19 +75,36 @@ object Session {
 
     fun readSession(): SessionData? {
         val sessionPlainText = readEncryptedFile(sessionFileName)
-        return if(sessionPlainText!=null){
+        if(sessionPlainText!=null){
             val sessionData = sessionDataFromJson(sessionPlainText)
             Log.i(TAG,"from $sessionFileName $sessionPlainText")
             _sessionDataState.update { sessionData }
-            sessionData
+            return sessionData
         } else{
-            null
+            return null
+        }
+    }
+
+    fun writeToken(sessionData: SessionData) {
+        val fileContent = sessionDataToJson(sessionData)
+        writeEncryptedFile(tokenFileName,fileContent)
+    }
+
+    fun readToken(): String? {
+        val tokenPlainText = readEncryptedFile(tokenFileName)
+        if(tokenPlainText!=null){
+            //token = tokenPlainText
+            _tokenState.update { tokenPlainText }
+
+            return tokenPlainText
+        } else{
+            return null
         }
     }
 
 
-
     private fun readEncryptedFile(filename: String) : String? {
+        Log.i(TAG,"Reading encrypted file : $filename")
         val encryptedFile = EncryptedFile.Builder(
             applicationContext,
             File(applicationContext.filesDir, filename),
@@ -130,9 +157,9 @@ object Session {
         return Gson().fromJson(json, typeToken)
     }
 
-    private fun sessionDataToJson(sessionData: SessionData?): String {
+    private fun sessionDataToJson(sessiondata: SessionData?): String {
         val gson = Gson()
-        return gson.toJson(sessionData)
+        return gson.toJson(sessiondata)
     }
 
 
