@@ -154,10 +154,10 @@ fun unzipPuzzleFiles(zf: ZipInputStream) : Map<String, ByteArray> {
             .map {
                 //Log.i(TAG,it.name)
                 when {
-                    it.name == "meta_data.json" -> Pair<String,ByteArray>("metaData",zipInputStream.readAllBytes() )
-                    it.name.split(".")[1] == "json" -> Pair<String,ByteArray>("puzzleJson",zipInputStream.readAllBytes() )
-                    it.name.split(".")[1] == "png" -> Pair<String,ByteArray>("image",zipInputStream.readAllBytes() )
-                    else -> Pair<String,ByteArray>(it.name,zipInputStream.readAllBytes() )
+                    it.name == "meta_data.json" -> Pair<String,ByteArray>("metaData",zipInputStream.readBytes() )
+                    it.name.split(".")[1] == "json" -> Pair<String,ByteArray>("puzzleJson",zipInputStream.readBytes() )
+                    it.name.split(".")[1] == "png" -> Pair<String,ByteArray>("image",zipInputStream.readBytes() )
+                    else -> Pair<String,ByteArray>(it.name,zipInputStream.readBytes() )
                 }
             }.toMap()
     }
