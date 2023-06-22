@@ -34,3 +34,36 @@ class Puzzle() {
     }
 
 }
+
+fun getAcrossCluesAsPairs(puzzle: Puzzle) : List<Pair<String, String>>{
+    val clues = getCluesByPrefix('a', puzzle)
+    val cluePairs = getCluesAsPairs(clues)
+    val cluePairsSorted = cluePairs.sortedBy {
+        (it.first.dropLast(1)).toInt()
+    }
+    return cluePairsSorted
+}
+
+fun getDownCluesAsPairs(puzzle: Puzzle) : List<Pair<String, String>>{
+    val clues = getCluesByPrefix('d', puzzle)
+    val cluePairs = getCluesAsPairs(clues)
+    val cluePairsSorted = cluePairs.sortedBy {
+        (it.first.dropLast(1)).toInt()
+    }
+    return cluePairsSorted
+}
+
+private fun getCluesByPrefix(prefix: Char, puzzle: Puzzle) : Map<String, Clue> {
+    val clues = puzzle.clues.filterKeys { it.last() == prefix }
+    return clues
+}
+
+private fun getCluesAsPairs(cluePairs : Map<String, Clue>) : List<Pair<String, String>> {
+    var cluePairs = cluePairs.map {
+        Pair(it.value.clueName ,it.value.clue)
+    }
+    return cluePairs
+}
+
+
+

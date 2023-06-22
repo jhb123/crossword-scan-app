@@ -19,6 +19,8 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.jhb.crosswordScan.data.Puzzle
 import com.jhb.crosswordScan.data.PuzzleRepository
+import com.jhb.crosswordScan.data.getAcrossCluesAsPairs
+import com.jhb.crosswordScan.data.getDownCluesAsPairs
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.GridScanUiState
@@ -59,6 +61,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
     private var TAG = "CrosswordScanViewModel"
 
+    //TODO make this a stateflow or something
     private val _puzzle = mutableStateOf(Puzzle())
     val puzzle : State<Puzzle> = _puzzle
 
@@ -144,7 +147,14 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
         _puzzle.value = crosswordDetector.assembleClues()
 
-        _uiState.update {ScanUiState()}
+
+        //makes a new blank UI for scanning clues
+        _uiState.value = ScanUiState(
+            downClues = getDownCluesAsPairs(puzzle.value),
+            acrossClues = getAcrossCluesAsPairs(puzzle.value)
+        )
+
+
         //_puzzle.value.setGridSize(gridBitmap)
 
     }
@@ -259,7 +269,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     }
 
     fun ocrClues()  {
-
+        Log.i(TAG,"performing OCR on clues")
         val imageForProcessing = cluePicDebugCropped.value //croppedCluePic.value
         if(imageForProcessing != null) {
             val image = InputImage.fromBitmap(imageForProcessing, 0)
@@ -284,7 +294,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                             }
                             _uiState.update {
                                 it.copy(
-                                    acrossClues = newClues
+                                    acrossClues = getAcrossCluesAsPairs(puzzle.value)
                                 )
                             }
 
@@ -299,9 +309,10 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                                     puzzle.value.updateClueTxt(clueNum + "d",cluetxt)
                                 }
                             }
+
                             _uiState.update {
                                 it.copy(
-                                    downClues = newClues
+                                    downClues = getDownCluesAsPairs(puzzle.value)
                                 )
                             }
                         }
@@ -348,6 +359,17 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     fun setSnapShotTrue(){
         Log.i(TAG,"Setting snapshot to true")
         _takeSnapShot.value = true
+    }
+
+    fun replaceClueText(old : Pair<String, String>, new : Pair<String, String>){
+        puzzle.value.updateClueTxt(old.first,new.second)
+
+        _uiState.update {
+            it.copy(
+                acrossClues = getAcrossCluesAsPairs(puzzle.value),
+                downClues = getDownCluesAsPairs(puzzle.value)
+            )
+        }
     }
 
 }

@@ -327,9 +327,13 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
 
     Row(horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
-            .padding(10.dp)
             .fillMaxWidth(1f)
     ){
+        val configuration = LocalConfiguration.current
+        val width = configuration.screenWidthDp
+        val trim = 15.dp
+        val columnWidth = (width/2).dp - trim
+
         val acrossColumn = LazyColumn(
             state = listStateA,
             modifier = Modifier
@@ -342,14 +346,20 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
                     dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.primaryContainer,
                         textColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        onClueSelect = onClueSelect
+                        onClueSelect = onClueSelect,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
                 }
                 else{
                     dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.surface,
                         textColor = MaterialTheme.colorScheme.onSurface,
-                        onClueSelect = onClueSelect
+                        onClueSelect = onClueSelect,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
                 }
             }
@@ -365,14 +375,20 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
                     dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.primaryContainer,
                         textColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        onClueSelect = onClueSelect
+                        onClueSelect = onClueSelect,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
                 }
                 else{
                     dynamicClueTextBox(clueData = clue,
                         backgroundColor = MaterialTheme.colorScheme.surface,
                         textColor = MaterialTheme.colorScheme.onSurface,
-                        onClueSelect = onClueSelect
+                        onClueSelect = onClueSelect,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
                 }
             }
