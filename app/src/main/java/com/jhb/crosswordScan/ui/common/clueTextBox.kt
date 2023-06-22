@@ -1,8 +1,7 @@
 package com.jhb.crosswordScan.ui.common
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -38,25 +37,19 @@ fun clueTextBox(clueData : Pair<String, String>,
 @Composable
 fun ClickableClueTextBox(
     clueData : Pair<String, String>,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
-    onClick : () -> Unit
+    colors: CardColors = CardDefaults.cardColors(),
+    onClick : () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = backgroundColor,//MaterialTheme.colorScheme.surface,
-        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        colors = colors,
         onClick = { onClick() },
-        modifier = Modifier
-            .width(170.dp)
-            .padding(5.dp)
-
+        modifier = modifier
     ) {
         Text(
             "${clueData.first}) ${clueData.second}",
-            color = textColor,
             modifier = Modifier
                 .padding(5.dp)
         )
@@ -70,7 +63,9 @@ fun ClickableClueTextBox(
 fun dynamicClueTextBox(clueData : Pair<String, Clue>,
                 backgroundColor: Color,
                 textColor: Color,
-                onClueSelect: (String) -> Unit ) {
+                onClueSelect: (String) -> Unit,
+                modifier: Modifier = Modifier
+) {
 
     // this composable is used in cases where a function needs to be
     // be applied based on the text in the clue box.
@@ -81,28 +76,13 @@ fun dynamicClueTextBox(clueData : Pair<String, Clue>,
             containerColor = backgroundColor,//MaterialTheme.colorScheme.surface,
         ),
         //shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .width(170.dp)
-            .padding(5.dp)
+        modifier = modifier
             .pointerInput(clueData.second.clueName) {
                 detectTapGestures {
                     onClueSelect(clueData.second.clueName)
                 }
             }
     ){
-
-//    Box(
-//        modifier = Modifier
-//            //.background(color = backgroundColor)
-//            .padding(5.dp)
-//            .width(170.dp)
-//            .background(color = backgroundColor, shape = RoundedCornerShape(5.dp))
-//            .pointerInput(clueData.second.clueName) {
-//                detectTapGestures {
-//                    onClueSelect(clueData.second.clueName)
-//                }
-//            }
-//    ){
 
         Text(
             "${clueData.first}) ${clueData.second.clue}",

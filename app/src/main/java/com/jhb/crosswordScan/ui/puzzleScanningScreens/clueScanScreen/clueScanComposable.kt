@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -209,9 +210,7 @@ fun ClueScanComposable(
         }
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .fillMaxWidth(1f)
-                .padding(10.dp)
+            modifier = Modifier.fillMaxWidth(1f)
         ){
             var openDialog by remember { mutableStateOf(false) }
             var oldClue by remember { mutableStateOf(Pair("","")) }
@@ -248,7 +247,9 @@ fun ClueScanComposable(
                             )
 
                             Row(
-                                modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 OutlinedButton(
@@ -275,12 +276,23 @@ fun ClueScanComposable(
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth(0.5f)
-            ){
+            val configuration = LocalConfiguration.current
+            val width = configuration.screenWidthDp
+            val trim = 15.dp
+            val columnWidth = (width/2).dp - trim
+
+            LazyColumn(){
                 items(uiState.acrossClues){ clue->
+                    val colors = when(clue.second){
+                        "" -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        else -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                     //clueTextBox(clueData = clue)
                     ClickableClueTextBox(
                         clueData = clue,
@@ -288,25 +300,38 @@ fun ClueScanComposable(
                             openDialog = true
                             oldClue = clue
                             newClue = clue
-
-                        }
+                        },
+                        colors = colors,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
                 }
             }
-            LazyColumn(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth(1f)
-            ){
+            LazyColumn(){
                 items(uiState.downClues){ clue->
+                    val colors = when(clue.second){
+                        "" -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        else -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+
                     ClickableClueTextBox(
                         clueData = clue,
                         onClick =  {
                             openDialog = true
                             oldClue = clue
                             newClue = clue
-
-                        }
+                        },
+                        colors = colors,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
                 }
             }

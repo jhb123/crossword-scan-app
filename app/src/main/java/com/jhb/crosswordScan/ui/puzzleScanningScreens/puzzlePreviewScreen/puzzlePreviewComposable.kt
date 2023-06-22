@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -95,7 +96,6 @@ fun puzzlePreviewComposable(
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
-                .padding(10.dp)
                 .fillMaxWidth(1f)
                 .fillMaxHeight(0.9f)
                 //.height(500.dp)
@@ -162,39 +162,62 @@ fun puzzlePreviewComposable(
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(5.dp)
-            ) {
+            val configuration = LocalConfiguration.current
+            val width = configuration.screenWidthDp
+            val trim = 15.dp
+            val columnWidth = (width/2).dp - trim
+
+            LazyColumn() {
                 items(uiClueState.acrossClues) { clue ->
+                    val colors = when(clue.second){
+                        "" -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        else -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                     ClickableClueTextBox(
                         clueData = clue,
                         onClick =  {
                             openDialog = true
                             oldClue = clue
                             newClue = clue
-
-                        }
+                        },
+                        colors = colors,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
                 }
             }
-            LazyColumn(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth(1f)
-            ) {
+            LazyColumn() {
                 items(uiClueState.downClues) { clue ->
+                    val colors = when(clue.second){
+                        "" -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        else -> CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+
                     ClickableClueTextBox(
                         clueData = clue,
                         onClick =  {
                             openDialog = true
                             oldClue = clue
                             newClue = clue
-
-                        }
+                        },
+                        colors = colors,
+                        modifier = Modifier
+                            .width(columnWidth)
+                            .padding(horizontal = 0.dp, vertical = 5.dp)
                     )
-                    //Text("${clue.first}) ${clue.second}", modifier = Modifier.padding(5.dp))
                 }
             }
         }
