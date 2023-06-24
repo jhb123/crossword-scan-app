@@ -52,3 +52,4 @@ output.json
 obj/
 .externalNativeBuild
 app/gradle.properties
+*.mp4
