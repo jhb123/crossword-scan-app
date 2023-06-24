@@ -64,13 +64,13 @@ fun LoginComposable(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logobackground),
-                contentDescription = "logo",
+                contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds
             )
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "logo foreground",
+                contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds,
             )
@@ -80,7 +80,7 @@ fun LoginComposable(
             value = uiState.userName ?: "",
             modifier = Modifier.padding(10.dp),
             onValueChange = { userNameFieldCallback(it) },
-            label = { Text("Username") },
+            label = { Text(text = stringResource(id = R.string.label_userName)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, autoCorrect = false),
             keyboardActions = KeyboardActions(
                 onNext = {
@@ -91,7 +91,7 @@ fun LoginComposable(
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_person_24),
-                    contentDescription = "username icon"
+                    contentDescription = stringResource(id = R.string.ContentDesc_userNameIcon)
                 )
             },
 
@@ -100,12 +100,12 @@ fun LoginComposable(
         OutlinedTextField(
             value = uiState.userPassword ?: "",
             onValueChange = { passwordFieldCallback(it) },
-            label = { Text("Password") },
+            label = { Text(text = stringResource(id = R.string.label_password)) },
             modifier = Modifier.padding(10.dp),
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_password_24),
-                    contentDescription = "password icon"
+                    contentDescription = stringResource(id = R.string.contentDesc_passwordIcon)
                 )
             },
             trailingIcon = {
@@ -116,7 +116,7 @@ fun LoginComposable(
                                 R.drawable.ic_baseline_visibility_24
                             } else R.drawable.ic_baseline_visibility_off_24
                         ),
-                        contentDescription = "password visibility"
+                        contentDescription = stringResource(id = R.string.contentDesc_passwordIconVisibleToggle)
                     )
                 }
             },
@@ -153,7 +153,7 @@ fun LoginComposable(
                 )
 
             ) {
-                Text(text = stringResource(R.string.login))
+                Text(text = stringResource(R.string.action_login))
             }
 
         }
@@ -163,7 +163,7 @@ fun LoginComposable(
                 .width(250.dp)
                 .padding(10.dp),
         ) {
-            Text(text = stringResource(R.string.register))
+            Text(text = stringResource(R.string.action_register))
         }
 
         OutlinedButton(
@@ -172,7 +172,7 @@ fun LoginComposable(
                 .width(250.dp)
                 .padding(10.dp),
         ) {
-            Text(text = stringResource(R.string.forgotPasswordButton))
+            Text(text = stringResource(R.string.question_forgotPassword))
         }
 
         uiState.serverErrorText?.let {

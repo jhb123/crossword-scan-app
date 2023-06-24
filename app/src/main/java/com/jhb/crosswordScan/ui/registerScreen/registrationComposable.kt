@@ -87,13 +87,13 @@ fun RegistrationComposeable(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logobackground),
-                contentDescription = "logo",
+                contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds
             )
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "logo foreground",
+                contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds,
             )
@@ -103,7 +103,7 @@ fun RegistrationComposeable(
             value = email,
             modifier = Modifier.padding(10.dp),
             onValueChange = { emailFieldCallback(it) },
-            label = { Text(stringResource(R.string.emailLabel)) },
+            label = { Text(stringResource(R.string.label_email)) },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Email
@@ -116,7 +116,7 @@ fun RegistrationComposeable(
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_email_24),
-                    contentDescription = "username icon"
+                    contentDescription = stringResource(id = R.string.contentDesc_emailIcon)
                 )
             },
 
@@ -127,7 +127,7 @@ fun RegistrationComposeable(
             value = userName,
             modifier = Modifier.padding(10.dp),
             onValueChange = { userNameFieldCallback(it) },
-            label = { Text("Username") },
+            label = { Text(text = stringResource(id = R.string.label_userName)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(
                 onNext = {
@@ -137,7 +137,7 @@ fun RegistrationComposeable(
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_person_24),
-                    contentDescription = "username icon"
+                    contentDescription = stringResource(id = R.string.ContentDesc_userNameIcon)
                 )
             },
             )
@@ -146,12 +146,12 @@ fun RegistrationComposeable(
             isError = !uiState.passwordsMatch,
             value = password,
             onValueChange = { passwordFieldCallback(it) },
-            label = { Text("Password") },
+            label = { Text(text = stringResource(id = R.string.label_password)) },
             modifier = Modifier.padding(10.dp),
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_password_24),
-                    contentDescription = "password icon"
+                    contentDescription = stringResource(id = R.string.contentDesc_passwordIcon)
                 )
             },
             trailingIcon = {
@@ -162,7 +162,7 @@ fun RegistrationComposeable(
                                 R.drawable.ic_baseline_visibility_24
                             } else R.drawable.ic_baseline_visibility_off_24
                         ),
-                        contentDescription = "password visibility"
+                        contentDescription = stringResource(id = R.string.contentDesc_passwordIconVisibleToggle)
                     )
                 }
             },
@@ -179,12 +179,12 @@ fun RegistrationComposeable(
             isError = !uiState.passwordsMatch,
             value = passwordConfirm,
             onValueChange = { passwordConfirmFieldCallback(it) },
-            label = { Text("Confirm password") },
+            label = { Text(text = stringResource(id = R.string.label_confirmPassword)) },
             modifier = Modifier.padding(10.dp),
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_password_24),
-                    contentDescription = "password icon"
+                    contentDescription = stringResource(id = R.string.contentDesc_passwordConfirmIcon)
                 )
             },
             trailingIcon = {
@@ -195,7 +195,7 @@ fun RegistrationComposeable(
                                 R.drawable.ic_baseline_visibility_24
                             } else R.drawable.ic_baseline_visibility_off_24
                         ),
-                        contentDescription = "password visibility"
+                        contentDescription = stringResource(id = R.string.contentDesc_passwordIconVisibleToggle)
                     )
                 }
             },
@@ -220,7 +220,7 @@ fun RegistrationComposeable(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            Text(text = stringResource(R.string.register))
+            Text(text = stringResource(R.string.action_register))
         }
         Text(
             text = uiState.message,

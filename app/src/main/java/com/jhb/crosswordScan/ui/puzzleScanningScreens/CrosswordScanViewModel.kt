@@ -265,7 +265,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                 .addOnSuccessListener { visionText ->
                     val text = Regex("\n").replace(visionText.text," ")
                     //split around things that look like (4) or (4,3] etc.
-                    val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
+                    val regex = Regex("(?<=[(\\[][^A-Za-z]{0,27}[)\\]])")
                     val matchResult = regex.split(text)
                     val newClues = mutableListOf<Pair<String,String>>()
 

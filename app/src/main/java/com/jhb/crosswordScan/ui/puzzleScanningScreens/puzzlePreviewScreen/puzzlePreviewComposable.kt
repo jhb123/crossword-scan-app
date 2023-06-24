@@ -14,9 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
+import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.Puzzle
 import com.jhb.crosswordScan.data.insertPuzzle
 import com.jhb.crosswordScan.ui.common.ClickableClueTextBox
@@ -85,7 +87,7 @@ fun puzzlePreviewComposable(
             uiGridState.gridPicProcessed.let {
                 if (it != null) {
                     Image(bitmap = it.asImageBitmap(),
-                        contentDescription = "scanned bitmap",
+                        contentDescription = stringResource(id = R.string.contentDesc_gridImage),
                         modifier = Modifier
                             .padding(5.dp)
                             .fillMaxSize())
@@ -135,7 +137,9 @@ fun puzzlePreviewComposable(
                             )
 
                             Row(
-                                modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 OutlinedButton(
@@ -151,10 +155,10 @@ fun puzzlePreviewComposable(
                                     )
 
                                 ) {
-                                    Text(text = "Confirm")
+                                    Text(text = stringResource(id = R.string.action_confirmation))
                                 }
                                 OutlinedButton(onClick = { openDialog = false }) {
-                                    Text(text = "Cancel")
+                                    Text(text = stringResource(id = R.string.action_cancellation))
                                 }
                             }
                         }
@@ -225,11 +229,10 @@ fun puzzlePreviewComposable(
             composableScope.launch{
                 insertPuzzle(puzzle,context,uiGridState.gridPicProcessed)
             }
-            //Log.i(TAG,"Save button clicked")
-            Toast.makeText(context,"Saved",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,R.string.event_save,Toast.LENGTH_SHORT).show()
             //onSave()
         }) {
-            Text(text = "Save Puzzle")
+            Text(text = stringResource(id = R.string.action_save_puzzle))
         }
     }
 }
