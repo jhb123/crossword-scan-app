@@ -17,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
+import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
 import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
 import org.opencv.android.CameraBridgeViewBase
@@ -104,7 +106,7 @@ fun gridScanComposable(
             uiState.gridPicProcessed.let {
                 if (it != null) {
                     Image(bitmap = it.asImageBitmap(),
-                        contentDescription = "scanned bitmap",
+                        contentDescription = stringResource(id = R.string.contentDesc_gridImage),
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxSize())
@@ -118,7 +120,7 @@ fun gridScanComposable(
                 //onClick = { viewModel.takeSnapshot = true }
                 onClick = takePic
             ) {
-                Text("Scan")
+                Text(text = stringResource(id = R.string.action_photograph))
             }
         //}
     }

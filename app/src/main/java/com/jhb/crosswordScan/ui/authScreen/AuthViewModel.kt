@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.network.CrosswordApi
+import com.jhb.crosswordScan.ui.Strings.unableToFindServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -61,8 +62,8 @@ class AuthViewModel() : ViewModel() {
             serverMessage = "Error ${e.code()} : ${e.message()}"
         }
         catch (e : ConnectException){
-            Log.e(TAG, "unable to find server")
-            serverMessage = "Unable to find server"
+            Log.e(TAG, unableToFindServer)
+            serverMessage = unableToFindServer
         }
         finally {
             _uiState.update {
@@ -89,7 +90,6 @@ class AuthViewModel() : ViewModel() {
     }
 
     fun setPassword(password: String){
-        Log.i(TAG,"password $password")
         _uiState.update {
             it.copy(userPassword = password)
         }

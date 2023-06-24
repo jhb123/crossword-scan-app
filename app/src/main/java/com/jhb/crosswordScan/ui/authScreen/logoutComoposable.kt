@@ -47,13 +47,13 @@ fun LogoutComposable(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logobackground),
-                contentDescription = "logo",
+                contentDescription = stringResource(R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds
             )
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "logo foreground",
+                contentDescription = stringResource(R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds,
             )
@@ -73,7 +73,7 @@ fun LogoutComposable(
                 )
 
             ) {
-                Text(text = stringResource(R.string.logout))
+                Text(text = stringResource(R.string.action_logout))
             }
             //tokenFromFile.value?.let { Text(text = it) }
         }

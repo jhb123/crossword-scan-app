@@ -22,6 +22,8 @@ class CrosswordDetector {
     var binaryCrosswordImg = Mat(480, 640, CV_8UC3, Scalar(0.0,255.0,255.0));
     var edgeImg = Mat(480, 640, CV_8UC3, Scalar(0.0,255.0,255.0));
 
+    var isSymmetric = false
+
 
     val cropSize = 500.0 //px
 
@@ -237,6 +239,18 @@ class CrosswordDetector {
 
     }
 
+    private fun checkBinaryCrosswordMaskSymmetry() : Boolean {
+        Log.i(TAG,"Checking for symmetry")
+        val matRot = binaryCrosswordImg!!.clone()
+        rotate(binaryCrosswordImg, matRot, ROTATE_180);
+        subtract(binaryCrosswordImg,matRot,matRot)
+        val isSymmetric = countNonZero(matRot) == 0
+
+        Log.i(TAG,"Crossword symmetric? $isSymmetric")
+
+        return isSymmetric
+    }
+
     fun makeBinaryCrosswordImg() {
 
         Log.i(TAG, "estimatating Clue box size")
@@ -252,12 +266,28 @@ class CrosswordDetector {
 
         Log.i(TAG, "resizing")
         //Imgproc.resize(clueBoxes,binaryCrosswordImg,Size(), rowsD/2, colsD/2, Imgproc.INTER_LINEAR )
-        Imgproc.resize(clueBoxes,binaryCrosswordImg,Size(1/rowsD,1/colsD), 0.0, 0.0, Imgproc.INTER_AREA  )
-        Imgproc.threshold(binaryCrosswordImg,binaryCrosswordImg,0.0,255.0,Imgproc.THRESH_BINARY+Imgproc.THRESH_OTSU)
+        Imgproc.resize(
+            clueBoxes,
+            binaryCrosswordImg,
+            Size(1 / rowsD, 1 / colsD),
+            0.0,
+            0.0,
+            Imgproc.INTER_AREA
+        )
+        Imgproc.threshold(
+            binaryCrosswordImg,
+            binaryCrosswordImg,
+            0.0,
+            255.0,
+            Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU
+        )
         Log.i(TAG, "resizing finished")
-        Log.d(TAG, "grid shape ${binaryCrosswordImg.rows()}x${binaryCrosswordImg.cols()}:\n${binaryCrosswordImg.dump()}")
+        Log.d(
+            TAG,
+            "grid shape ${binaryCrosswordImg.rows()}x${binaryCrosswordImg.cols()}:\n${binaryCrosswordImg.dump()}"
+        )
 
-
+        isSymmetric = checkBinaryCrosswordMaskSymmetry()
 
     }
 
@@ -325,14 +355,17 @@ class CrosswordDetector {
             Log.d(TAG,"$name: ${clue.clueBoxes}")
         }
 
-        val gridBitmap = Bitmap.createBitmap(binaryCrosswordImg.cols(),
-            binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888)
+        val gridBitmap = Bitmap.createBitmap(
+            binaryCrosswordImg.cols(),
+            binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888
+        )
         Utils.matToBitmap(binaryCrosswordImg, gridBitmap);
 
         //puzzle.image = gridBitmap
         puzzle.gridSize = binaryCrosswordImg.rows()
 
         return puzzle
+
     }
 
     fun getGridWithClueMarks() : Mat{
@@ -488,3 +521,4 @@ class CrosswordDetector {
         return newGrid
     }
 }
+

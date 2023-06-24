@@ -75,7 +75,7 @@ fun CrosswordApp(repository: PuzzleRepository) {
                             content = {
                                 Icon(
                                     painterResource(id = R.drawable.ic_baseline_home_24),
-                                    contentDescription = "back"
+                                    contentDescription = stringResource(id = R.string.action_home)
                                 )
                             }
                         )
@@ -89,10 +89,6 @@ fun CrosswordApp(repository: PuzzleRepository) {
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
                     actions = {
-                        //val showSearch = uiState.collectAsState().value.puzzleSearchShown
-//                        Button(onClick = { websocket.webtest.send("test")}){
-//                            Text("WS")
-//                        }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -113,7 +109,7 @@ fun CrosswordApp(repository: PuzzleRepository) {
                                 content = {
                                     Icon(
                                         painterResource(id = Screen.Authenticate.iconResourceId),
-                                        contentDescription = "Authenticate"
+                                        contentDescription = stringResource(id =Screen.Authenticate.resourceId)
                                     )
                                 }
                             )
@@ -121,7 +117,7 @@ fun CrosswordApp(repository: PuzzleRepository) {
                                 Text(it,
                                     modifier = Modifier
                                         .padding(0.dp)
-                                        .offset(y = -15.dp)
+                                        .offset(y = (-15).dp)
                                 )
                             }
 
@@ -133,7 +129,7 @@ fun CrosswordApp(repository: PuzzleRepository) {
                             content = {
                                 Icon(
                                     painterResource(id = R.drawable.ic_baseline_dark_mode_24),
-                                    contentDescription = "dark mode"
+                                    contentDescription = stringResource(id = R.string.contentDesc_darkModeToggele)
                                 )
                             }
                         )
@@ -200,7 +196,7 @@ fun CrosswordApp(repository: PuzzleRepository) {
                 // be taken out of the composable and replaced with callbacks.
                 composable(route = Screen.GridScan.route) {
                     uiState.update { ui ->
-                        ui.copy(pageTitle = stringResource(id = R.string.gridScan))
+                        ui.copy(pageTitle = stringResource(id = Screen.GridScan.resourceId))
                     }
                     gridScanScreen()
                 }
@@ -208,14 +204,14 @@ fun CrosswordApp(repository: PuzzleRepository) {
                 //
                 composable(route = Screen.ClueScan.route) {
                     uiState.update { ui ->
-                        ui.copy(pageTitle = stringResource(id = R.string.clueScan))
+                        ui.copy(pageTitle = stringResource(id = Screen.ClueScan.resourceId))
                     }
                     clueScanScreen()
                 }
 
                 composable(route = Screen.PreviewScan.route) {
                     uiState.update { ui ->
-                        ui.copy(pageTitle = stringResource(id = R.string.previewGridScan))
+                        ui.copy(pageTitle = stringResource(id = Screen.PreviewScan.resourceId))
                     }
                     puzzlePreviewScreen()
                     Log.i(TAG, "Navigated to preview screen")
@@ -223,25 +219,23 @@ fun CrosswordApp(repository: PuzzleRepository) {
 
                 composable(route = Screen.SelectPuzzle.route) {
                     uiState.update { ui ->
-                        ui.copy(pageTitle = stringResource(id = R.string.solveMenuItem))
+                        ui.copy(pageTitle = stringResource(id = Screen.SelectPuzzle.resourceId))
                     }
                     Log.i(TAG, "navigated to puzzleSelect")
                     puzzleSelectionScreen(navigateToPuzzle = {
                             Log.i(TAG, "Navigating to solve/$it")
                             navController.popBackStack()
-                            navController.navigate("solve/$it")
+                            navController.navigate("${Screen.Solve.route}/$it")
                         })
-
-
                 }
 
                 composable(
-                    route = "solve/{puzzleId}",
+                    route = "${Screen.Solve.route}/{puzzleId}",
                     arguments = listOf(navArgument("puzzleId") { type = NavType.StringType }),
                 )
                 {
                     uiState.update { ui ->
-                        ui.copy(pageTitle = "Puzzle")
+                        ui.copy(pageTitle = stringResource(Screen.Solve.resourceId))
                     }
                     val puzzleId = it.arguments?.getString("puzzleId")
 
@@ -286,7 +280,7 @@ fun CrosswordApp(repository: PuzzleRepository) {
                 }
 
                 composable(
-                    route = "resetPassword"
+                    route = Screen.ResetPassword.route
                 ){
                     uiState.update { ui ->
                         ui.copy(pageTitle = stringResource(id = Screen.ResetPassword.resourceId))

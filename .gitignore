@@ -51,3 +51,4 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
+*.mp4

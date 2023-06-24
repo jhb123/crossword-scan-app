@@ -68,7 +68,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     private val _takeSnapShot = mutableStateOf(false)
     val takeSnapShot : State<Boolean> = _takeSnapShot
 
-    //private lateinit var gridImg : Bitmap
     private lateinit var _viewFinderImg : Mat // we want this to be set by the camera input
     private lateinit var _viewFinderImgWithContour : Mat // we want this to be set by the camera input
     private lateinit var contours: List<MatOfPoint>
@@ -80,13 +79,6 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     val viewFinderImgWithContour: Mat
         get() = _viewFinderImgWithContour
 
-
-
-    //private val gridImgResize = MutableLiveData<Bitmap>()
-    //fun getGridImgResize() = gridImgResize
-
-    private val gridImg = MutableLiveData<Bitmap>()
-    //fun getGridImg() = gridImg
 
     fun processPreview(inputImg : Mat) {
         _viewFinderImg = inputImg
@@ -117,43 +109,39 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         Log.d(TAG, "Setting snapshot preview image")
         crosswordDetector.cropToCrossword(contours[cwContourIndex], viewFinderImg)
         Log.d(TAG, "Making bitmap")
-        val bitmap =
-            Bitmap.createBitmap(crosswordDetector.croppedToCrosswordImg.cols(),
-                crosswordDetector.croppedToCrosswordImg.rows(), Bitmap.Config.ARGB_8888)
-        Utils.matToBitmap(crosswordDetector.croppedToCrosswordImg, bitmap);
+
         val matrix = Matrix()
         matrix.postRotate(90f)
-        gridImg.postValue(
-            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        )
 
         crosswordDetector.makeBinaryCrosswordImg()
 
-        var gridBitmap =
-            Bitmap.createBitmap(crosswordDetector.binaryCrosswordImg.cols(),
-                crosswordDetector.binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888)
+        if (crosswordDetector.isSymmetric) {
+
+            var gridBitmap =
+                Bitmap.createBitmap(
+                    crosswordDetector.binaryCrosswordImg.cols(),
+                    crosswordDetector.binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888
+                )
+
+            Utils.matToBitmap(crosswordDetector.binaryCrosswordImg, gridBitmap);
+            gridBitmap = Bitmap.createScaledBitmap(gridBitmap, 500, 500, false)
+
+            _uiGridState.update { it ->
+                it.copy(
+                    gridPicProcessed = gridBitmap
+                )
+            }
 
 
-        Utils.matToBitmap(crosswordDetector.binaryCrosswordImg, gridBitmap);
-        gridBitmap = Bitmap.createScaledBitmap(gridBitmap,500,500,false)
-//        gridImgResize.postValue(
-//            Bitmap.createBitmap(gridBitmap, 0, 0, gridBitmap.width, gridBitmap.height, matrix, true)
-//        )
-        _uiGridState.update { it->
-            it.copy(
-                gridPicProcessed = gridBitmap
+            _puzzle.value = crosswordDetector.assembleClues()
+
+
+            //makes a new blank UI for scanning clues
+            _uiState.value = ScanUiState(
+                downClues = getDownCluesAsPairs(puzzle.value),
+                acrossClues = getAcrossCluesAsPairs(puzzle.value)
             )
         }
-
-        _puzzle.value = crosswordDetector.assembleClues()
-
-
-        //makes a new blank UI for scanning clues
-        _uiState.value = ScanUiState(
-            downClues = getDownCluesAsPairs(puzzle.value),
-            acrossClues = getAcrossCluesAsPairs(puzzle.value)
-        )
-
 
         //_puzzle.value.setGridSize(gridBitmap)
 
@@ -277,7 +265,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                 .addOnSuccessListener { visionText ->
                     val text = Regex("\n").replace(visionText.text," ")
                     //split around things that look like (4) or (4,3] etc.
-                    val regex = Regex("(?<=[\\(\\[][^A-Za-z]{0,27}[\\)\\]])")
+                    val regex = Regex("(?<=[(\\[][^A-Za-z]{0,27}[)\\]])")
                     val matchResult = regex.split(text)
                     val newClues = mutableListOf<Pair<String,String>>()
 

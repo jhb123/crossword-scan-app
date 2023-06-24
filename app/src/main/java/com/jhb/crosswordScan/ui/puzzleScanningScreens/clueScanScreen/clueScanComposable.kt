@@ -26,11 +26,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.MainActivity
 import com.jhb.crosswordScan.PuzzleApplication
+import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.ui.common.ClickableClueTextBox
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
@@ -122,7 +124,7 @@ fun ClueScanComposable(
                 cluePicDebug?.asImageBitmap()?.let {
                     Image(
                         bitmap = it,
-                        contentDescription = "Image of Clues",
+                        contentDescription = stringResource(id = R.string.contentDesc_clueImage),
                         contentScale = ContentScale.Fit,
                     )
                 }
@@ -136,8 +138,6 @@ fun ClueScanComposable(
                     }
                 ) {
                     setCanvasSize(this.size)
-
-                    //Text("Canvas Size ${uiState.value.canvasSize}")
 
                     if(uiState.selectedPoints.isNotEmpty()){
                         val x1 = min(uiState.selectedPoints.first().x,uiState.selectedPoints.last().x)
@@ -181,7 +181,8 @@ fun ClueScanComposable(
         ) {
 
             FilledTonalButton(onClick = { takeImage() }) {
-                Text(text="Snap",
+                Text(
+                    text= stringResource(id = R.string.action_photograph),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(60.dp)
                 )
@@ -191,7 +192,8 @@ fun ClueScanComposable(
                 setClueScanDirection(ClueDirection.ACROSS)
                 scanClues()
             }) {
-                Text("Across",
+                Text(
+                    text = stringResource(id = R.string.action_selectAcross),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(60.dp)
                 )
@@ -202,7 +204,8 @@ fun ClueScanComposable(
                 scanClues() },
                 //colors = //ButtonDefaults.elevatedButtonColors()
             ) {
-                Text("Down",
+                Text(
+                    text = stringResource(id = R.string.action_selectDown),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(60.dp)
                 )
@@ -265,10 +268,10 @@ fun ClueScanComposable(
                                     )
 
                                 ) {
-                                    Text(text = "Confirm")
+                                    Text(text = stringResource(id = R.string.action_confirmation))
                                 }
                                 OutlinedButton(onClick = { openDialog = false }) {
-                                    Text(text = "Cancel")
+                                    Text(text = stringResource(id = R.string.action_cancellation))
                                 }
                             }
                         }
