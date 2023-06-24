@@ -51,5 +51,4 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
-app/gradle.properties
 *.mp4
