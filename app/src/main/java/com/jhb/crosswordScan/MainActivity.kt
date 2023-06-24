@@ -34,6 +34,8 @@ class MainActivity : ComponentActivity() {
         Log.i(TAG, "Reading session")
         Session.setContext(this.applicationContext)
         Session.readSession()
+        //Log.i(TAG)
+
 
         Log.i(TAG, "Setting content")
         setContent {
