@@ -244,6 +244,8 @@ fun puzzleSelectionComposable(
                                     )
                                 ) {
                                     append(stringResource(id = R.string.label_created))
+                                    append(stringResource(id = R.string.stringSeparator))
+
                                 }
                                 append(timeCreated)
                             }
@@ -259,6 +261,7 @@ fun puzzleSelectionComposable(
                                     )
                                 ) {
                                     append(stringResource(id = R.string.label_modified))
+                                    append(stringResource(id = R.string.stringSeparator))
                                 }
                                 append(timeModified)
                             }

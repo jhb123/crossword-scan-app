@@ -2,6 +2,8 @@
     <!-- General  !-->
     <string name="app_name">Crossword Scan</string>
     <string name="logo">Logo</string>
+    <string name="stringSeparator">": "</string>
+
 
     <!-- Screen Resources !-->
     <string name="screenTitle_gridScan">Scan grid</string>
@@ -22,7 +24,7 @@
     <string name="action_logout">Logout</string>
     <string name="action_back">Back</string>
     <string name="action_home">Home</string>
-    <string name="action_photograph">Snap</string>
+    <string name="action_photograph">Scan</string>
     <string name="action_selectAcross">Across</string>
     <string name="action_selectDown">Down</string>
     <string name="action_confirmation">Confirm</string>
@@ -35,7 +37,7 @@
     <!-- Events !-->
     <string name="event_save">Saved</string>
     <!-- text box labels !-->
-    <string name="label_userName">User name</string>
+    <string name="label_userName">Username</string>
     <string name="label_password">Password</string>
     <string name="label_newPassword">New Password</string>
     <string name="label_confirmPassword">Confirm password</string>
