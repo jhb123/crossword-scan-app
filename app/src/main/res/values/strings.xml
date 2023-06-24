@@ -1,20 +1,62 @@
 <resources>
+    <!-- General  !-->
     <string name="app_name">Crossword Scan</string>
-    <string name="gridScan">Capture grid</string>
-    <string name="previewGridScan">Preview</string>
-    <string name="clueScan">Scan clues</string>
-    <string name="solveMenuItem">Solve</string>
-    <string name="authenticateMenuItem">Authenticate</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
-    <string name="logout">logout</string>
-    <string name="registrationScreenMenuItem">Register</string>
-    <string name="resetPasswordMenuItem">Reset Password</string>
-    <string name="forgotPasswordButton">Forgot password?</string>
-    <string name="requestPasswordReset">send code</string>
-    <string name="resetPasswordAction">reset password</string>
-    <string name="emailLabel">Email</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="logo">Logo</string>
 
+    <!-- Screen Resources !-->
+    <string name="screenTitle_gridScan">Scan grid</string>
+    <string name="screenTitle_clueScan">Scan clues</string>
+    <string name="screenTitle_previewPuzzleScan">Preview</string>
+    <string name="screenTitle_puzzleSelect">Solve</string>
+    <string name="screenTitle_solveMenuItem">Solve</string>
+    <string name="screenTitle_authenticate">Authenticate</string>
+    <string name="screenTitle_registrationScreen">Register</string>
+    <string name="screenTitle_resetPassword">Reset Password</string>
+    <string name="screenTitle_solveTitle">Solve</string>
+
+    <!-- Actions descriptions !-->
+    <string name="action_requestPasswordReset">Send code</string>
+    <string name="action_resetPassword">Reset password</string>
+    <string name="action_login">Login</string>
+    <string name="action_register">Register</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_back">Back</string>
+    <string name="action_home">Home</string>
+    <string name="action_photograph">Snap</string>
+    <string name="action_selectAcross">Across</string>
+    <string name="action_selectDown">Down</string>
+    <string name="action_confirmation">Confirm</string>
+    <string name="action_cancellation">Cancel</string>
+    <string name="action_save_puzzle">Save puzzle</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_backspace">Backspace</string>
+    <!-- Questions !-->
+    <string name="question_forgotPassword">Forgot password?</string>
+    <!-- Events !-->
+    <string name="event_save">Saved</string>
+    <!-- text box labels !-->
+    <string name="label_userName">User name</string>
+    <string name="label_password">Password</string>
+    <string name="label_newPassword">New Password</string>
+    <string name="label_confirmPassword">Confirm password</string>
+    <string name="label_puzzleSearch">Puzzle ID</string>
+    <string name="label_created">Created</string>
+    <string name="label_modified">Modified</string>
+    <string name="label_email">Email</string>
+    <string name="label_passwordResetCode">Reset code</string>
+
+    <!-- content descriptions !-->
+    <string name="contentDesc_darkModeToggele">"Toggle light/dark mode"</string>
+    <string name="contentDesc_passwordIcon">Password icon</string>
+    <string name="contentDesc_newPasswordIcon">New password icon</string>
+    <string name="contentDesc_passwordConfirmIcon">Password confirm icon</string>
+    <string name="contentDesc_passwordIconVisibleToggle">Password visibility</string>
+    <string name="contentDesc_clueImage">Image of Clues</string>
+    <string name="contentDesc_gridImage">Image of Grid</string>
+    <string name="contentDesc_search">Search</string>
+    <string name="contentDesc_copyGuid">Copy GUID</string>
+    <string name="contentDesc_uploadPuzzle">Upload Puzzle</string>
+    <string name="ContentDesc_userNameIcon">Username icon</string>
+    <string name="contentDesc_emailIcon">Email icon</string>
 
 </resources>

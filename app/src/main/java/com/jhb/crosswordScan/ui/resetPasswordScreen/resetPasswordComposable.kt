@@ -109,13 +109,13 @@ fun resetPasswordComposable(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logobackground),
-                contentDescription = "logo",
+                contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds
             )
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "logo foreground",
+                contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds,
             )
@@ -123,9 +123,11 @@ fun resetPasswordComposable(
 
         OutlinedTextField(
             value = email,
-            modifier = Modifier.padding(10.dp).width(textBoxWidth),
+            modifier = Modifier
+                .padding(10.dp)
+                .width(textBoxWidth),
             onValueChange = { setEmailCallback(it) },
-            label = { Text("Email") },
+            label = { Text(text = stringResource(id = R.string.label_email)) },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Email
@@ -138,7 +140,7 @@ fun resetPasswordComposable(
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_email_24),
-                    contentDescription = "username icon"
+                    contentDescription = stringResource(id = R.string.contentDesc_emailIcon)
                 )
             },
             singleLine = true
@@ -154,14 +156,16 @@ fun resetPasswordComposable(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            Text(text = stringResource(R.string.requestPasswordReset))
+            Text(text = stringResource(R.string.action_requestPasswordReset))
         }
 
         OutlinedTextField(
             value = resetCode,
             onValueChange = { setResetCodeCallback(it) },
-            label = { Text("reset code") },
-            modifier = Modifier.padding(10.dp).width(textBoxWidth),
+            label = { Text(stringResource(R.string.label_passwordResetCode)) },
+            modifier = Modifier
+                .padding(10.dp)
+                .width(textBoxWidth),
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(
@@ -175,11 +179,11 @@ fun resetPasswordComposable(
         OutlinedTextField(
             value = newpassword,
             onValueChange = { setNewPasswordCallback(it) },
-            label = { Text("New password") },
+            label = { Text(stringResource(R.string.label_newPassword)) },
             leadingIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_baseline_password_24),
-                    contentDescription = "password icon"
+                    contentDescription = stringResource(R.string.contentDesc_newPasswordIcon)
                 )
             },
             trailingIcon = {
@@ -190,7 +194,7 @@ fun resetPasswordComposable(
                                 R.drawable.ic_baseline_visibility_24
                             } else R.drawable.ic_baseline_visibility_off_24
                         ),
-                        contentDescription = "password visibility"
+                        contentDescription = stringResource(id = R.string.contentDesc_passwordIconVisibleToggle)
                     )
                 }
             },
@@ -203,7 +207,9 @@ fun resetPasswordComposable(
                 },
             ),
             singleLine = true,
-            modifier = Modifier.padding(10.dp).width(textBoxWidth)
+            modifier = Modifier
+                .padding(10.dp)
+                .width(textBoxWidth)
 
         )
 
@@ -217,7 +223,7 @@ fun resetPasswordComposable(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            Text(text = stringResource(R.string.resetPasswordAction))
+            Text(text = stringResource(R.string.action_resetPassword))
         }
         Text(text = serverMessage,color = MaterialTheme.colorScheme.error)
 
