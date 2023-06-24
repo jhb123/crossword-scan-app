@@ -13,7 +13,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main, task/fix-code-ql" ]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "main" ]
@@ -69,7 +69,7 @@ jobs:
 
     - run: |
         echo "Run, Build Application using script"
-        ./location_of_script_within_repo/buildscript.sh
+        ./gradlew realDebug
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
