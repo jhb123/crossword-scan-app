@@ -1,6 +1,7 @@
 package com.jhb.crosswordScan.network
 
 
+import com.jhb.crosswordScan.BuildConfig
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
@@ -8,13 +9,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
 
-//private const val BASE_URL = "http://192.168.0.34:5000"
-private const val BASE_URL = "https://joehb123.pythonanywhere.com"
+//private const val BASE_URL = "https://joehb123.pythonanywhere.com"
 private val retrofit = Retrofit.Builder()
-    .baseUrl(BASE_URL)
+    .baseUrl(BuildConfig.API_URL)
     .addConverterFactory(ScalarsConverterFactory.create())
     .addConverterFactory(GsonConverterFactory.create())
     .build()
+
 
 // you only need one instance of retrofit, and its expensive. Therefore,
 // it makes sense to have it be a singleton
@@ -23,6 +24,7 @@ object CrosswordApi {
     val retrofitService : CrosswordApiService by lazy {
         retrofit.create(CrosswordApiService::class.java)
     }
+
 }
 
 interface CrosswordApiService {

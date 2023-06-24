@@ -22,6 +22,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions "app_type"
+    productFlavors {
+        local {
+            buildConfigField "String", "API_URL", "${project.property('PRIVATE_IP')}"
+            dimension "app_type"
+        }
+        real {
+            buildConfigField "String", "API_URL", "\"https://joehb123.pythonanywhere.com\""
+            dimension "app_type"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
