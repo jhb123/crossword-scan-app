@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -118,10 +119,10 @@ fun puzzleSelectionComposable(
                         )
 
                     ) {
-                        Text(text = "Delete")
+                        Text(text = stringResource(id = R.string.action_delete))
                     }
                     OutlinedButton(onClick = { openDialog.value = false }) {
-                        Text(text = "Cancel")
+                        Text(text = stringResource(id = R.string.action_cancellation))
                     }
                 }
             }
@@ -141,7 +142,7 @@ fun puzzleSelectionComposable(
                     .padding(10.dp)
                     .fillParentMaxWidth(1f),
                 onValueChange = { setSearchText(it) },
-                label = { Text("Puzzle ID") },
+                label = { Text(stringResource(id = R.string.label_puzzleSearch)) },
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Search,
                     autoCorrect = false
@@ -153,7 +154,7 @@ fun puzzleSelectionComposable(
                     IconButton(onClick = { searchPuzzle() }) {
                         Icon(
                             painterResource(id = R.drawable.ic_baseline_search_24),
-                            contentDescription = "search"
+                            contentDescription = stringResource(id = R.string.contentDesc_search)
                         )
                     }
                 },
@@ -168,17 +169,6 @@ fun puzzleSelectionComposable(
                 isError = uiState.errorText != null,
                 singleLine = true
             )
-        }
-        if (uiState.imageTest != null) {
-            item {
-                Image(
-                    painter = BitmapPainter(uiState.imageTest!!.asImageBitmap()),
-                    contentDescription = "imagetest",
-                    modifier = Modifier
-                        .width(100.dp)
-                        .padding(10.dp)
-                )
-            }
         }
         items(puzzles) { puzzleData ->
 
@@ -253,7 +243,9 @@ fun puzzleSelectionComposable(
                                         fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
                                     )
                                 ) {
-                                    append("Created: ")
+                                    append(stringResource(id = R.string.label_created))
+                                    append(stringResource(id = R.string.stringSeparator))
+
                                 }
                                 append(timeCreated)
                             }
@@ -268,7 +260,8 @@ fun puzzleSelectionComposable(
                                         fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
                                     )
                                 ) {
-                                    append("Modified: ")
+                                    append(stringResource(id = R.string.label_modified))
+                                    append(stringResource(id = R.string.stringSeparator))
                                 }
                                 append(timeModified)
                             }
@@ -288,12 +281,12 @@ fun puzzleSelectionComposable(
                         if (puzzleData.isShared) {
                             Icon(
                                 painterResource(id = R.drawable.ic_baseline_content_copy_24),
-                                contentDescription = "copy GUID"
+                                contentDescription = stringResource(id = R.string.contentDesc_copyGuid)
                             )
                         } else {
                             Icon(
                                 painterResource(id = R.drawable.ic_baseline_file_upload_24),
-                                contentDescription = "upload Puzzle"
+                                contentDescription = stringResource(id = R.string.contentDesc_uploadPuzzle)
                             )
                         }
                     }
