@@ -13,13 +13,11 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
@@ -86,113 +86,204 @@ fun SolveComposable(
     val activeClue = uiState.value.currentClue
     val gridSize = uiState.value.currentPuzzle.gridSize
     Log.i(TAG,"Grid size $gridSize")
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
 
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize(),
+//        verticalArrangement = Arrangement.SpaceEvenly,
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//    ) {
+
+        ConstraintLayout(modifier = Modifier
+            .fillMaxSize()
+        ) {
+            // Create references for the composables to constrain
+            val (clueGrid, keyBoard, cluesText) = createRefs()
+
+            Box(modifier = Modifier
+                .constrainAs(clueGrid) {
+                    top.linkTo(parent.top, margin = 0.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+
+                    //bottom.linkTo(cluesText.top)
+                }) {
+                clueGrid(
+                    uiState = uiState,
+                    updateCurrentCell = updateCurrentCell,
+                    updateCurrentClue = updateCurrentClue,
+                    gridSize = gridSize,
+                    cellSetFromPuzzle = cellSetFromPuzzle,
+                    labelledClues = labelledClues
+                )
+            }
+
+
+            Box(modifier = Modifier
+                //.heightIn(50.dp,200.dp)
+                .constrainAs(cluesText) {
+                    top.linkTo(clueGrid.bottom, margin = 0.dp)
+                    bottom.linkTo(parent.bottom, margin = 0.dp)
+                    height = Dimension.fillToConstraints
+                }
             ) {
-            clueGrid(
-                uiState = uiState,
-                updateCurrentCell = updateCurrentCell,
-                updateCurrentClue = updateCurrentClue,
-                gridSize = gridSize,
-                cellSetFromPuzzle = cellSetFromPuzzle,
-                labelledClues = labelledClues
-            )
-            clueTextArea(clues, onClueSelect = onClueSelect, activeClue = activeClue)
-            keyBoard(setLetter = setLetter, delLetter = delLetter, syncFun = syncFun)
+                clueTextArea(clues, onClueSelect = onClueSelect, activeClue = activeClue)
+            }
+
+            Box(modifier = Modifier
+                //.background(MaterialTheme.colorScheme.primary)
+                .constrainAs(keyBoard) {
+                    //top.linkTo(cluesText.bottom)
+                    bottom.linkTo(parent.bottom, margin = 0.dp)
+                    width = Dimension.wrapContent
+
+                }) {
+                keyBoard(
+                    setLetter = setLetter,
+                    delLetter = delLetter,
+                    syncFun = syncFun,
+                )
+            }
+
         }
-    }
+
 }
 @Composable
 fun keyBoard(setLetter : (String) -> Unit,
              delLetter : () -> Unit,
-             syncFun: () -> Unit
+             syncFun: () -> Unit,
+             modifier: Modifier = Modifier,
 ){
+
     Log.i(TAG,"Composing button ")
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
-    Column() {
-        Row (
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ){
-            "QWERTYUIOP".forEach {
-                FilledTonalButton(onClick = { setLetter(it.toString()) },
+    Column(modifier = modifier.wrapContentHeight(Alignment.CenterVertically)) {
+        var isCollapsed by remember { mutableStateOf(false) }
+
+        val keyboardColour = MaterialTheme.colorScheme.background
+        if(isCollapsed) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.wrapContentWidth()
+            ) {
+                FilledTonalButton(
+                    onClick = { isCollapsed = false },
                     shape = RoundedCornerShape(2.dp),
                     contentPadding = PaddingValues(0.dp),
-                    modifier = Modifier
-                        .width(screenWidth / 10)
-                        .padding(2.dp)
-                ) {
-                    Text(text = it.toString(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            "ASDFGHJKL".forEach {
-                FilledTonalButton(onClick = { setLetter(it.toString()) },
-                    shape = RoundedCornerShape(2.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    //elevation = ,
                     modifier = Modifier
                         .width(screenWidth / 9)
-                        .padding(2.dp)
+                        .padding(horizontal = 2.dp)
                 ) {
-                    Text(text = it.toString(),
-                        textAlign = TextAlign.Center
+                    Icon(
+                        painter = painterResource(R.drawable.ic_baseline_arrow_drop_down_24),
+                        contentDescription = stringResource(id = R.string.drop_down_keyboard),
+                        modifier = Modifier.rotate(180f)
                     )
                 }
             }
         }
-        Row (
-            horizontalArrangement = Arrangement.SpaceBetween,
-
-        ){
-
-            "ZXCVBNM".forEach {
-                FilledTonalButton(onClick = { setLetter(it.toString()) },
-                    shape = RoundedCornerShape(2.dp),
-                    contentPadding = PaddingValues(0.dp),
+        else {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
-                        .width(screenWidth / 8)
-                        .padding(2.dp)
-
+                        .background(keyboardColour)
                 ) {
-                    Text(text = it.toString(),
-                        textAlign = TextAlign.Center,
-                        //modifier = Modifier.offset(-5.dp,-5.dp)
-                        //fontSize = 1.sp
-                        //style = MaterialTheme.typography.displaySmall
-                    )
+                    "QWERTYUIOP".forEach {
+                        FilledTonalButton(
+                            onClick = { setLetter(it.toString()) },
+                            shape = RoundedCornerShape(2.dp),
+                            contentPadding = PaddingValues(0.dp),
+                            modifier = Modifier
+                                .width(screenWidth / 10)
+                                .padding(horizontal = 2.dp, vertical = 0.dp)
+                        ) {
+                            Text(
+                                text = it.toString(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
-            }
-            FilledTonalButton(onClick = { delLetter() },
-                shape = RoundedCornerShape(2.dp),
-                contentPadding = PaddingValues(0.dp),
-                modifier = Modifier
-                    .width(screenWidth / 8)
-                    .padding(2.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_baseline_keyboard_backspace_24),
-                    contentDescription = stringResource(id = R.string.action_backspace),
-                    //colorFilter = ColorFilter.tint(Color.White)
-                )
-            }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .background(keyboardColour)
+                ) {
+                    "ASDFGHJKL".forEach {
+                        FilledTonalButton(
+                            onClick = { setLetter(it.toString()) },
+                            shape = RoundedCornerShape(2.dp),
+                            contentPadding = PaddingValues(0.dp),
+                            //elevation = ,
+                            modifier = Modifier
+                                .width(screenWidth / 9)
+                                .padding(horizontal = 2.dp)
+                        ) {
+                            Text(
+                                text = it.toString(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .background(keyboardColour)
+                ) {
+                    FilledTonalButton(
+                        onClick = { isCollapsed = true },
+                        shape = RoundedCornerShape(2.dp),
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier
+                            .width(screenWidth / 9)
+                            .padding(horizontal = 2.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_baseline_arrow_drop_down_24),
+                            contentDescription = stringResource(id = R.string.drop_down_keyboard),
+                        )
+                    }
+
+                    "ZXCVBNM".forEach {
+                        FilledTonalButton(
+                            onClick = { setLetter(it.toString()) },
+                            shape = RoundedCornerShape(2.dp),
+                            contentPadding = PaddingValues(0.dp),
+                            modifier = Modifier
+                                .width(screenWidth / 9)
+                                .padding(horizontal = 2.dp)
+
+                        ) {
+                            Text(
+                                text = it.toString(),
+                                textAlign = TextAlign.Center,
+                                //modifier = Modifier.offset(-5.dp,-5.dp)
+                                //fontSize = 1.sp
+                                //style = MaterialTheme.typography.displaySmall
+                            )
+                        }
+                    }
+                    FilledTonalButton(
+                        onClick = { delLetter() },
+                        shape = RoundedCornerShape(2.dp),
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier
+                            .width(screenWidth / 9)
+                            .padding(horizontal = 2.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_baseline_keyboard_backspace_24),
+                            contentDescription = stringResource(id = R.string.action_backspace),
+                            //colorFilter = ColorFilter.tint(Color.White)
+                        )
+                    }
+                }
+
         }
     }
 
@@ -340,7 +431,7 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
             state = listStateA,
             modifier = Modifier
                 //.fillMaxWidth(0.9f)
-                .height(150.dp)
+                //.fillMaxHeight(1f)
         ){
             items(acrossClues){ clue->
                 Log.i(TAG,"clue: ${clue.first} ${clue.second.clue}")
@@ -370,7 +461,7 @@ fun clueTextArea(cluesTxt : Map<String, Clue>,
             state = listStateD,
             modifier = Modifier
                 //.fillMaxWidth(0.01f)
-                .height(150.dp)
+                //.fillMaxHeight(1f)
         ){
             items(downClues){ clue->
                 if(clue.second == activeClue){
