@@ -16,22 +16,12 @@ class CrosswordDetector {
 
     val TAG = "CrosswordDetector"
 
-    var unprocessedImg = Mat()
-
     var croppedToCrosswordImg = Mat(480, 640, CV_8UC3, Scalar(255.0,0.0,255.0));
     var binaryCrosswordImg = Mat(480, 640, CV_8UC3, Scalar(0.0,255.0,255.0));
     var edgeImg = Mat(480, 640, CV_8UC3, Scalar(0.0,255.0,255.0));
-
     var isSymmetric = false
-
-
     val cropSize = 500.0 //px
 
-    fun process(input_image: Mat?) {
-        val (contours,cw_contour) = get_crossword_contour(input_image)
-        Imgproc.drawContours(input_image, contours, cw_contour, Scalar(0.0, 255.0, 0.0), 5)
-
-    }
 
     fun draw_crossword_contour(input_image: Mat?,contours : List<MatOfPoint>?, cw_contour : Int){
         Imgproc.drawContours(input_image, contours, cw_contour, Scalar(0.0, 255.0, 0.0), 5)
@@ -403,13 +393,13 @@ class CrosswordDetector {
         val binaryGrid = Mat()
         binaryCrosswordImg.convertTo(binaryGrid,-1,1.0/250)
 
-        Imgproc.filter2D(binaryGrid, newGrid, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+        Imgproc.filter2D(binaryGrid, newGrid, -1, kernel,anchor, 0.0, BORDER_CONSTANT)
 
         kernel = Mat.zeros(3,3, CV_32F)
         kernel.put(0,1,-1.0)
         kernel.put(2,1,1.0)
         val newGrid_ends = Mat()
-        Imgproc.filter2D(binaryGrid, newGrid_ends, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+        Imgproc.filter2D(binaryGrid, newGrid_ends, -1, kernel,anchor, 0.0, BORDER_CONSTANT)
 
 
         add(newGrid,newGrid_ends,newGrid)
@@ -464,13 +454,13 @@ class CrosswordDetector {
         val binaryGrid = Mat()
         binaryCrosswordImg.convertTo(binaryGrid,-1,1.0/250)
 
-        Imgproc.filter2D(binaryGrid, newGrid, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+        Imgproc.filter2D(binaryGrid, newGrid, -1, kernel,anchor, 0.0 ,BORDER_CONSTANT)
 
         kernel = Mat.zeros(3,3, CV_32F)
         kernel.put(1,0,-1.0)
         kernel.put(1,2,1.0)
         val newGrid_ends = Mat()
-        Imgproc.filter2D(binaryGrid, newGrid_ends, -1, kernel,anchor, 0.0 ,Core.BORDER_CONSTANT)
+        Imgproc.filter2D(binaryGrid, newGrid_ends, -1, kernel,anchor, 0.0 ,BORDER_CONSTANT)
 
         add(newGrid,newGrid_ends,newGrid)
         newGrid.convertTo(newGrid,-1,1.0,-1.0)
