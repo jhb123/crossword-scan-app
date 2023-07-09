@@ -31,14 +31,14 @@ jobs:
 
 
       - name: Build with Gradle
-        run: ./gradlew assembleRelease
+        run: ./gradlew bundleRelease
 
       - uses: r0adkll/sign-android-release@v1
-        name: Sign app APK
+        name: Sign app aab
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/real/release
+          releaseDirectory: app/real/release
           signingKeyBase64: ${{ secrets.UPLOAD_KEYSTORE }}
           alias: ${{ secrets.UPLOAD_ALIAS }}
           keyStorePassword: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
