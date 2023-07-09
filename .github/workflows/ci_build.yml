@@ -58,7 +58,7 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: build-artifact
-          path: bundle.aab
+          path: ~/download/bundle.aab
 
 
       - name: upload apk to Playstore
@@ -66,5 +66,5 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
           packageName: com.jhb.crosswordScan
-          releaseFiles: bundle.aab
+          releaseFiles: ~/download/bundle.aab
           track: internal
