@@ -14,8 +14,8 @@ jobs:
         uses: oflynned/android-version-bump@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        permissions:
-          contents: write
+          permissions:
+            contents: write
 
       - uses: actions/checkout@v3
       - name: set up JDK 17
