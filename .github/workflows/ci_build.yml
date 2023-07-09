@@ -1,7 +1,9 @@
+permissions:
+  contents: write
+  
 on:
   push:
     branches: [ "task/investigate-release-processes" ]
-
 
 jobs:
   build:
@@ -22,6 +24,7 @@ jobs:
         uses: oflynned/android-version-bump@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
