@@ -49,5 +49,5 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
           packageName: com.jhb.crosswordScan
-          releaseFiles: app/build/outputs/apk/real/app-real-release.apk
+          releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
           track: internal
