@@ -31,13 +31,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.MainActivity
-import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.ui.common.ClickableClueTextBox
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModel
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModelFactory
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -47,9 +46,7 @@ private const val TAG = "clueScanComposable"
 @Composable
 fun clueScanScreen(
     viewModel: CrosswordScanViewModel = viewModel(
-        factory = CrosswordScanViewModelFactory(
-            (LocalContext.current.applicationContext as PuzzleApplication).repository
-        ),
+        factory = CrosswordScanViewModelFactory(),
         viewModelStoreOwner = (LocalContext.current as ComponentActivity)
     )
 ){
