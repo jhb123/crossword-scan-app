@@ -29,12 +29,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease
+
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: app/build/outputs/apk/real
           signingKeyBase64: ${{ secrets.UPLOAD_KEYSTORE }}
           alias: ${{ secrets.UPLOAD_ALIAS }}
           keyStorePassword: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
