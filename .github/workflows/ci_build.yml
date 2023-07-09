@@ -38,7 +38,7 @@ jobs:
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/real/release
+          releaseDirectory: app/build/outputs/bundle/realRelease
           signingKeyBase64: ${{ secrets.UPLOAD_KEYSTORE }}
           alias: ${{ secrets.UPLOAD_ALIAS }}
           keyStorePassword: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
