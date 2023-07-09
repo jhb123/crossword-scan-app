@@ -40,5 +40,3 @@ jobs:
           packageName: com.jhb.crosswordScan
           releaseFiles: app/build/outputs/apk/real/app-real-release.apk
           track: internal
-          status: inProgress
-
