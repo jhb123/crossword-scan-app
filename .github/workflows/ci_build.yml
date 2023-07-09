@@ -36,7 +36,7 @@ jobs:
       - name: upload apk to playstore
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ PLAYSTORE_SERVICE_ACCOUNT_JSON }}
+          serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
           packageName: com.jhb.crosswordScan
           releaseFiles: app/build/outputs/apk/real/app-real-release.apk
           track: internal
