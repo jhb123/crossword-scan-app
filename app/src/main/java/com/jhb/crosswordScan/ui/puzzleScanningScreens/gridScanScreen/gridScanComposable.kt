@@ -1,11 +1,18 @@
 package com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen
 
 import android.util.Log
-import android.view.SurfaceView
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,6 +52,8 @@ fun gridScanScreen(
     val uiState by viewModel.uiGridState.collectAsState()
 
     val openCVlogic = OpenCVlogic(viewModel)
+    //openCVlogic.onCameraViewStarted(800,1200)
+
     gridScanComposable(
         uiState = uiState,
         openCVlogic = openCVlogic,
@@ -56,77 +66,102 @@ fun gridScanScreen(
 fun gridScanComposable(
     uiState: GridScanUiState,
     //viewModel: CrosswordScanViewModel,
-    openCVlogic: OpenCVlogic,
+    openCVlogic: OpenCVlogic?,
     takePic : ()->Unit,
 
     ) {
 
+    // made openCVlogic nullable so that the layout can be previewed
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
-            .padding(5.dp)
+            //.padding(5.dp)
+            //.background(MaterialTheme.colorScheme.background)
+
     )
     {
         AndroidView(
             modifier = Modifier
-                .fillMaxWidth(1f)
+                .width(400.dp)
                 .height(400.dp)
-                .background(MaterialTheme.colorScheme.inverseSurface),
+//                .aspectRatio((uiState.previewWidth/uiState.previewHeight).toFloat())
+
+                    ,
             factory = { context ->
                 val mOpenCvCameraView =
                     JavaCamera2View(context, CameraBridgeViewBase.CAMERA_ID_BACK)
-                mOpenCvCameraView
-            },
-            update = { mOpenCvCameraView ->
-                //val openCVlogic = OpenCVlogic(viewModel)
-                mOpenCvCameraView.enableView()
                 mOpenCvCameraView.setCameraPermissionGranted() // this is essential!!!
-                mOpenCvCameraView.setUserRotation(90)
-                mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK)
-                mOpenCvCameraView.visibility = SurfaceView.VISIBLE
                 mOpenCvCameraView.setCvCameraViewListener(openCVlogic)
-                //mOpenCvCameraView.clipToOutline = true
-                //mOpenCvCameraView.setMaxFrameSize(1600,900)
-                //mOpenCvCameraView.setBackgroundColor(backgroundColour)
-                //mOpenCvCameraView.setMaxFrameSize(200,200)
-            },
+                mOpenCvCameraView.enableView()
+                mOpenCvCameraView.setUserRotation(90)
+                mOpenCvCameraView.setMaxFrameSize(1600,1600)
+                mOpenCvCameraView
+            }
         )
-
-        Card(
+        Box(
             modifier = Modifier
-                .width(200.dp)
-                .height(200.dp)
-                .padding(5.dp)
-            //.background(MaterialTheme.colorScheme.secondary)
+                .fillMaxSize(1f)
+                .background(MaterialTheme.colorScheme.background)
         ){
-            uiState.gridPicProcessed.let {
-                if (it != null) {
-                    Image(bitmap = it.asImageBitmap(),
-                        contentDescription = stringResource(id = R.string.contentDesc_gridImage),
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(5.dp)
+                //.background(MaterialTheme.colorScheme.background)
+            ){
+                Card(
                     modifier = Modifier
+                        //.width(200.dp)
+                        .fillMaxHeight(0.8f)
+                        .aspectRatio(1f)
                         .padding(5.dp)
-                        .fillMaxSize())
+                    //.background(MaterialTheme.colorScheme.secondary)
+                ){
+                    uiState.gridPicProcessed.let {
+                        if (it != null) {
+                            Image(bitmap = it.asImageBitmap(),
+                                contentDescription = stringResource(id = R.string.contentDesc_gridImage),
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .fillMaxSize())
+                        }
+                    }
                 }
+
+
+                //Row(modifier = Modifier.padding(5.dp)) {
+                Button(
+                    //onClick = { viewModel.takeSnapshot = true }
+                    onClick = takePic
+                ) {
+                    Text(text = stringResource(id = R.string.action_photograph))
+                }
+                //}
+            }
             }
         }
-
-
-        //Row(modifier = Modifier.padding(5.dp)) {
-            Button(
-                //onClick = { viewModel.takeSnapshot = true }
-                onClick = takePic
-            ) {
-                Text(text = stringResource(id = R.string.action_photograph))
-            }
-        //}
-    }
-
 }
 
+
+@Preview(widthDp = 400, heightDp = 650)
+@Composable
+fun GridScanPreview() {
+    val uiState = GridScanUiState(
+        gridPicDebug=null,
+        gridPicProcessed=null
+    )
+
+    gridScanComposable(
+        uiState = uiState,
+        openCVlogic = null,
+        takePic = {}
+    )
+}
 
 class OpenCVlogic(viewModel: CrosswordScanViewModel) :
     CameraBridgeViewBase.CvCameraViewListener2 {
@@ -135,6 +170,7 @@ class OpenCVlogic(viewModel: CrosswordScanViewModel) :
 
     override fun onCameraViewStarted(width: Int, height: Int) {
         viewModel.openCVCameraSize(width, height)
+        Log.i(TAG, "onCameraViewStarted: width = $width, height: $height")
         Log.i(TAG, "onCameraViewStarted called")
     }
 
