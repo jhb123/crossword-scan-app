@@ -1,6 +1,5 @@
 permissions:
   contents: write
-
 on:
   push:
     branches: [ "task/investigate-release-processes" ]
@@ -11,27 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - step:
-        - name: Checkout Repository
-          uses: actions/checkout@v3
-      - step:
-        - name: set up JDK 17
-          uses: actions/setup-java@v3
-          with:
-            java-version: '17'
-            distribution: 'temurin'
-            cache: gradle
-      - step:
-        - name: Bump version
-          id: bump_version
-          uses: oflynned/android-version-bump@master
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - step:
-        - name: Grant execute permission for gradlew
-          run: chmod +x gradlew
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
 
-      - step:
-        - name: Build with Gradle
-          run: ./gradlew assembleRelease
+      - name: Bump version
+        id: bump_version
+        uses: oflynned/android-version-bump@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease
+
+
+      - name: upload apk to playstore
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ PLAYSTORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.jhb.crosswordScan
+          releaseFiles: app/build/outputs/apk/real/app-real-release.apk
+          track: internal
+          status: inProgress
+
