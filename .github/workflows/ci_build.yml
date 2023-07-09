@@ -1,6 +1,6 @@
 permissions:
   contents: write
-  
+
 on:
   push:
     branches: [ "task/investigate-release-processes" ]
@@ -11,23 +11,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
+      - step:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+      - step:
+        - name: set up JDK 17
+          uses: actions/setup-java@v3
+          with:
+            java-version: '17'
+            distribution: 'temurin'
+            cache: gradle
+      - step:
+        - name: Bump version
+          id: bump_version
+          uses: oflynned/android-version-bump@master
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Bump version
-        id: bump_version
-        uses: oflynned/android-version-bump@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - step:
+        - name: Grant execute permission for gradlew
+          run: chmod +x gradlew
 
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew assembleRelease
-
+      - step:
+        - name: Build with Gradle
+          run: ./gradlew assembleRelease
