@@ -52,3 +52,9 @@ output.json
 obj/
 .externalNativeBuild
 *.mp4
+
+# deployment
+pc-api-5456079215006959861-608-dc1137afa971.json
+Fastlane/
+Gemfile
+Gemfile.lock

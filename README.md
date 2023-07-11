@@ -1,4 +1,5 @@
-# Crossword Scan
+![image](./banner.png)
+
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 ![OpenCV](https://img.shields.io/badge/opencv-%23white.svg?style=for-the-badge&logo=opencv&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
@@ -13,6 +14,10 @@ Crossword Scan is an Android app that brings physical crosswords into the digita
 Dark mode |  Light mode | Authentication Scren
  :--: | :--: | :--: 
 <img src="https://i.imgur.com/8jstZzY.png" height="400"/>|<img src="https://i.imgur.com/EmwWxVg.png" height="400"/>|<img src= "./readme_resources/auth_screen.png" height="400" />
+
+## Release Process
+
+A Github action is used to handle uploading bundles to the app store
 
 ## Image Processing Pipeline
 
