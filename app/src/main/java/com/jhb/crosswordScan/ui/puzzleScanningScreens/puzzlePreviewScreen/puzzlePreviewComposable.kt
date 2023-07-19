@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.Puzzle
 import com.jhb.crosswordScan.data.insertPuzzle
@@ -25,8 +24,8 @@ import com.jhb.crosswordScan.ui.common.ClickableClueTextBox
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.GridScanUiState
 import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.OpenCVlogic
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModel
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModelFactory
 import kotlinx.coroutines.launch
 
 private const val TAG = "puzzlePreviewComposable"
@@ -34,9 +33,7 @@ private const val TAG = "puzzlePreviewComposable"
 @Composable
 fun puzzlePreviewScreen(
     viewModel: CrosswordScanViewModel = viewModel(
-        factory = CrosswordScanViewModelFactory(
-            (LocalContext.current.applicationContext as PuzzleApplication).repository
-        ),
+        factory = CrosswordScanViewModelFactory(),
         viewModelStoreOwner = (LocalContext.current as ComponentActivity)
     )
 ){

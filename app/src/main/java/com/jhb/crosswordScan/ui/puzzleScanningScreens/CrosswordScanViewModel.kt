@@ -1,11 +1,9 @@
-package com.jhb.crosswordScan.viewModels
+package com.jhb.crosswordScan.ui.puzzleScanningScreens
 
 //import com.jhb.learn_opencv.Puzzle
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
@@ -18,13 +16,16 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.jhb.crosswordScan.data.Puzzle
-import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.data.getAcrossCluesAsPairs
 import com.jhb.crosswordScan.data.getDownCluesAsPairs
 import com.jhb.crosswordScan.ui.common.ClueDirection
 import com.jhb.crosswordScan.ui.common.ScanUiState
 import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.GridScanUiState
-import com.jhb.crosswordScan.util.CrosswordDetector
+import com.jhb.crosswordScan.util.assembleClues
+import com.jhb.crosswordScan.util.cropToCrossword
+import com.jhb.crosswordScan.util.drawCrosswordContour
+import com.jhb.crosswordScan.util.getCrosswordContour
+import com.jhb.crosswordScan.util.makeBinaryCrosswordImg
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -37,7 +38,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.properties.Delegates
 
-class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewModel(
+private const val TAG = "CrosswordScanViewModel"
+
+class CrosswordScanViewModel : ViewModel(
 ) {
 
     private val _uiState = MutableStateFlow(ScanUiState())
@@ -58,23 +61,20 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     val cluePicDebug = mutableStateOf<Bitmap?>(null)
     private val cluePicDebugCropped = mutableStateOf<Bitmap?>(null)
 
-
-    private var TAG = "CrosswordScanViewModel"
-
     //TODO make this a stateflow or something
     private val _puzzle = mutableStateOf(Puzzle())
     val puzzle : State<Puzzle> = _puzzle
 
     private val _takeSnapShot = mutableStateOf(false)
-    val takeSnapShot : State<Boolean> = _takeSnapShot
+    private val takeSnapShot : State<Boolean> = _takeSnapShot
 
     private lateinit var _viewFinderImg : Mat // we want this to be set by the camera input
     private lateinit var _viewFinderImgWithContour : Mat // we want this to be set by the camera input
     private lateinit var contours: List<MatOfPoint>
     private var cwContourIndex by Delegates.notNull<Int>()
-    private val crosswordDetector = CrosswordDetector()
+    //private val crosswordDetector = CrosswordDetector()
 
-    val viewFinderImg: Mat
+    private val viewFinderImg: Mat
         get() = _viewFinderImg
     val viewFinderImgWithContour: Mat
         get() = _viewFinderImgWithContour
@@ -83,10 +83,10 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     fun processPreview(inputImg : Mat) {
         _viewFinderImg = inputImg
         _viewFinderImgWithContour = _viewFinderImg.clone()
-        val contourInfo = crosswordDetector.get_crossword_contour(_viewFinderImg)
+        val contourInfo = getCrosswordContour(_viewFinderImg)
         contours = contourInfo.first
         cwContourIndex = contourInfo.second
-        crosswordDetector.draw_crossword_contour(_viewFinderImgWithContour,contours,cwContourIndex)
+        drawCrosswordContour(_viewFinderImgWithContour,contours,cwContourIndex)
 
         if (takeSnapShot.value && contours.isNotEmpty()) {
             Log.i(TAG,"Processing puzzle")
@@ -103,37 +103,36 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun setPreprocessed() {
+    private fun setPreprocessed() {
 
         Log.d(TAG, "Setting snapshot preview image")
-        crosswordDetector.cropToCrossword(contours[cwContourIndex], viewFinderImg)
+        val croppedCrossword = cropToCrossword(contours[cwContourIndex], viewFinderImg)
         Log.d(TAG, "Making bitmap")
 
         val matrix = Matrix()
         matrix.postRotate(90f)
 
-        crosswordDetector.makeBinaryCrosswordImg()
+       val binaryCrossword = makeBinaryCrosswordImg(croppedCrossword)
 
-        if (crosswordDetector.isSymmetric) {
+        if (binaryCrossword != null) {
 
             var gridBitmap =
                 Bitmap.createBitmap(
-                    crosswordDetector.binaryCrosswordImg.cols(),
-                    crosswordDetector.binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888
+                    binaryCrossword.cols(),
+                    binaryCrossword.rows(), Bitmap.Config.ARGB_8888
                 )
 
-            Utils.matToBitmap(crosswordDetector.binaryCrosswordImg, gridBitmap);
+            Utils.matToBitmap(binaryCrossword, gridBitmap)
             gridBitmap = Bitmap.createScaledBitmap(gridBitmap, 500, 500, false)
 
-            _uiGridState.update { it ->
+            _uiGridState.update {
                 it.copy(
                     gridPicProcessed = gridBitmap
                 )
             }
 
 
-            _puzzle.value = crosswordDetector.assembleClues()
+            _puzzle.value =  assembleClues(binaryCrossword)
 
 
             //makes a new blank UI for scanning clues
@@ -148,7 +147,7 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
     }
 
     fun resetClueHighlightBox(point : Offset) : Offset {
-        Log.i(TAG,"start: ${point}")
+        Log.i(TAG,"start: $point")
         val newPoints = mutableListOf(point)
         _uiState.update {
             it.copy(
@@ -256,12 +255,12 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
     }
 
-    fun ocrClues()  {
+    private fun ocrClues()  {
         Log.i(TAG,"performing OCR on clues")
         val imageForProcessing = cluePicDebugCropped.value //croppedCluePic.value
         if(imageForProcessing != null) {
             val image = InputImage.fromBitmap(imageForProcessing, 0)
-            val result = recognizer.process(image)
+            recognizer.process(image)
                 .addOnSuccessListener { visionText ->
                     val text = Regex("\n").replace(visionText.text," ")
                     //split around things that look like (4) or (4,3] etc.
@@ -272,12 +271,12 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                     when(uiState.value.clueScanDirection){
                         ClueDirection.ACROSS -> {
                             matchResult.forEach {
-                                val cluetxt = extractClueText(it)
+                                val clueText = extractClueText(it)
                                 val clueNum = extractClueNumber(it)
-                                if (cluetxt != null && clueNum != null) {
-                                    val cluePair = Pair(clueNum + "a",cluetxt)
+                                if (clueText != null) {
+                                    val cluePair = Pair(clueNum + "a",clueText)
                                     newClues.add(cluePair)
-                                    puzzle.value.updateClueTxt(clueNum + "a",cluetxt)
+                                    puzzle.value.updateClueTxt(clueNum + "a",clueText)
                                 }
                             }
                             _uiState.update {
@@ -289,12 +288,12 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                         }
                         ClueDirection.DOWN -> {
                             matchResult.forEach {
-                                val cluetxt = extractClueText(it)
+                                val clueText = extractClueText(it)
                                 val clueNum = extractClueNumber(it)
-                                if (cluetxt != null && clueNum != null) {
-                                    val cluePair = Pair(clueNum + "d",cluetxt)
+                                if (clueText != null) {
+                                    val cluePair = Pair(clueNum + "d",clueText)
                                     newClues.add(cluePair)
-                                    puzzle.value.updateClueTxt(clueNum + "d",cluetxt)
+                                    puzzle.value.updateClueTxt(clueNum + "d",clueText)
                                 }
                             }
 
@@ -307,31 +306,20 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
                     }
                 }
                 .addOnFailureListener { e ->
-                    //hmmm
+                    e.message?.let { Log.e(TAG, it) }
                 }
         }
     }
 
-    fun extractClueNumber(unprocessed : String):  String{
+    private fun extractClueNumber(unprocessed : String):  String{
         val regex = Regex("\\d+")
         val processed = regex.find(unprocessed)
-        if (processed != null) {
-            return processed.value
-        }
-        else{
-            return "No clue found"
-        }
+        return processed?.value ?: "No clue found"
     }
 
-    fun extractClueText(unprocessed : String):  String?{
+    private fun extractClueText(unprocessed : String):  String? {
         val regex = Regex("(?<=\\d)(?!\\d).+")
-        val processed = regex.find(unprocessed)
-        if (processed != null) {
-            return processed.value
-        }
-        else{
-            return null
-        }
+        return regex.find(unprocessed)?.value
     }
 
     fun openCVCameraSize(width: Int, height: Int) {
@@ -362,12 +350,12 @@ class CrosswordScanViewModel(private val repository: PuzzleRepository): ViewMode
 
 }
 
-class CrosswordScanViewModelFactory(private val repository: PuzzleRepository) : ViewModelProvider.Factory {
+class CrosswordScanViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         Log.i("CrosswordScanViewModelFactory","Creating")
         if (modelClass.isAssignableFrom(CrosswordScanViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return CrosswordScanViewModel(repository) as T
+            return CrosswordScanViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
