@@ -15,6 +15,10 @@ Dark mode |  Light mode | Authentication Scren
  :--: | :--: | :--: 
 <img src="https://i.imgur.com/8jstZzY.png" height="400"/>|<img src="https://i.imgur.com/EmwWxVg.png" height="400"/>|<img src= "./readme_resources/auth_screen.png" height="400" />
 
+## Release Process
+
+A Github action is used to handle uploading bundles to the app store
+
 ## Image Processing Pipeline
 
 The image processing pipeline used to detect the crossword grid was implemented with OpenCV. Below is an image of how this pipeline works.
