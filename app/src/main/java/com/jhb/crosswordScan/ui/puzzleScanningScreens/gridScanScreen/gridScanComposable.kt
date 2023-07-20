@@ -29,10 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModel
-import com.jhb.crosswordScan.viewModels.CrosswordScanViewModelFactory
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModel
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModelFactory
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.android.JavaCamera2View
 import org.opencv.core.Mat
@@ -42,9 +41,7 @@ private const val TAG = "gridScanComposable"
 @Composable
 fun gridScanScreen(
     viewModel: CrosswordScanViewModel = viewModel(
-        factory = CrosswordScanViewModelFactory(
-        (LocalContext.current.applicationContext as PuzzleApplication).repository
-        ),
+        factory = CrosswordScanViewModelFactory(),
         viewModelStoreOwner = (LocalContext.current as ComponentActivity)
     )
 ){

@@ -67,7 +67,8 @@ fun SolveScreenWrapper(puzzleId: String) {//repository: PuzzleRepository,index: 
         updateCurrentClue = { puzzleSolveViewModel.updateactiveClue2(it) },
         cellSetFromPuzzle = { puzzleSolveViewModel.convertPuzzleToCellSet(it) },//should this be immutable?
         labelledClues = { puzzleSolveViewModel.getLabelledCells(it) }, //should these even be functions!?
-        syncFun = { puzzleSolveViewModel.cloudSync() }
+        syncFun = { puzzleSolveViewModel.cloudSync() },
+        toggleCollapsed = {puzzleSolveViewModel.toggleCollapseKeyboard()}
     )
 
 
@@ -83,13 +84,15 @@ fun SolveComposable(
     updateCurrentClue: (Triple<Int, Int, String>) -> Unit,
     cellSetFromPuzzle: (Puzzle) -> MutableSet<Triple<Int, Int, String>>,//should this be immutable?
     labelledClues: (Puzzle) -> Map<Triple<Int, Int, String>, String>, //should these even be functions!?
-    syncFun: () -> Unit
+    syncFun: () -> Unit,
+    toggleCollapsed: () -> Unit
 ) {
 
     //val uiState = uiState.collectAsState()
     val clues = uiState.value.currentPuzzle.clues
     val activeClue = uiState.value.currentClue
     val gridSize = uiState.value.currentPuzzle.gridSize
+    val keyboardCollapsed = uiState.value.keyboardCollapsed
     Log.i(TAG, "Grid size $gridSize")
 
 //    Column(
@@ -129,13 +132,17 @@ fun SolveComposable(
             //.heightIn(50.dp,200.dp)
             .constrainAs(cluesText) {
                 top.linkTo(clueGrid.bottom, margin = 0.dp)
-                bottom.linkTo(parent.bottom, margin = 0.dp)
+                if(keyboardCollapsed) {
+                    bottom.linkTo(parent.bottom, margin = 0.dp)
+                }
+                else{
+                    bottom.linkTo(keyBoard.top, margin = 0.dp)
+                }
                 height = Dimension.fillToConstraints
             }
         ) {
             clueTextArea(clues, onClueSelect = onClueSelect, activeClue = activeClue)
         }
-
         Box(modifier = Modifier
             //.background(MaterialTheme.colorScheme.primary)
             .constrainAs(keyBoard) {
@@ -148,6 +155,8 @@ fun SolveComposable(
                 setLetter = setLetter,
                 delLetter = delLetter,
                 syncFun = syncFun,
+                isCollapsed = keyboardCollapsed,
+                toggleCollapsed = toggleCollapsed
             )
         }
 
@@ -162,6 +171,8 @@ fun keyBoard(
     delLetter: () -> Unit,
     syncFun: () -> Unit,
     modifier: Modifier = Modifier,
+    isCollapsed : Boolean,
+    toggleCollapsed : () -> Unit
 ) {
 
     Log.i(TAG, "Composing button ")
@@ -170,7 +181,7 @@ fun keyBoard(
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
     val density = LocalDensity.current
-    var isCollapsed by remember { mutableStateOf(false) }
+    //var isCollapsed by remember { mutableStateOf(false) }
     val keyboardColour = MaterialTheme.colorScheme.background
 
     AnimatedContent(
@@ -248,7 +259,7 @@ fun keyBoard(
                         .background(keyboardColour)
                 ) {
                     FilledTonalButton(
-                        onClick = { isCollapsed = true },
+                        onClick = { toggleCollapsed() },
                         shape = RoundedCornerShape(2.dp),
                         contentPadding = PaddingValues(0.dp),
                         modifier = Modifier
@@ -303,12 +314,13 @@ fun keyBoard(
                 modifier = Modifier.wrapContentWidth()
             ) {
                 FilledTonalButton(
-                    onClick = { isCollapsed = false },
+                    onClick = { toggleCollapsed() },
                     shape = RoundedCornerShape(2.dp),
                     contentPadding = PaddingValues(0.dp),
                     modifier = Modifier
                         .width(screenWidth / 9)
                         .padding(horizontal = 2.dp)
+                        .alpha(0.7f)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_baseline_arrow_drop_down_24),
