@@ -52,6 +52,13 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         Log.i(TAG,"Finished initialising ui")
     }
 
+    fun toggleCollapseKeyboard(){
+        _uiState.update { ui ->
+            ui.copy(keyboardCollapsed = !_uiState.value.keyboardCollapsed,
+            )
+        }
+    }
+
 
     fun convertPuzzleToCellSet(puzzle : Puzzle) : MutableSet<Triple<Int, Int, String>>{
         val cellSet = mutableSetOf<Triple<Int, Int, String>>()
