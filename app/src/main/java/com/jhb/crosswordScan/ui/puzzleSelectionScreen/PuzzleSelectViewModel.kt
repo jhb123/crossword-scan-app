@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.jhb.crosswordScan.data.*
 import com.jhb.crosswordScan.network.CrosswordApi
+import com.jhb.crosswordScan.ui.Strings
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.PuzzleSelectionUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
 import java.net.ConnectException
+import java.net.UnknownHostException
 import java.util.zip.ZipInputStream
 
 private const val TAG = "PuzzleSelectViewModel"
@@ -62,6 +64,7 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                 )
             }
             val guid = _uiState.value.searchGuid!!.trim()
+            Log.i(TAG,"Configuring search for $guid")
             //delay(1000)
             val gson = Gson()
             val search = mapOf(
@@ -69,8 +72,9 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
             )
             val payload = gson.toJson(search)
             val requestBody = RequestBody.create(MediaType.get("application/json"), payload)
-
+            var errorMessage : String? = null
             try{
+                Log.i(TAG,"Sending search post")
                 val response = Session.sessionDataState.value?.let { session->
                     session.token?.let {
                         CrosswordApi.retrofitService.search(
@@ -79,7 +83,10 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                         )
                     }
                 }
+                Log.i(TAG,"Finished search")
+
                 if(response != null){
+                    Log.i(TAG,"got response")
                     //decode the zip files contents
                     val zf = ZipInputStream(response.byteStream())
                     val files = unzipPuzzleFiles(zf)
@@ -117,24 +124,25 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
             }
             catch(e : HttpException){
                 Log.e(TAG,e.message())
-                _uiState.update {
-                    it.copy(
-                        errorText = e.message()
-                    )
-                }
+                errorMessage = Strings.unableToFindServer
             }
             catch (e : ConnectException){
                 Log.e(TAG, "unable to find server")
-                _uiState.update {
-                    it.copy(
-                        errorText = "Unable to find server"
-                    )
-                }
+                errorMessage = Strings.unableToFindServer
+            }
+            catch (e: UnknownHostException){
+                Log.e(TAG, e.toString())
+                errorMessage = Strings.unableToFindServer
+            }
+            catch (e: Exception){
+                Log.e(TAG, e.toString())
+                errorMessage = Strings.genericServerError
             }
             finally {
                 _uiState.update {
                     it.copy(
-                        isLoading = false
+                        isLoading = false,
+                        errorText = errorMessage
                     )
                 }
             }
@@ -163,17 +171,47 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                     .addFormDataPart("timeCreated", puzzleData.timeCreated)
                     .addFormDataPart("lastModified", puzzleData.lastModified)
                     .build()
-                if (Session.sessionDataState.value != null) {
-                    val Authorization = "Bearer ${Session.sessionDataState.value?.token}"
-                    Log.i(TAG, "uploading with $Authorization")
-                    val message = CrosswordApi.retrofitService.upload(Authorization, requestBody)
-                    Log.i(TAG, message.string())
-                }
-                puzzleData.isShared = true
-                Log.i(TAG, puzzleData.puzzle)
-                Log.i(TAG, puzzleData.puzzleIcon)
 
-                repository.update(puzzleData)
+                var errorMessage = ""
+
+                try {
+                    if (Session.sessionDataState.value != null) {
+                        val Authorization = "Bearer ${Session.sessionDataState.value?.token}"
+                        Log.i(TAG, "uploading with $Authorization")
+                        val message =
+                            CrosswordApi.retrofitService.upload(Authorization, requestBody)
+                        Log.i(TAG, message.string())
+                    }
+                    puzzleData.isShared = true
+                    Log.i(TAG, puzzleData.puzzle)
+                    Log.i(TAG, puzzleData.puzzleIcon)
+
+                    repository.update(puzzleData)
+                }
+                catch(e : HttpException){
+                    Log.e(TAG,e.message())
+                    errorMessage = Strings.unableToFindServer
+                }
+                catch (e : ConnectException){
+                    Log.e(TAG, "unable to find server")
+                    errorMessage = Strings.unableToFindServer
+                }
+                catch (e: UnknownHostException){
+                    Log.e(TAG, e.toString())
+                    errorMessage = Strings.unableToFindServer
+
+                }
+                catch (e: Exception){
+                    Log.e(TAG, e.toString())
+                    errorMessage = Strings.genericServerError
+                }
+                finally {
+                    _uiState.update {
+                        it.copy(
+                            errorText = errorMessage
+                        )
+                    }
+                }
             }
         }
     }

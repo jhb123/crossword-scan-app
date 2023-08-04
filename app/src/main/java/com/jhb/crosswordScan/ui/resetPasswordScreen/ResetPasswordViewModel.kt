@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.network.CrosswordApi
+import com.jhb.crosswordScan.ui.Strings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -16,6 +17,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.net.ConnectException
+import java.net.UnknownHostException
 
 private const val TAG = "ResetPasswordViewModel"
 
@@ -71,6 +73,14 @@ class ResetPasswordViewModel(navigateOnSuccess : ()->Unit) : ViewModel() {
                     e.code() == 400 -> e.message.toString()
                     else -> "Error ${e.code()} : ${e.message()}}"
                 }
+            }
+            catch (e: UnknownHostException){
+                Log.e(TAG, e.toString())
+                serverMessage = Strings.unableToFindServer
+            }
+            catch (e: Exception){
+                Log.e(TAG, e.toString())
+                serverMessage = Strings.genericServerError
             }
             _uiState.update {
                 it.copy(
@@ -129,6 +139,14 @@ class ResetPasswordViewModel(navigateOnSuccess : ()->Unit) : ViewModel() {
             catch (e : ConnectException){
                 Log.e(TAG, "unable to find server")
                 serverMessage = "Unable to find server"
+            }
+            catch (e: UnknownHostException){
+                Log.e(TAG, e.toString())
+                serverMessage = Strings.unableToFindServer
+            }
+            catch (e: Exception){
+                Log.e(TAG, e.toString())
+                serverMessage = Strings.genericServerError
             }
             finally {
                 _uiState.update {
