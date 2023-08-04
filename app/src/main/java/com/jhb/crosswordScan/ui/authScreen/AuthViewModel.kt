@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.network.CrosswordApi
+import com.jhb.crosswordScan.ui.Strings.genericServerError
 import com.jhb.crosswordScan.ui.Strings.unableToFindServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +15,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.net.ConnectException
+import java.net.UnknownHostException
 
 
 private const val TAG = "AuthViewModel"
@@ -64,6 +66,14 @@ class AuthViewModel() : ViewModel() {
         catch (e : ConnectException){
             Log.e(TAG, unableToFindServer)
             serverMessage = unableToFindServer
+        }
+        catch (e: UnknownHostException){
+            Log.e(TAG, e.toString())
+            serverMessage = unableToFindServer
+        }
+        catch (e: Exception){
+            Log.e(TAG, e.toString())
+            serverMessage = genericServerError
         }
         finally {
             _uiState.update {
