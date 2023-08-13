@@ -6,5 +6,6 @@ data class AuthUiState(
     val userEmail : String? = null,
     //val users : List<UserData>? = null,
     val serverErrorText : String? = null,
-    val isLoading : Boolean = false
+    val isLoading : Boolean = false,
+    val validLogin : Boolean = true
 )

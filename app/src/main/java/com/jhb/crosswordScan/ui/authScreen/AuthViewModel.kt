@@ -7,6 +7,7 @@ import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.network.CrosswordApi
 import com.jhb.crosswordScan.ui.Strings.genericServerError
+import com.jhb.crosswordScan.ui.Strings.invalidCredentials
 import com.jhb.crosswordScan.ui.Strings.unableToFindServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +30,8 @@ class AuthViewModel() : ViewModel() {
         Log.i(TAG,"Logging in")
         _uiState.update {
             it.copy(
-                isLoading = true
+                isLoading = true,
+                validLogin = true
             )
         }
         //viewModelScope.launch {
@@ -56,12 +58,16 @@ class AuthViewModel() : ViewModel() {
 
             Session.updateSession(sessionData)
 
-            Log.i(TAG, "Token ${responseJson["token"]}")
             Log.i(TAG, "Finished logging in")
         }
         catch(e : HttpException){
-            Log.e(TAG,e.message())
-            serverMessage = "Error ${e.code()} : ${e.message()}"
+            Log.e(TAG,e.toString())
+            val errorMessage = when {
+                e.code() == 401 ->  invalidCredentials
+                e.code() >= 500 ->  genericServerError
+                else  -> genericServerError
+            }
+            serverMessage = "${e.code()} : $errorMessage"
         }
         catch (e : ConnectException){
             Log.e(TAG, unableToFindServer)
@@ -79,7 +85,8 @@ class AuthViewModel() : ViewModel() {
             _uiState.update {
                 it.copy(
                     serverErrorText = serverMessage,
-                    isLoading = false
+                    isLoading = false,
+                    validLogin = serverMessage.toBoolean()
                 )
             }
         }
