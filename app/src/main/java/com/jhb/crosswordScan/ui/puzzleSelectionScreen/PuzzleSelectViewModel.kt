@@ -180,7 +180,7 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                     .addFormDataPart("lastModified", puzzleData.lastModified)
                     .build()
 
-                var errorMessage = ""
+                var errorMessage : String? = null
 
                 try {
                     if (Session.sessionDataState.value != null) {
