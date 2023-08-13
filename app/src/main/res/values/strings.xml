@@ -36,6 +36,7 @@
     <string name="question_forgotPassword">Forgot password?</string>
     <!-- Events !-->
     <string name="event_save">Saved</string>
+    <string name="logging_in">Logging in...</string>
     <!-- text box labels !-->
     <string name="label_userName">Username</string>
     <string name="label_password">Password</string>
@@ -61,5 +62,6 @@
     <string name="ContentDesc_userNameIcon">Username icon</string>
     <string name="contentDesc_emailIcon">Email icon</string>
     <string name="drop_down_keyboard">collapse keyboard</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
 
 </resources>
