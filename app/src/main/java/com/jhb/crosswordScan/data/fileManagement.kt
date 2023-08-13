@@ -17,7 +17,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
-import java.util.*
+import java.util.UUID
 import java.util.zip.ZipInputStream
 
 private const val TAG = "fileManagement"
@@ -196,7 +196,7 @@ fun processMetaDataFile(metaData : ByteArray, filePath: String) : PuzzleData{
                 && it.containsKey("puzzle")
                 && it.containsKey("timeCreated")
                 && it.containsKey("lastModified")
-                && it.containsKey("puzzleIcon")
+                && it.containsKey("icon")
     }
 
     if(isMetaDataValid!=true){
@@ -205,7 +205,7 @@ fun processMetaDataFile(metaData : ByteArray, filePath: String) : PuzzleData{
 
     Log.i(TAG,metaData["id"].toString())
     Log.i(TAG,metaData["puzzle"].toString())
-    Log.i(TAG,metaData["puzzleIcon"].toString())
+    Log.i(TAG,metaData["icon"].toString())
     Log.i(TAG,metaData["timeCreated"].toString())
     Log.i(TAG,metaData["lastModified"].toString())
 
@@ -217,7 +217,7 @@ fun processMetaDataFile(metaData : ByteArray, filePath: String) : PuzzleData{
         puzzle = metaData["puzzle"].toString().let {
             "$filePath/${it.substring(1, it.length - 1)}"
         },
-        puzzleIcon = metaData["puzzleIcon"].toString().let {
+        puzzleIcon = metaData["icon"].toString().let {
             "$filePath/${it.substring(1, it.length - 1)}"
         },
         timeCreated = metaData["timeCreated"].toString().let {

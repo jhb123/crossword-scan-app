@@ -90,6 +90,10 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                     //decode the zip files contents
                     val zf = ZipInputStream(response.byteStream())
                     val files = unzipPuzzleFiles(zf)
+                    files.keys.forEach(){
+                        Log.i(TAG,"zip contained $it")
+                    }
+
 
                     val image = files["image"]?.let { processImageFile(it) }
                     val puzzleTxt = files["puzzleJson"]?.let { processPuzzleFile(it) }
