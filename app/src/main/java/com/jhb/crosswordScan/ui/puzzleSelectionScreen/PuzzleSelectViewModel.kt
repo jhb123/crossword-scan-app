@@ -127,8 +127,12 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                 }
             }
             catch(e : HttpException){
-                Log.e(TAG,e.message())
-                errorMessage = Strings.unableToFindServer
+                Log.e(TAG,e.toString())
+                errorMessage = when {
+                    e.code() == 404 -> "Error code ${e.code()}: ${Strings.noSuchPuzzle}"
+                    e.code() >= 500 -> "Error code ${e.code()}: ${Strings.genericServerError}"
+                    else  -> "Error code ${e.code()}"
+                }
             }
             catch (e : ConnectException){
                 Log.e(TAG, "unable to find server")
