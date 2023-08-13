@@ -50,7 +50,7 @@ android {
             dimension "app_type"
         }
         real {
-            buildConfigField "String", "API_URL", "\"https://joehb123.pythonanywhere.com\""
+            buildConfigField "String", "API_URL", "\"https://t92g40mm52.execute-api.eu-north-1.amazonaws.com/dev-zappa/\""
             dimension "app_type"
         }
     }
