@@ -1,10 +1,8 @@
 package com.jhb.crosswordScan.util
 
-import android.graphics.Bitmap
 import android.util.Log
 import com.jhb.crosswordScan.data.Clue
 import com.jhb.crosswordScan.data.Puzzle
-import org.opencv.android.Utils
 import org.opencv.core.Core.BORDER_CONSTANT
 import org.opencv.core.Core.ROTATE_180
 import org.opencv.core.Core.add
@@ -357,12 +355,6 @@ fun assembleClues(binaryCrosswordImg: Mat): Puzzle {
         Log.d(TAG, "$name: ${clue.clueBoxes}")
     }
 
-    val gridBitmap = Bitmap.createBitmap(
-        binaryCrosswordImg.cols(),
-        binaryCrosswordImg.rows(), Bitmap.Config.ARGB_8888
-    )
-    Utils.matToBitmap(binaryCrosswordImg, gridBitmap)
-
     //puzzle.image = gridBitmap
     puzzle.gridSize = binaryCrosswordImg.rows()
 
@@ -508,7 +500,6 @@ private fun getDownClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int, 
 
     return clueCoordinates
 }
-
 
 private fun convolveGrid(grid: Mat, kernel: Mat): Mat {
     val anchor = Point(-1.0, -1.0)
