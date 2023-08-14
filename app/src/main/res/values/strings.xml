@@ -63,5 +63,7 @@
     <string name="contentDesc_emailIcon">Email icon</string>
     <string name="drop_down_keyboard">collapse keyboard</string>
     <string name="invalid_credentials">Invalid Credentials</string>
+    <string name="action_delete_scan">delete scan</string>
+    <string name="action_rotate_right">rotate 90 degrees clockwise</string>
 
 </resources>
