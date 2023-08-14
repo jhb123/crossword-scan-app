@@ -2,7 +2,6 @@ package com.jhb.crosswordScan.ui.puzzleScanningScreens
 
 //import com.jhb.learn_opencv.Puzzle
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +29,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import org.opencv.android.Utils
+import org.opencv.core.Core.ROTATE_90_CLOCKWISE
+import org.opencv.core.Core.rotate
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.imgproc.Imgproc
@@ -44,7 +45,6 @@ class CrosswordScanViewModel : ViewModel(
 ) {
 
     private val _uiState = MutableStateFlow(ScanUiState())
-
     val uiState : StateFlow<ScanUiState> = _uiState
 
     private val _uiGridState = MutableStateFlow(
@@ -54,16 +54,15 @@ class CrosswordScanViewModel : ViewModel(
         )
     )
     val uiGridState : StateFlow<GridScanUiState> = _uiGridState
-
+    private var mirror = false
 
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-
     val cluePicDebug = mutableStateOf<Bitmap?>(null)
     private val cluePicDebugCropped = mutableStateOf<Bitmap?>(null)
 
     //TODO make this a stateflow or something
-    private val _puzzle = mutableStateOf(Puzzle())
-    val puzzle : State<Puzzle> = _puzzle
+    private val _puzzle = MutableStateFlow(Puzzle())
+    val puzzle : StateFlow<Puzzle> = _puzzle
 
     private val _takeSnapShot = mutableStateOf(false)
     private val takeSnapShot : State<Boolean> = _takeSnapShot
@@ -97,32 +96,37 @@ class CrosswordScanViewModel : ViewModel(
             // if the area is bigger than 100x100 pixels, then set the preprocessed images
             if( imArea > 100*100 ) {
                 setPreprocessed()
+
             }
             // GlobalScope.launch {  }
 
         }
     }
 
+
     private fun setPreprocessed() {
-
-        Log.d(TAG, "Setting snapshot preview image")
         val croppedCrossword = cropToCrossword(contours[cwContourIndex], viewFinderImg)
-        Log.d(TAG, "Making bitmap")
-
-        val matrix = Matrix()
-        matrix.postRotate(90f)
-
-       val binaryCrossword = makeBinaryCrosswordImg(croppedCrossword)
+        var binaryCrossword = makeBinaryCrosswordImg(croppedCrossword)
 
         if (binaryCrossword != null) {
+            val puzzle = assembleClues(binaryCrossword)
+
+            clearScan()
 
             var gridBitmap =
                 Bitmap.createBitmap(
+                    binaryCrossword.rows(),
                     binaryCrossword.cols(),
-                    binaryCrossword.rows(), Bitmap.Config.ARGB_8888
+                    Bitmap.Config.ARGB_8888,
+
                 )
 
-            Utils.matToBitmap(binaryCrossword, gridBitmap)
+            // The coordinate system of openCV seems to be rotated by 90deg (or mirrored LR?).
+            // The clue numbering algorithm handles this, but maybe work can be
+            // done to make it so there aren't any confusing rotations required.
+            val rotBinaryImage = Mat()
+            rotate(binaryCrossword,rotBinaryImage,ROTATE_90_CLOCKWISE)
+            Utils.matToBitmap(rotBinaryImage, gridBitmap)
             gridBitmap = Bitmap.createScaledBitmap(gridBitmap, 500, 500, false)
 
             _uiGridState.update {
@@ -131,19 +135,41 @@ class CrosswordScanViewModel : ViewModel(
                 )
             }
 
+            _puzzle.update {
+                puzzle
+                //assembleClues(binaryCrossword)
+            }
+//            _puzzle.value =  assembleClues(binaryCrossword)
 
-            _puzzle.value =  assembleClues(binaryCrossword)
+            _uiState.update {
+                it.copy(
+                    downClues = getDownCluesAsPairs(puzzle),
+                    acrossClues = getAcrossCluesAsPairs(puzzle)
+                )
+            }
+        }
+    }
 
+    fun clearScan(){
+        clearPuzzleData()
+        Log.i(TAG,"Resetting sreens")
 
-            //makes a new blank UI for scanning clues
-            _uiState.value = ScanUiState(
-                downClues = getDownCluesAsPairs(puzzle.value),
-                acrossClues = getAcrossCluesAsPairs(puzzle.value)
+        _uiState.update {
+            ScanUiState()
+        }
+        _uiGridState.update {
+            GridScanUiState(
+                gridPicDebug = null,
+                gridPicProcessed = null
             )
         }
+    }
 
-        //_puzzle.value.setGridSize(gridBitmap)
-
+    private fun clearPuzzleData(){
+        Log.i(TAG,"Deleting Puzzle data")
+        _puzzle.update {
+            Puzzle()
+        }
     }
 
     fun resetClueHighlightBox(point : Offset) : Offset {
@@ -252,7 +278,6 @@ class CrosswordScanViewModel : ViewModel(
                 clueScanDirection = direction
             )
         }
-
     }
 
     private fun ocrClues()  {

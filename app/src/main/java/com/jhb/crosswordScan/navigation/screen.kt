@@ -11,7 +11,7 @@ sealed class Screen(val route: String,
                     @DrawableRes val iconResourceId : Int
 ) {
     object GridScan : Screen( "gridScan", R.string.screenTitle_gridScan, R.drawable.ic_baseline_grid_on_24)
-    object ClueScan : Screen("clueScan", R.string.screenTitle_clueScan, R.drawable.ic_baseline_camera_24)
+    object ClueScan : Screen("clueScan", R.string.screenTitle_clueScan, R.drawable.ic_baseline_text_fields_24)
     object PreviewScan : Screen("previewScan", R.string.screenTitle_previewPuzzleScan, R.drawable.ic_baseline_preview_24)
     object SelectPuzzle : Screen("puzzleSelect", R.string.screenTitle_puzzleSelect, R.drawable.ic_baseline_edit_24)
     object Authenticate : Screen("authenticate", R.string.screenTitle_authenticate, R.drawable.ic_baseline_person_24)
