@@ -1,7 +1,9 @@
 package com.jhb.crosswordScan.util
 
 import android.util.Log
+import com.jhb.crosswordScan.data.Cell
 import com.jhb.crosswordScan.data.Clue
+import com.jhb.crosswordScan.data.Direction
 import com.jhb.crosswordScan.data.Puzzle
 import org.opencv.core.Core.BORDER_CONSTANT
 import org.opencv.core.Core.ROTATE_180
@@ -79,7 +81,7 @@ fun getCrosswordContour(input_image: Mat?): Pair<List<MatOfPoint>, Int> {
     return Pair(contours, cwContour)
 }
 
-fun cropToCrossword(contour: MatOfPoint, image: Mat, cropSize: Double = 500.0): Mat {
+fun cropToCrossword(contour: MatOfPoint, image: Mat, cropSize: Double = 500.0): Mat? {
     // finding the minimum rectangle doesn't work since the crossword's edges
     // are curved.
 
@@ -130,9 +132,15 @@ fun cropToCrossword(contour: MatOfPoint, image: Mat, cropSize: Double = 500.0): 
 
     }
 
-    Log.i(TAG, "assigning cropped image ")
+    Log.i(TAG, "assigning cropped image ${cropSize.toInt()}")
     val rectToCrop = Rect(0, 0, cropSize.toInt(), cropSize.toInt())
-    return imageWarp.submat(rectToCrop)
+    if (imageWarp.size().height > cropSize){
+        return imageWarp.submat(rectToCrop)
+    } else {
+        Log.i(TAG, "The input image was too small.")
+        return null
+    }
+//    return imageWarp.submat(rectToCrop)
 }
 
 private fun estimateClueBoxSize(croppedToCrosswordImg: Mat): Double {
@@ -300,8 +308,8 @@ private fun median(list: List<Double>) = list.sorted().let {
 fun assembleClues(binaryCrosswordImg: Mat): Puzzle {
     val clueMarks = getGridWithClueMarks(binaryCrosswordImg)
 
-    val acrossClues = mutableMapOf<Triple<Int, Int, String>, String>()
-    val downClues = mutableMapOf<Triple<Int, Int, String>, String>()
+    val acrossClues = mutableMapOf<Cell, String>()
+    val downClues = mutableMapOf<Cell, String>()
 
     var clueIdx = 1
     for (col_idx in 0 until clueMarks.cols()) {
@@ -311,18 +319,18 @@ fun assembleClues(binaryCrosswordImg: Mat): Puzzle {
             // 4 is across and down.
             when (clueMarks.get(row_idx, col_idx).toList()[0]) {
                 2.0 -> {
-                    acrossClues[Triple(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}a"
+                    acrossClues[Cell(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}a"
                     clueIdx += 1
                 }
 
                 3.0 -> {
-                    downClues[Triple(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}d"
+                    downClues[Cell(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}d"
                     clueIdx += 1
                 }
 
                 4.0 -> {
-                    downClues[Triple(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}d"
-                    acrossClues[Triple(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}a"
+                    downClues[Cell(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}d"
+                    acrossClues[Cell(clueMarks.rows() - row_idx - 1, col_idx, "")] = "${clueIdx}a"
                     clueIdx += 1
                 }
             }
@@ -343,16 +351,19 @@ fun assembleClues(binaryCrosswordImg: Mat): Puzzle {
 
 //
     acrossClueCells.forEach { clueCells ->
-        val clue = Clue(acrossClues[clueCells[0]]!!, clueCells)
-        puzzle.addClue(acrossClues[clueCells[0]]!!, clue)
+        val clue = Clue(clueCells, "across clue")
+        puzzle.addClue(acrossClues[clueCells[0]]!!, clue, Direction.ACROSS)
     }
     downClueCells.forEach { clueCells ->
-        val clue = Clue(downClues[clueCells[0]]!!, clueCells)
-        puzzle.addClue(downClues[clueCells[0]]!!, clue)
+        val clue =Clue(clueCells, "down clue")
+        puzzle.addClue(downClues[clueCells[0]]!!, clue, Direction.DOWN)
     }
 
-    puzzle.clues.forEach { (name, clue) ->
-        Log.d(TAG, "$name: ${clue.clueBoxes}")
+    puzzle.across.forEach { (name, clue) ->
+        Log.d(TAG, "across clue $name: ${clue.cells}")
+    }
+    puzzle.down.forEach { (name, clue) ->
+        Log.d(TAG, "down clue $name: ${clue.cells}")
     }
 
     //puzzle.image = gridBitmap
@@ -387,7 +398,7 @@ private fun getGridWithClueMarks(binaryCrosswordImg: Mat): Mat {
     return binaryGrid
 }
 
-private fun getAcrossClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int, Int, String>>> {
+private fun getAcrossClues(binaryCrosswordImg: Mat): List<MutableList<Cell>> {
     var kernel = Mat.zeros(3, 3, CV_32F)
     kernel.put(0, 1, 1.0)
     kernel.put(1, 1, 1.0)
@@ -410,8 +421,8 @@ private fun getAcrossClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int
     newGrid.convertTo(newGrid, -1, 1.0, -1.0)
 
 
-    val clueCoordinates = mutableListOf<MutableList<Triple<Int, Int, String>>>()
-    var clue = mutableListOf<Triple<Int, Int, String>>()
+    val clueCoordinates = mutableListOf<MutableList<Cell>>()
+    var clue = mutableListOf<Cell>()
 
     //val row = Mat()
     for (col_idx in 0 until newGrid.cols()) {
@@ -421,7 +432,7 @@ private fun getAcrossClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int
             //Log.v(TAG,"cell (${row_idx} ${col_idx}) value: ${cellValue}")
             if (cellValue > 0) {
                 //  Log.v(TAG,"Adding cell to current Clue")
-                clue.add(Triple(newGrid.rows() - row_idx - 1, col_idx, ""))
+                clue.add(Cell(newGrid.rows() - row_idx - 1, col_idx, ""))
                 //Log.v(TAG,clue.toString())
             } else {
                 if (clue.size > 0) {
@@ -445,7 +456,7 @@ private fun getAcrossClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int
     return clueCoordinates
 }
 
-private fun getDownClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int, Int, String>>> {
+private fun getDownClues(binaryCrosswordImg: Mat): List<MutableList<Cell>> {
     var kernel = Mat.zeros(3, 3, CV_32F)
     kernel.put(1, 0, 1.0)
     kernel.put(1, 1, 1.0)
@@ -469,8 +480,8 @@ private fun getDownClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int, 
 
     //Log.i(TAG,"grid:\n${binaryCrosswordImg.dump()}")
 
-    val clueCoordinates = mutableListOf<MutableList<Triple<Int, Int, String>>>()
-    var clue = mutableListOf<Triple<Int, Int, String>>()
+    val clueCoordinates = mutableListOf<MutableList<Cell>>()
+    var clue = mutableListOf<Cell>()
 
     //val row = Mat()
     for (row_idx in (newGrid.rows() - 1) downTo 0) {
@@ -479,7 +490,7 @@ private fun getDownClues(binaryCrosswordImg: Mat): List<MutableList<Triple<Int, 
             Log.v(TAG, "cell (${row_idx} ${col_idx}) value: $cellValue")
             if (cellValue > 0) {
                 Log.v(TAG, "Adding cell to current Clue")
-                clue.add(Triple(newGrid.rows() - row_idx - 1, col_idx, ""))
+                clue.add(Cell(newGrid.rows() - row_idx - 1, col_idx, ""))
                 Log.v(TAG, clue.toString())
             } else {
                 if (clue.size > 0) {

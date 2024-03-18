@@ -54,18 +54,23 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
     fun toggleCollapseKeyboard(){
         _uiState.update { ui ->
-            ui.copy(keyboardCollapsed = !_uiState.value.keyboardCollapsed,
+            ui.copy(
+                keyboardCollapsed = !_uiState.value.keyboardCollapsed,
             )
         }
     }
 
 
-    fun convertPuzzleToCellSet(puzzle : Puzzle) : MutableSet<Triple<Int, Int, String>>{
-        val cellSet = mutableSetOf<Triple<Int, Int, String>>()
+    fun convertPuzzleToCellSet(puzzle : Puzzle) : MutableSet<Cell>{
+        val cellSet = mutableSetOf<Cell>()
         puzzle.clues.forEach { s, clue ->
-            clue.clueBoxes.forEach {
-                cellSet.add(it)
+            clue.cells.forEach {
+                if (!cellSet.add(it)) {
+                    Log.i(TAG,"Found duplicate")
+                }
+
             }
+            Log.i(TAG, "Adding clue ${s}")
         }
         return cellSet
     }
@@ -73,7 +78,10 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     fun cloudSync(){
 
         viewModelScope.launch {
-
+            Log.i(TAG,"Sycning")
+            val gson = Gson()
+            val payload = gson.toJson(uiState.value.currentPuzzle)
+            Log.i(TAG, payload)
             //uploadPuzzle()
             //update the local puzzle
             //updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
@@ -83,27 +91,6 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         // Use the servers response as the new grid.
     }
 
-    private fun continuousUpdate(){
-        // keep calling the sync puzzle function while you're in the puzzle.
-        // do this every 0.5s or something.
-    }
-
-    private suspend fun syncPuzzle(){
-        //do this immediately when opening the puzzle to check for the latest version.
-
-        //check if the puzzle needs syncing by looking at its last modified time
-
-        // if the server's puzzle has been updated more recently than the local version
-        // get the newest version and replace the local version with it
-
-        //if the client's puzzle has been updated more recently than the server's version
-        // then upload the clients puzzle to the server
-    }
-
-    private suspend fun checkServerPuzzleUpate(){
-        // obtain the lastmodified time of the current puzzle.
-
-    }
 
     private suspend fun uploadPuzzle(){
         val puzzlePayload = mapOf(
@@ -127,48 +114,51 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         }
     }
 
-    fun getLabelledCells(puzzle : Puzzle) : Map<Triple<Int, Int, String>,String > {
-        val cellSetLabels = mutableMapOf< Triple<Int, Int, String>,String >()
+    fun getLabelledCells(puzzle : Puzzle) : Map<Cell,String > {
+        val cellSetLabels = mutableMapOf< Cell,String >()
         puzzle.clues.forEach { s, clue ->
 
             val regex = Regex("\\d+")
             val processed = regex.find(s)
             if (processed != null) {
-                cellSetLabels[clue.clueBoxes[0]] = processed.value
+                cellSetLabels[clue.cells[0]] = processed.value
             }
             else{
                 Log.w(TAG,"Badly labelled clue: $s")
             }
         }
+        cellSetLabels.forEach({(k, v)-> Log.i(TAG, "special cells ${k.x},${k.y} with $v") })
         return cellSetLabels
     }
 
-    fun updateCurrentCell(cell : Triple<Int,Int,String>){
+    fun updateCurrentCell(cell : Cell){
         _uiState.update { ui ->
             ui.copy(currentCell = cell)
         }
     }
 
-    fun updateactiveClue(name : String){
+    fun updateActiveClueByName(name : String){
         _uiState.update { ui->
             ui.copy(
                 currentClue = _uiState.value.currentPuzzle.clues[name]!!,
-                currentCell = _uiState.value.currentPuzzle.clues[name]!!.clueBoxes[0]
+                currentCell = _uiState.value.currentPuzzle.clues[name]!!.cells[0],
+                currentClueName = name
             )
         }
     }
 
-    fun updateactiveClue2(cell : Triple<Int,Int,String>) {
+    fun updateActiveClueByCell(cell : Cell) {
         Log.i(
             TAG, "trying to update clue at $cell. " +
-                "from current Active clue ${_uiState.value.currentClue.clueName} ")
+                "from current Active clue ${_uiState.value.currentClue} ")
         val allClues = uiState.value.currentPuzzle.clues
         for (clue in allClues) {
-            if (clue.value.clueBoxes.contains(cell) && clue.value != _uiState.value.currentClue) {
+            Log.i(TAG, "current cell: $cell\nClue cells${clue.value.cells}\nContains: ${clue.value.cells.contains(cell)}")
+            if (clue.value.cells.contains(cell) && clue.value != _uiState.value.currentClue) {
                 Log.i(TAG, "setting active clue at $cell to ${clue.key}")
                 _uiState.update { ui ->
                     //if ui.currentClue !=
-                    ui.copy(currentClue = clue.value)
+                    ui.copy(currentClue = clue.value, currentClueName = clue.key)
                 }
                 break
             }
@@ -178,7 +168,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     //val imageList = mutableStateMapOf<Int, Uri>()
 
     //val cellLetterMap = mutableStateMapOf<Pair<Int,Int>,String>()
-    private fun updateGridCell(cell : Triple<Int,Int,String>){
+    private fun updateGridCell(cell : Cell){
         //make a new cell to update the grid with
 
         Log.i(TAG, "replacing ${uiState.value.currentCell} with $cell")
@@ -188,14 +178,14 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         var clue_box_idx = -1
         uiState.value.currentPuzzle.clues.forEach { (key, clue) ->
             try {
-                val idx = clue.clueBoxes.indexOf(_uiState.value.currentCell)
-                Log.i(TAG, "clue ${clue.clueName} idx is: $idx")
+                val idx = clue.cells.indexOf(_uiState.value.currentCell)
+                Log.i(TAG, "clue $key idx is: $idx")
                 if (idx >= 0) {
-                    clue.clueBoxes[idx] = cell
+                    clue.cells[idx] = cell
                 }
                 if (clue == _uiState.value.currentClue) {
                     clue_box_idx = idx
-                    _uiState.value.currentClue.clueBoxes[clue_box_idx] = cell
+                    _uiState.value.currentClue.cells[clue_box_idx] = cell
                 }
             }
             catch(exception : ArrayIndexOutOfBoundsException){
@@ -218,35 +208,26 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
         viewModelScope.launch(Dispatchers.IO) {
 
             //make a new cell to update the grid with
-            val newCell = Triple(
-                _uiState.value.currentCell.first,
-                _uiState.value.currentCell.second,
+            val newCell = Cell(
+                _uiState.value.currentCell.x,
+                _uiState.value.currentCell.y,
                 letter
             )
 
             updateGridCell(newCell)
 
-            //update the database with the puzzle.
-//            Log.i(TAG, "calling updateDatabase")
-//            // TODO fix this bit
-//            //viewModelScope.launch {
-//            updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
-//            //}
-//            Log.i(TAG, "Finished updating database")
-//
-//            repository.updatePuzzleEditTime(puzzleId)
             updatePuzzleData()
 
             //increment active if its not the last cell in the clue
-            val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)
+            val clue_box_idx = uiState.value.currentClue.cells.indexOf(uiState.value.currentCell)
 
             Log.i(TAG,"current clue index: $clue_box_idx")
 
-                if(clue_box_idx < _uiState.value.currentClue.clueBoxes.size - 1 ) {
+                if(clue_box_idx < _uiState.value.currentClue.cells.size - 1 ) {
                     Log.i(TAG,"updating position in clue : ${clue_box_idx+1}")
                     _uiState.update { ui ->
                         ui.copy(
-                            currentCell = _uiState.value.currentClue.clueBoxes[clue_box_idx+1],
+                            currentCell = _uiState.value.currentClue.cells[clue_box_idx+1],
                         )
                     }
                 }
@@ -268,9 +249,9 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
 
             //make a new cell to update the grid with
-            val newCell = Triple(
-                _uiState.value.currentCell.first,
-                _uiState.value.currentCell.second,
+            val newCell = Cell(
+                _uiState.value.currentCell.x,
+                _uiState.value.currentCell.y,
                 ""
             )
 
@@ -286,14 +267,14 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             updatePuzzleData()
 
             //update the grids ui state to move the selected clue box to the next one.
-            val clue_box_idx = uiState.value.currentClue.clueBoxes.indexOf(uiState.value.currentCell)
-            Log.i(TAG,"current position in clue : $clue_box_idx. Clue's size ${_uiState.value.currentClue.clueBoxes.size}")
+            val clue_box_idx = uiState.value.currentClue.cells.indexOf(uiState.value.currentCell)
+            Log.i(TAG,"current position in clue : $clue_box_idx. Clue's size ${_uiState.value.currentClue.cells.size}")
             //increment active if its not the last cell in the clue
             if(clue_box_idx > 0 ) {
                 Log.i(TAG,"updating position in clue : ${clue_box_idx-1}")
                 _uiState.update { ui ->
                     ui.copy(
-                        currentCell = _uiState.value.currentClue.clueBoxes[clue_box_idx-1],
+                        currentCell = _uiState.value.currentClue.cells[clue_box_idx-1],
                     )
                 }
             }

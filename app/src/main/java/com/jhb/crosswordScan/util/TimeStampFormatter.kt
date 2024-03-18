@@ -16,10 +16,14 @@ class TimeStampFormatter {
     }
 
     fun friendlyTimeStamp(timeStamp : String) : String {
-        val zoneDateTime = getDateTime(timeStamp)
-        val timeStampPattern = "MMM dd, HH:mm"
-        val formatter = DateTimeFormatter.ofPattern(timeStampPattern)
-        return zoneDateTime.format(formatter)
+        try {
+            val zoneDateTime = getDateTime(timeStamp)
+            val timeStampPattern = "MMM dd, HH:mm"
+            val formatter = DateTimeFormatter.ofPattern(timeStampPattern)
+            return zoneDateTime.format(formatter)
+        } catch (e: java.time.format.DateTimeParseException) {
+            return timeStamp
+        }
     }
 
 

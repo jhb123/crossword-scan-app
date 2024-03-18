@@ -106,8 +106,10 @@ class CrosswordScanViewModel : ViewModel(
 
     private fun setPreprocessed() {
         val croppedCrossword = cropToCrossword(contours[cwContourIndex], viewFinderImg)
-        var binaryCrossword = makeBinaryCrosswordImg(croppedCrossword)
-
+        var binaryCrossword : Mat? = null
+        if (croppedCrossword != null) {
+            binaryCrossword = makeBinaryCrosswordImg(croppedCrossword)
+        }
         if (binaryCrossword != null) {
             val puzzle = assembleClues(binaryCrossword)
 

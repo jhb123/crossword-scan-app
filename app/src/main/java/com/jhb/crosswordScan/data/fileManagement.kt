@@ -26,6 +26,7 @@ private const val TAG = "fileManagement"
 fun PuzzleFromJson(json: String?): Puzzle {
     val typeToken = object : TypeToken<Puzzle>() {}.type
     val puzzle = Gson().fromJson<Puzzle>(json, typeToken)
+    puzzle.setCluesAfterDeserialised()
     return puzzle
 }
 
@@ -37,7 +38,7 @@ fun PuzzleToJson(puzzle: Puzzle?): String {
 
 
 suspend fun insertPuzzle(puzzle: Puzzle, context: Context,image: Bitmap?):Boolean = withContext(Dispatchers.IO) {
-
+    Log.i(TAG, "Inserting puzzle into database")
     return@withContext try {
         val repository = (context.applicationContext as PuzzleApplication).repository
 

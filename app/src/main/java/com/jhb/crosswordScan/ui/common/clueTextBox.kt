@@ -61,10 +61,10 @@ fun ClickableClueTextBox(
 
 @Composable
 fun dynamicClueTextBox(clueData : Pair<String, Clue>,
-                backgroundColor: Color,
-                textColor: Color,
-                onClueSelect: (String) -> Unit,
-                modifier: Modifier = Modifier
+                       backgroundColor: Color,
+                       textColor: Color,
+                       onClueSelect: (String) -> Unit,
+                       modifier: Modifier = Modifier
 ) {
 
     // this composable is used in cases where a function needs to be
@@ -77,17 +77,17 @@ fun dynamicClueTextBox(clueData : Pair<String, Clue>,
         ),
         //shape = RoundedCornerShape(10.dp),
         modifier = modifier
-            .pointerInput(clueData.second.clueName) {
+            .pointerInput(clueData.first) {
                 detectTapGestures {
-                    onClueSelect(clueData.second.clueName)
+                    onClueSelect(clueData.first)
                 }
             }
     ){
 
         Text(
-            "${clueData.first}) ${clueData.second.clue}",
+            "${clueData.first}) ${clueData.second.hint}",
             color = textColor,
-            //shape = RoundedCornerShape(20.dp),
+            //shape = RoundedCornerShape(20.dp),z
             modifier = Modifier
                 //.fillMaxWidth(0.5f)
                 .padding(5.dp)
