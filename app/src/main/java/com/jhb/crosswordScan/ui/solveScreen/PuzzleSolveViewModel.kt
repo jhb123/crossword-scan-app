@@ -7,8 +7,6 @@ import com.jhb.crosswordScan.data.*
 import com.jhb.crosswordScan.network.CrosswordApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import java.util.*
 
 
@@ -89,22 +87,6 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
 
         // step1, pass the puzzle to the server.
         // Use the servers response as the new grid.
-    }
-
-
-    private suspend fun uploadPuzzle(){
-        val puzzlePayload = mapOf(
-            "id" to _uiState.value.puzzleId,
-            "puzzle" to _uiState.value.currentPuzzle
-        )
-        val payload = Gson().toJson(puzzlePayload)
-        val requestBody = RequestBody.create(MediaType.get("application/json"), payload)
-        if( Session.sessionDataState.value != null ) {
-            val Authorization = "Bearer ${Session.sessionDataState.value?.token}"
-            Log.i(TAG,"uploading with $Authorization")
-            val message = CrosswordApi.retrofitService.upload( Authorization,requestBody)
-            Log.i(TAG,message.string())
-        }
     }
 
     private fun getGuid(){

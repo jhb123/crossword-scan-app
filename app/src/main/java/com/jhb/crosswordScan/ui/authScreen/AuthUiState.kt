@@ -8,5 +8,5 @@ data class AuthUiState(
     val serverErrorText : String? = null,
     val isLoading : Boolean = false,
     val validLogin : Boolean = true,
-    val wip : Boolean = true,
+    val wip : Boolean = false,
 )

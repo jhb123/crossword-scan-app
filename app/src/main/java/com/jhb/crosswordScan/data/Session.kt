@@ -6,6 +6,7 @@ import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.jhb.crosswordScan.network.CrosswordApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -48,7 +49,8 @@ object Session {
             .build();
     }
 
-    fun logOut(){
+    suspend fun logOut(){
+        CrosswordApi.retrofitService.logOut()
         deleteSessionData()
         _sessionDataState.update { null }
     }
