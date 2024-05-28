@@ -2,7 +2,6 @@ package com.jhb.crosswordScan.data
 
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.jhb.crosswordScan.util.TimeStampFormatter
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -46,19 +45,14 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    fun updatePuzzleEditTime(id: String){
-        Log.i(TAG, "updating last edit time in database")
-        val currentTime = TimeStampFormatter().generateTimeStamp()
-        puzzleDao.updatePuzzleEditTime(currentTime,id)
-    }
-
-
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
     fun deletePuzzle(puzzleData: PuzzleData){
-
         Log.i(TAG, "deleting ${puzzleData.id} database")
         puzzleDao.deletePuzzle(puzzleData.id)
+    }
+
+    @WorkerThread
+    fun getLastIndex(): Int {
+        return puzzleDao.getLastIndex()
     }
 
 

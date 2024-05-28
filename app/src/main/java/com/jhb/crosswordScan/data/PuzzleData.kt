@@ -6,19 +6,14 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "puzzle_table")
 class PuzzleData(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
     @ColumnInfo(name="timeCreated")
     val timeCreated: String,
-    @ColumnInfo(name="lastModified")
-    val lastModified: String,
-    @ColumnInfo(name= "puzzle")
-    val puzzle: String,
-    @ColumnInfo(name= "puzzleIcon")
-    val puzzleIcon: String,
-    @ColumnInfo(name = "isShared")
-    var isShared: Boolean = false,
-
-    //@ColumnInfo(name = "puzzle") val puzzle: Puzzle,
-    //@ColumnInfo(name = "icon") val icon_uuid: String
+    @ColumnInfo(name= "file")
+    val file: String,
+    @ColumnInfo(name= "name")
+    val name: String,
+    @ColumnInfo(name = "serverId")
+    var serverId: Int? = null,
     )

@@ -8,11 +8,11 @@ interface PuzzleDao {
     @Query("SELECT * FROM puzzle_table")
     fun getPuzzles(): Flow<List<PuzzleData>>
 
+    @Query("SELECT MAX(id) FROM puzzle_table LIMIT 1")
+    fun getLastIndex(): Int
+
     @Query("SELECT * FROM puzzle_table WHERE id=:uid")
     fun getPuzzleByID(uid: String): PuzzleData
-
-    @Query("UPDATE puzzle_table SET lastModified=:time WHERE id = :id")
-    fun updatePuzzleEditTime(time: String,  id: String)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(puzzle: PuzzleData)
@@ -21,7 +21,7 @@ interface PuzzleDao {
     suspend fun deleteAll()
 
     @Query("DELETE FROM puzzle_table WHERE id = :id")
-    fun deletePuzzle(id: String)
+    fun deletePuzzle(id: Int)
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
     fun updatePuzzle(puzzle: PuzzleData)

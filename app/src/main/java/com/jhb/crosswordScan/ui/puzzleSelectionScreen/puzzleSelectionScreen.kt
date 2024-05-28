@@ -1,9 +1,7 @@
 package com.jhb.crosswordScan.ui.puzzleSelectionScreen
 
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,8 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -63,13 +59,12 @@ import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 
 
 private val TAG = "puzzleSelectionScreen"
 
 @Composable
-fun puzzleSelectionScreen(navigateToPuzzle: (String)->Unit){
+fun puzzleSelectionScreen(navigateToPuzzle: (Int)->Unit){
 
     val application = (LocalContext.current.applicationContext as PuzzleApplication)
     val puzzleSelectViewModel : PuzzleSelectViewModel = viewModel(
@@ -101,7 +96,7 @@ fun puzzleSelectionScreen(navigateToPuzzle: (String)->Unit){
 @Composable
 fun puzzleSelectionComposable(
     uiState : PuzzleSelectionUiState,
-    navigateToPuzzle : (String) ->  Unit,
+    navigateToPuzzle : (Int) ->  Unit,
     searchPuzzle : () -> Unit,
     setSearchText : (String) -> Unit,
     uploadNewPuzzle: (PuzzleData) -> Unit,
@@ -229,23 +224,6 @@ fun puzzleSelectionComposable(
                     modifier = Modifier.fillMaxSize(1f)
                 ) {
                     Column(
-                        modifier = Modifier
-                            .width(100.dp)
-                    ) {
-                        val file = File(puzzleData.puzzleIcon)
-                        val bmOptions = BitmapFactory.Options()
-                        val bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions)
-                        if (bitmap != null) {
-                            Image(
-                                painter = BitmapPainter(bitmap.asImageBitmap()),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(10.dp)
-                            )
-                        }
-                    }
-                    Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier
@@ -255,8 +233,6 @@ fun puzzleSelectionComposable(
                         val timeStampFormatter = TimeStampFormatter()
                         val timeCreated =
                             timeStampFormatter.friendlyTimeStamp(puzzleData.timeCreated)
-                        val timeModified =
-                            timeStampFormatter.friendlyTimeStamp(puzzleData.lastModified)
 
                         Text(
                             buildAnnotatedString {
@@ -274,35 +250,19 @@ fun puzzleSelectionComposable(
                                 append(timeCreated)
                             }
                         )
-
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    SpanStyle(
-                                        fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
-                                        fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                                        fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
-                                    )
-                                ) {
-                                    append(stringResource(id = R.string.label_modified))
-                                    append(stringResource(id = R.string.stringSeparator))
-                                }
-                                append(timeModified)
-                            }
-                        )
                     }
 
                     IconButton(
                         onClick = {
-                            if (puzzleData.isShared) {
-                                clipboardManager.setText(AnnotatedString(text = puzzleData.id))
+                            if (puzzleData.serverId != null) {
+                                clipboardManager.setText(AnnotatedString(text = "${puzzleData.serverId}"))
                             } else {
                                 uploadNewPuzzle(puzzleData)
                             }
                         },
                         modifier = Modifier.padding(10.dp)
                     ) {
-                        if (puzzleData.isShared) {
+                        if (puzzleData.serverId != null) {
                             Icon(
                                 painterResource(id = R.drawable.ic_baseline_content_copy_24),
                                 contentDescription = stringResource(id = R.string.contentDesc_copyGuid)

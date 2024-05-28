@@ -12,6 +12,6 @@ data class PuzzleUiState (
     val currentClue : Clue = Clue(mutableListOf(),"no data"),
     val currentClueName: String = "",
     val updateFromRepository : Boolean = true,
-    val puzzleId : String? = null,
+    val puzzleId : Int? = null,
     val keyboardCollapsed : Boolean = false,
 )

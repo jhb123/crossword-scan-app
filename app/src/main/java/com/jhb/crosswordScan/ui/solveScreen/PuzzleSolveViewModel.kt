@@ -32,11 +32,9 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
             withContext(Dispatchers.IO) {
                 val puzzleData = repository.getPuzzle(puzzleId)
                 Log.i(TAG, "Collecting puzzle from database")
-                Log.i(TAG, "puzzleData puzzle ${puzzleData.puzzle}")
+                Log.i(TAG, "puzzleData puzzle ${puzzleData.file}")
                 Log.i(TAG, "puzzleData id ${puzzleData.id}")
-                Log.i(TAG, "puzzleData lastModified ${puzzleData.lastModified}")
-                puzzleFilePath = puzzleData.puzzle
-                iconImageFilePath = puzzleData.puzzleIcon
+                puzzleFilePath = puzzleData.file
 
                 val puzzle = readFileAsPuzzle(puzzleFilePath)
                 _uiState.update {
@@ -274,8 +272,7 @@ class PuzzleSolveViewModel(private val repository: PuzzleRepository,private val 
     private suspend fun updatePuzzleData(){
         Log.i(TAG, "Updating Puzzle file")
         updatePuzzleFile(puzzleFilePath,uiState.value.currentPuzzle)
-        Log.i(TAG, "Updating puzzle database with last edit time")
-        repository.updatePuzzleEditTime(puzzleId)
+//        repository.updatePuzzleEditTime(puzzleId)
     }
 
 }

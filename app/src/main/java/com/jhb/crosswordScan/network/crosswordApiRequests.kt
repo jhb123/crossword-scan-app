@@ -57,12 +57,12 @@ interface CrosswordApiService {
     suspend fun upload(@Body request: RequestBody): ResponseBody
 //    suspend fun upload(@Body request: RequestBody): ResponseBody
 
-    @POST("puzzles/search")
-    suspend fun search(
+//    @POST("puzzles/search")
+//    suspend fun search(
 //        @Header("Authorization") token : String,
-        @Header("Authorization") token : String,
-        @Body request: RequestBody
-    ): ResponseBody
+//        @Header("Authorization") token : String,
+//        @Body request: RequestBody
+//    ): ResponseBody
 //    suspend fun upload(@Body request: RequestBody): ResponseBody
 
 
