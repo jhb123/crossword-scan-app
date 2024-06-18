@@ -8,5 +8,6 @@ data class PuzzleSelectionUiState(
     val searchGuid : String = "",
     val isLoading : Boolean = false,
     val errorText : String? = null,
-    val imageTest : Bitmap? = null
+    val imageTest : Bitmap? = null,
+    val isOffline : Boolean = false
 )

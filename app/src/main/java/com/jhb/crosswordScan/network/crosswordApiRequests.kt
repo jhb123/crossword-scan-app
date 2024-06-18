@@ -78,5 +78,11 @@ interface CrosswordApiService {
     @POST("log-out")
     suspend fun logOut(): ResponseBody
 
-    suspend fun getGuid(): String
+    @GET("puzzle/list")
+    suspend fun getPuzzleList(): ResponseBody
+
+    @GET("puzzle/{id}/data")
+    suspend fun getPuzzleData(@Path("id") id: Int) : ResponseBody
+
+
 }

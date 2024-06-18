@@ -22,7 +22,7 @@ private const val TAG = "fileManagement"
 fun PuzzleFromJson(json: String?): Puzzle {
     val typeToken = object : TypeToken<Puzzle>() {}.type
     val puzzle = Gson().fromJson<Puzzle>(json, typeToken)
-    puzzle.setCluesAfterDeserialised()
+//    puzzle.setCluesAfterDeserialised()
     return puzzle
 }
 

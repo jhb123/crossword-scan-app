@@ -26,4 +26,7 @@ interface PuzzleDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     fun updatePuzzle(puzzle: PuzzleData)
 
+    @Query("SELECT * FROM puzzle_table WHERE serverId IS NOT NULL")
+    fun getSharedPuzzles(): List<PuzzleData>
+
 }

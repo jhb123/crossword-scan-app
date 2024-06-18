@@ -222,15 +222,15 @@ fun CrosswordApp(repository: PuzzleRepository) {
                         ui.copy(pageTitle = stringResource(id = Screen.SelectPuzzle.resourceId))
                     }
                     Log.i(TAG, "navigated to puzzleSelect")
-                    puzzleSelectionScreen(navigateToPuzzle = {
-                            Log.i(TAG, "Navigating to solve/$it")
+                    puzzleSelectionScreen(navigateToPuzzle = { puzzleId,remote ->
+                            Log.i(TAG, "Navigating to solve/$remote/$puzzleId")
                             navController.popBackStack()
-                            navController.navigate("${Screen.Solve.route}/$it")
+                            navController.navigate("${Screen.Solve.route}/$remote/$puzzleId")
                         })
                 }
 
                 composable(
-                    route = "${Screen.Solve.route}/{puzzleId}",
+                    route = "${Screen.Solve.route}/{remote}/{puzzleId}",
                     arguments = listOf(navArgument("puzzleId") { type = NavType.StringType }),
                 )
                 {
@@ -238,10 +238,11 @@ fun CrosswordApp(repository: PuzzleRepository) {
                         ui.copy(pageTitle = stringResource(Screen.Solve.resourceId))
                     }
                     val puzzleId = it.arguments?.getString("puzzleId")
+                    val remote = it.arguments?.getString("remote").toBoolean()
 
-                    Log.i(TAG, "navigated to solve/$puzzleId")
+                    Log.i(TAG, "navigated to solve/$remote/$puzzleId")
                     if (puzzleId != null) {
-                        SolveScreenWrapper(puzzleId)
+                        SolveScreenWrapper(puzzleId, remote)
                     } else {
                         Log.e(TAG, "puzzle id in route is null")
                     }

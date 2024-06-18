@@ -3,8 +3,8 @@ package com.jhb.crosswordScan.util
 import android.util.Log
 import com.jhb.crosswordScan.data.Cell
 import com.jhb.crosswordScan.data.Clue
-import com.jhb.crosswordScan.data.Direction
 import com.jhb.crosswordScan.data.Puzzle
+import com.jhb.crosswordScan.data.PuzzleBuilder
 import org.opencv.core.Core.BORDER_CONSTANT
 import org.opencv.core.Core.ROTATE_180
 import org.opencv.core.Core.add
@@ -24,8 +24,6 @@ import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.set
 import kotlin.math.abs
 
@@ -347,29 +345,18 @@ fun assembleClues(binaryCrosswordImg: Mat): Puzzle {
     val acrossClueCells = getAcrossClues(binaryCrosswordImg)
     val downClueCells = getDownClues(binaryCrosswordImg)
 
-    val puzzle = Puzzle()
+    val puzzleBuilder = PuzzleBuilder()
 
-//
     acrossClueCells.forEach { clueCells ->
         val clue = Clue(clueCells, "across clue")
-        puzzle.addClue(acrossClues[clueCells[0]]!!, clue, Direction.ACROSS)
+        puzzleBuilder.addAcrossClue(acrossClues[clueCells[0]]!!, clue)
     }
     downClueCells.forEach { clueCells ->
         val clue =Clue(clueCells, "down clue")
-        puzzle.addClue(downClues[clueCells[0]]!!, clue, Direction.DOWN)
-    }
+        puzzleBuilder.addDownClue(downClues[clueCells[0]]!!, clue)
 
-    puzzle.across.forEach { (name, clue) ->
-        Log.d(TAG, "across clue $name: ${clue.cells}")
     }
-    puzzle.down.forEach { (name, clue) ->
-        Log.d(TAG, "down clue $name: ${clue.cells}")
-    }
-
-    //puzzle.image = gridBitmap
-    puzzle.gridSize = binaryCrosswordImg.rows()
-
-    return puzzle
+    return puzzleBuilder.build()
 
 }
 

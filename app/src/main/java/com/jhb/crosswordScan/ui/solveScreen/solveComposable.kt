@@ -1,6 +1,5 @@
 package com.jhb.crosswordScan.ui.solveScreen
 
-//import com.jhb.learn_opencv.Puzzle
 import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.keyframes
@@ -12,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +23,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,64 +35,25 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
-import com.jhb.crosswordScan.data.Cell
-import com.jhb.crosswordScan.data.Puzzle
+import com.jhb.crosswordScan.data.Clue
 import com.jhb.crosswordScan.ui.common.dynamicClueTextBox
 
 private const val TAG = "solveComposable"
 
 @Composable
-fun SolveScreenWrapper(puzzleId: String) {//repository: PuzzleRepository,index: Int){
+fun SolveScreenWrapper(puzzleId: String, remote: Boolean) {
 
-    val puzzleSolveViewModel: PuzzleSolveViewModel = viewModel(
+    val viewModel: PuzzleSolveViewModel = viewModel(
         factory = PuzzleSolveViewModelFactory(
             (LocalContext.current.applicationContext as PuzzleApplication).repository,
-            puzzleId
+            puzzleId, remote
         )
     )
-    //var puzzleSolveViewModel = PuzzleSolveViewModel(repository)
-    //val count by viewModel.counter.collectAsStateWithLifecycle()
-    //puzzleSolveViewModel.setup(index)
-    //val puzzleSolveViewModel = PuzzleSolveViewModelFactory(repository,index)
 
+    val uiState = viewModel.uiState.collectAsState()
 
-    SolveComposable(
-        uiState = puzzleSolveViewModel.uiState.collectAsState(),
-        onClueSelect = { puzzleSolveViewModel.updateActiveClueByName(it) },
-        setLetter = { puzzleSolveViewModel.setLetter(it) },
-        delLetter = { puzzleSolveViewModel.delLetter() },
-        updateCurrentCell = { puzzleSolveViewModel.updateCurrentCell(it) },
-        updateCurrentClue = { puzzleSolveViewModel.updateActiveClueByCell(it) },
-        cellSetFromPuzzle = { puzzleSolveViewModel.convertPuzzleToCellSet(it) },//should this be immutable?
-        labelledClues = { puzzleSolveViewModel.getLabelledCells(it) }, //should these even be functions!?
-        syncFun = { puzzleSolveViewModel.cloudSync() },
-        toggleCollapsed = {puzzleSolveViewModel.toggleCollapseKeyboard()}
-    )
-
-
-}
-
-@Composable
-fun SolveComposable(
-    uiState: State<PuzzleUiState>,//StateFlow<PuzzleUiState>,
-    onClueSelect: (String) -> Unit,
-    setLetter: (String) -> Unit,
-    delLetter: () -> Unit,
-    updateCurrentCell: (Cell) -> Unit,
-    updateCurrentClue: (Cell) -> Unit,
-    cellSetFromPuzzle: (Puzzle) -> MutableSet<Cell>,//should this be immutable?
-    labelledClues: (Puzzle) -> Map<Cell, String>, //should these even be functions!?
-    syncFun: () -> Unit,
-    toggleCollapsed: () -> Unit
-) {
-
-    //val uiState = uiState.collectAsState()
-    // val clues = uiState.value.currentPuzzle.clues
-    val puzzle = uiState.value.currentPuzzle
-    val activeClue = uiState.value.currentClue
-    val gridSize = uiState.value.currentPuzzle.gridSize
     val keyboardCollapsed = uiState.value.keyboardCollapsed
-    Log.i(TAG, "Grid size $gridSize")
+    Log.i(TAG, "Composing solve composable")
 
     ConstraintLayout(
         modifier = Modifier
@@ -103,7 +61,7 @@ fun SolveComposable(
     ) {
         // Create references for the composables to constrain
         val (clueGrid, keyBoard, cluesText) = createRefs()
-
+        // Text(text = "$serverUpdated")
         Box(modifier = Modifier
             .constrainAs(clueGrid) {
                 top.linkTo(parent.top, margin = 0.dp)
@@ -112,14 +70,72 @@ fun SolveComposable(
 
                 //bottom.linkTo(cluesText.top)
             }) {
-            clueGrid(
-                uiState = uiState,
-                updateCurrentCell = updateCurrentCell,
-                updateCurrentClue = updateCurrentClue,
-                gridSize = gridSize,
-                cellSetFromPuzzle = cellSetFromPuzzle,
-                labelledClues = labelledClues
-            )
+
+            Log.i(TAG, "composing grid")
+            Box(
+                contentAlignment = Alignment.TopStart,
+                modifier = Modifier
+                    .size(
+                        width = (uiState.value.gridSize * 25 + 3).dp,
+                        height = (uiState.value.gridSize * 25 + 3).dp
+                    )
+                    .background(MaterialTheme.colorScheme.outline)
+                    .padding(1.dp)
+            ) {
+
+                uiState.value.cells.forEach { cell ->
+                    // for some reason, I couldn't extract this into a composable with
+                    // it recomposing all of the grid.
+                    key(cell) {
+                        val color = if (cell == uiState.value.currentCell) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else if (uiState.value.currentClue.cells.contains(cell)) {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        }
+                        val label = uiState.value.labeledCells[cell]
+
+                        Box(contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(width = 25.dp, height = 25.dp)
+                                .offset(x = (cell.x * 25).dp)
+                                .offset(y = (cell.y * 25).dp)
+                                .padding(0.8.dp)
+                                .background(
+                                    color = color
+                                )
+                                .pointerInput(cell) {
+                                    detectTapGestures {
+                                        viewModel.updateCurrentCell(cell)
+                                        viewModel.updateActiveClueByCell(cell)
+                                    }
+                                }
+
+                        ) {
+                            label?.also {
+                                Text(
+                                    text = it,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.offset(x = (-7).dp, y = (-7).dp)
+                                )
+                            }
+
+                            Text(
+                                text = cell.c,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .offset(x = (0).dp)
+                                    .alpha(0.9f)
+                            )
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -136,7 +152,12 @@ fun SolveComposable(
                 height = Dimension.fillToConstraints
             }
         ) {
-            clueTextArea(puzzle, onClueSelect = onClueSelect, activeClueName = uiState.value.currentClueName)
+            ClueTextArea(
+                acrossClues = uiState.value.acrossClues,
+                downClues = uiState.value.downClues,
+                onClueSelect = { viewModel.updateActiveClueByName(it) },
+                activeClueName = uiState.value.currentClueName
+            )
         }
         Box(modifier = Modifier
             //.background(MaterialTheme.colorScheme.primary)
@@ -146,12 +167,11 @@ fun SolveComposable(
                 width = Dimension.wrapContent
 
             }) {
-            keyBoard(
-                setLetter = setLetter,
-                delLetter = delLetter,
-                syncFun = syncFun,
+            KeyBoard(
+                setLetter = { viewModel.setLetter(it) },
+                delLetter = { viewModel.delLetter() },
                 isCollapsed = keyboardCollapsed,
-                toggleCollapsed = toggleCollapsed
+                toggleCollapsed = {viewModel.toggleCollapseKeyboard()}
             )
         }
 
@@ -161,11 +181,9 @@ fun SolveComposable(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun keyBoard(
+fun KeyBoard(
     setLetter: (String) -> Unit,
     delLetter: () -> Unit,
-    syncFun: () -> Unit,
-    modifier: Modifier = Modifier,
     isCollapsed : Boolean,
     toggleCollapsed : () -> Unit
 ) {
@@ -173,10 +191,7 @@ fun keyBoard(
     Log.i(TAG, "Composing button ")
     val configuration = LocalConfiguration.current
 
-    val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
-    val density = LocalDensity.current
-    //var isCollapsed by remember { mutableStateOf(false) }
     val keyboardColour = MaterialTheme.colorScheme.background
 
     AnimatedContent(
@@ -202,13 +217,7 @@ fun keyBoard(
         }
     ) { targetExpanded ->
         if (targetExpanded) {
-            Column() {
-                Row(modifier = Modifier
-                    .background(keyboardColour) ) {
-                    Button(onClick = { syncFun() }) {
-                        Text(text = "Synchronise")
-                    }
-                }
+            Column {
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
@@ -334,129 +343,19 @@ fun keyBoard(
     }
 }
 
-@Composable
-fun clueGrid(
-    uiState: State<PuzzleUiState>,
-    updateCurrentCell: (Cell) -> Unit,
-    updateCurrentClue: (Cell) -> Unit,
-    gridSize: Int,
-    cellSetFromPuzzle: (Puzzle) -> MutableSet<Cell>,//should this be immutable?
-    labelledClues: (Puzzle) -> Map<Cell, String>
-) {
-    val grid = cellSetFromPuzzle(uiState.value.currentPuzzle)
-    val labelledClues = labelledClues(uiState.value.currentPuzzle)
-
-    Log.i(TAG, "calling puzzle layout")
-    Box(
-        contentAlignment = Alignment.TopStart,
-        modifier = Modifier
-            .size(width = (gridSize * 25 + 3).dp, height = (gridSize * 25 + 3).dp)
-            .background(MaterialTheme.colorScheme.outline)
-            .padding(1.dp)
-    ) {
-        PuzzleLayout(
-            onClueSelect = {
-                Log.i(TAG, "$it selected")
-                updateCurrentCell(it)
-                updateCurrentClue(it)
-            },
-            uiState = uiState.value,
-            grid = grid,
-            labelledClues = labelledClues,
-        )
-    }
-
-}
 
 @Composable
-fun PuzzleLayout(
-    onClueSelect: (Cell) -> Unit,
-    uiState: PuzzleUiState,
-    grid: MutableSet<Cell>,
-    labelledClues: Map<Cell, String>
-) {
-    Log.i(TAG, "Drawing grid")
-    grid.forEach { cell ->
-        Log.d(TAG, "Creating box ${cell.x}, ${cell.y}, ${cell.c} from scratch?")
-        //cellLetterMap[coord]
-        Box(contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(width = 25.dp, height = 25.dp)
-                .offset(x = (cell.x * 25).dp)
-                .offset(y = (cell.y * 25).dp)
-                .padding(0.8.dp)
-                .background(
-                    if (cell == uiState.currentCell) {
-                        //MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
-                        //MaterialTheme.colorScheme.scrim
-                        //Color.Green
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else if (uiState.currentClue.cells.contains(cell)) {
-                        //Color.Yellow
-                        MaterialTheme.colorScheme.surfaceVariant
-                        //MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    }
-                )
-                .pointerInput(cell) {
-                    detectTapGestures {
-                        onClueSelect(cell)
-                    }
-                }
-
-        ) {
-            if (labelledClues[cell] != null) {
-                Text(
-                    text = labelledClues[cell]!!,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 8.sp,
-                    modifier = Modifier.offset(x = (-7).dp, y = (-7).dp)
-                )
-                Text(
-                    text = cell.c,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .offset(x = (0).dp)
-                        .alpha(0.9f)
-                )
-            } else {
-                Text(
-                    text = cell.c,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .offset(x = (0).dp)
-                        .alpha(0.9f)
-
-                )
-
-            }
-
-        }
-
-    }
-}
-
-
-@Composable
-fun clueTextArea(
-    puzzle: Puzzle,
+fun ClueTextArea(
+    acrossClues: List<Pair<String,Clue>>,
+    downClues: List<Pair<String,Clue>>,
     onClueSelect: (String) -> Unit,
     activeClueName: String,
-    //viewModel: PuzzleSolveViewModel
+    //viewModel: LocalPuzzleSolveViewModel
 ) {
 
     val listStateA = rememberLazyListState()
     val listStateD = rememberLazyListState()
 
-    val acrossClues = puzzle.across.toList()
-    val downClues = puzzle.down.toList()
     val activeIndexA = acrossClues.indexOfFirst { (name, _) -> name == activeClueName }
     val activeIndexD = downClues.indexOfFirst { (name, _) -> name == activeClueName }
 
@@ -475,7 +374,7 @@ fun clueTextArea(
         val trim = 15.dp
         val columnWidth = (width / 2).dp - trim
 
-        val acrossColumn = LazyColumn(
+        LazyColumn(
             state = listStateA,
             modifier = Modifier
         ) {
@@ -492,7 +391,7 @@ fun clueTextArea(
                 )
             }
         }
-        val downColumn = LazyColumn(
+        LazyColumn(
             state = listStateD,
             modifier = Modifier
         ) {

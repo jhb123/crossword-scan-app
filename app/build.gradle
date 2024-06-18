@@ -47,10 +47,12 @@ android {
     productFlavors {
         stage {
             buildConfigField "String", "API_URL", "\"https://stage.live-crossword.net\""
+            buildConfigField "String", "WEBSOCKET_URL", "\"wss://stage.live-crossword.net\""
             dimension "app_type"
         }
         real {
             buildConfigField "String", "API_URL", "\"https://www.live-crossword.net\""
+            buildConfigField "String", "WEBSOCKET_URL", "\"wss://live-crossword.net\""
             dimension "app_type"
         }
     }

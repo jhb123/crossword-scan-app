@@ -55,6 +55,11 @@ class PuzzleRepository(private val puzzleDao: PuzzleDao)  {
         return puzzleDao.getLastIndex()
     }
 
+    @WorkerThread
+    fun getSharedPuzzles(): List<PuzzleData> {
+        return puzzleDao.getSharedPuzzles()
+    }
+
 
 
 }

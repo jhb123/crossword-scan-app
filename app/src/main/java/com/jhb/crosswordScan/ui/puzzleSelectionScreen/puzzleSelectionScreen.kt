@@ -1,16 +1,16 @@
 package com.jhb.crosswordScan.ui.puzzleSelectionScreen
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.SpaceEvenly
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,6 +49,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,7 +68,7 @@ import kotlinx.coroutines.launch
 private val TAG = "puzzleSelectionScreen"
 
 @Composable
-fun puzzleSelectionScreen(navigateToPuzzle: (Int)->Unit){
+fun puzzleSelectionScreen(navigateToPuzzle: (Int, Boolean)->Unit){
 
     val application = (LocalContext.current.applicationContext as PuzzleApplication)
     val puzzleSelectViewModel : PuzzleSelectViewModel = viewModel(
@@ -96,7 +100,7 @@ fun puzzleSelectionScreen(navigateToPuzzle: (Int)->Unit){
 @Composable
 fun puzzleSelectionComposable(
     uiState : PuzzleSelectionUiState,
-    navigateToPuzzle : (Int) ->  Unit,
+    navigateToPuzzle : (Int, Boolean) ->  Unit,
     searchPuzzle : () -> Unit,
     setSearchText : (String) -> Unit,
     uploadNewPuzzle: (PuzzleData) -> Unit,
@@ -147,7 +151,7 @@ fun puzzleSelectionComposable(
             }
         }
     }
-    
+
     LazyColumn(
         contentPadding = PaddingValues(10.dp),
         modifier = Modifier
@@ -155,128 +159,232 @@ fun puzzleSelectionComposable(
             .background(MaterialTheme.colorScheme.background)
     ) {
         item {
-            OutlinedTextField(
-                value = uiState.searchGuid,
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillParentMaxWidth(1f),
-                onValueChange = { setSearchText(it) },
-                label = { Text(stringResource(id = R.string.label_puzzleSearch)) },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Search,
-                    autoCorrect = false
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = { searchPuzzle() }
-                ),
-                leadingIcon = {
-                    IconButton(onClick = { searchPuzzle() }) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_baseline_search_24),
-                            contentDescription = stringResource(id = R.string.contentDesc_search)
-                        )
-                    }
-                },
-                trailingIcon = {
-                    if (uiState.isLoading) {
-                        Spinner()
-                    }
-                },
-                supportingText = {
-                    uiState.errorText?.let { Text(it) }
-                },
-                isError = uiState.errorText != null,
-                singleLine = true
-            )
+            SearchBar(uiState, setSearchText, searchPuzzle)
         }
         items(puzzles) { puzzleData ->
 
-            Card(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 2.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
-                modifier = Modifier
-                    .height(120.dp)
-                    .fillParentMaxWidth(1f)
-                    .padding(5.dp)
-                    .combinedClickable(
-                        onClick = {
-                            Log.i(TAG, "Card clicked")
-                            navigateToPuzzle(puzzleData.id)
-                            //navigateToPuzzle(puzzles.indexOf(puzzleData))
-                        },
-                        onLongClick = {
-                            Log.i(TAG, "detected long click")
-                            puzzleToDelete.value = puzzleData
-                            openDialog.value = true
-                        }
-                    ),
+            val UseOnlinePuzzle = !(uiState.isOffline && puzzleData.serverId != null)
 
+            lateinit var color: CardColors
+            lateinit var contents: @Composable() (ColumnScope.() -> Unit)
 
-                ) {
-                //Box(Modifier.fillMaxSize()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxSize(1f)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.SpaceEvenly,
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier
-                            .height(100.dp)
-                            .padding(10.dp)
-                    ) {
-                        val timeStampFormatter = TimeStampFormatter()
-                        val timeCreated =
-                            timeStampFormatter.friendlyTimeStamp(puzzleData.timeCreated)
+            if (UseOnlinePuzzle) {
+                color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                contents = LocalCardContents(puzzleData, uploadNewPuzzle)
 
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    SpanStyle(
-                                        fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
-                                        fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                                        fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
-                                    )
-                                ) {
-                                    append(stringResource(id = R.string.label_created))
-                                    append(stringResource(id = R.string.stringSeparator))
-
-                                }
-                                append(timeCreated)
-                            }
-                        )
-                    }
-
-                    IconButton(
-                        onClick = {
-                            if (puzzleData.serverId != null) {
-                                clipboardManager.setText(AnnotatedString(text = "${puzzleData.serverId}"))
-                            } else {
-                                uploadNewPuzzle(puzzleData)
-                            }
-                        },
-                        modifier = Modifier.padding(10.dp)
-                    ) {
-                        if (puzzleData.serverId != null) {
-                            Icon(
-                                painterResource(id = R.drawable.ic_baseline_content_copy_24),
-                                contentDescription = stringResource(id = R.string.contentDesc_copyGuid)
-                            )
-                        } else {
-                            Icon(
-                                painterResource(id = R.drawable.ic_baseline_file_upload_24),
-                                contentDescription = stringResource(id = R.string.contentDesc_uploadPuzzle)
-                            )
-                        }
-                    }
-                }
+            } else {
+                color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                contents = RemoteCardContents(puzzleData, clipboardManager)
             }
+
+            PuzzleCard(
+                puzzleData,
+                navigateToPuzzle,
+                UseOnlinePuzzle,
+                openDialog,
+                color,
+                contents
+            )
         }
     }
 }
+
+@Composable
+private fun SearchBar(
+    uiState: PuzzleSelectionUiState,
+    setSearchText: (String) -> Unit,
+    searchPuzzle: () -> Unit
+) {
+    OutlinedTextField(
+        value = uiState.searchGuid,
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(1f),
+        onValueChange = { setSearchText(it) },
+        label = { Text(stringResource(id = R.string.label_puzzleSearch)) },
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search,
+            autoCorrect = false
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = { searchPuzzle() }
+        ),
+        leadingIcon = {
+            IconButton(onClick = { searchPuzzle() }) {
+                Icon(
+                    painterResource(id = R.drawable.ic_baseline_search_24),
+                    contentDescription = stringResource(id = R.string.contentDesc_search)
+                )
+            }
+        },
+        trailingIcon = {
+            if (uiState.isLoading) {
+                Spinner()
+            }
+        },
+        supportingText = {
+            uiState.errorText?.let { Text(it) }
+        },
+        isError = uiState.errorText != null,
+        singleLine = true
+    )
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun PuzzleCard(
+    puzzleData: PuzzleData,
+    navigateToPuzzle: (Int, Boolean) -> Unit,
+    navigationRemote: Boolean,
+    openDialog: MutableState<Boolean>,
+    colors: CardColors,
+    contents: @Composable() (ColumnScope.() -> Unit)
+) {
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = colors,
+        modifier = Modifier
+            .wrapContentHeight()
+            .fillMaxWidth(1f)
+            .padding(5.dp)
+            .combinedClickable(
+                onClick = { navigateToPuzzle(puzzleData.id, navigationRemote) },
+//                onLongClick = {
+//                    puzzleToDelete.value = puzzleData
+//                    openDialog.value = true
+//                }
+            ),
+        content = contents
+    )
+}
+
+@Composable
+private fun LocalCardContents(
+    puzzleData: PuzzleData,
+    uploadNewPuzzle: (PuzzleData) -> Unit
+): @Composable() (ColumnScope.() -> Unit) =
+    {
+        //Box(Modifier.fillMaxSize()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxSize(1f)
+        ) {
+            Column(
+                verticalArrangement = SpaceEvenly,
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .padding(10.dp)
+            ) {
+                puzzleData.name?.let {
+                    Text(
+                        it,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+                }
+                puzzleData.timeCreated?.let { it ->
+                    val timeStampFormatter = TimeStampFormatter()
+                    val timestamp = timeStampFormatter.friendlyTimeStamp(it)
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(
+                                SpanStyle(
+                                    fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
+                                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                    fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
+                                )
+                            ) {
+                                append(stringResource(id = R.string.label_created))
+                                append(stringResource(id = R.string.stringSeparator))
+
+                            }
+                            append(timestamp)
+                        }
+                    )
+                }
+            }
+
+            IconButton(
+                onClick = {uploadNewPuzzle(puzzleData)},
+                modifier = Modifier.padding(10.dp)
+            ) { Icon(
+                    painterResource(
+                        id = R.drawable.ic_baseline_file_upload_24),
+                        contentDescription = stringResource(id = R.string.contentDesc_uploadPuzzle
+                        )
+                    )
+                }
+            }
+    }
+
+
+
+
+@Composable
+private fun RemoteCardContents(
+    puzzleData: PuzzleData,
+    clipboardManager: ClipboardManager,
+): @Composable() (ColumnScope.() -> Unit) =
+    {
+        //Box(Modifier.fillMaxSize()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxSize(1f)
+        ) {
+            Column(
+                verticalArrangement = SpaceEvenly,
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .padding(10.dp)
+            ) {
+                puzzleData.name?.let {
+                    Text(
+                        it,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.fillMaxWidth(0.7f)
+                    )
+                }
+                puzzleData.timeCreated?.let { it ->
+                    val timeStampFormatter = TimeStampFormatter()
+                    val timestamp = timeStampFormatter.friendlyTimeStamp(it)
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(
+                                SpanStyle(
+                                    fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
+                                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                    fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
+                                )
+                            ) {
+                                append(stringResource(id = R.string.label_created))
+                                append(stringResource(id = R.string.stringSeparator))
+
+                            }
+                            append(timestamp)
+                        }
+                    )
+                }
+            }
+
+            IconButton(
+                onClick = {
+                        clipboardManager.setText(AnnotatedString(text = "${puzzleData.serverId}"))
+                },
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Icon(
+                    painterResource(
+                        id = R.drawable.ic_baseline_content_copy_24),
+                        contentDescription = stringResource(id = R.string.contentDesc_copyGuid)
+                    )
+            }
+        }
+    }
+
 
