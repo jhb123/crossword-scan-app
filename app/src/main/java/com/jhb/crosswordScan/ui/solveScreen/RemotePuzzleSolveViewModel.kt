@@ -40,8 +40,6 @@ class RemotePuzzleSolveViewModel(private val repository: PuzzleRepository, priva
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val puzzleData = repository.getPuzzle(puzzleId)
-                Log.i(TAG, "Collecting puzzle from database")
-                Log.i(TAG, "puzzleData puzzle ${puzzleData.file}")
                 Log.i(TAG, "puzzleData id ${puzzleData.id}")
 
                 puzzleData.serverId?.let {

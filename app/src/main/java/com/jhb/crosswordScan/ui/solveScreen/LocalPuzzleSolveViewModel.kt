@@ -29,7 +29,11 @@ class LocalPuzzleSolveViewModel(private val repository: PuzzleRepository, privat
                 Log.i(TAG, "puzzleData puzzle ${puzzleData.file}")
                 Log.i(TAG, "puzzleData id ${puzzleData.id}")
                 puzzleData?.file?.let {
-                    val puzzle = readFileAsPuzzle(it)
+                    val localPuzzle = readFileAsPuzzle(it)
+                    puzzleFilePath = it
+
+                    puzzle.update { localPuzzle!! }
+
                     _uiState.update {
                         it.copy(
                             puzzleId = puzzleData.id,

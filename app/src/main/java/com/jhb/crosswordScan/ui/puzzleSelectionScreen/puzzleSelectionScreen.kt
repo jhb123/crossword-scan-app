@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -28,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,10 +42,8 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -57,7 +52,6 @@ import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.PuzzleData
 import com.jhb.crosswordScan.data.deletePuzzleFiles
-import com.jhb.crosswordScan.ui.common.Spinner
 import com.jhb.crosswordScan.util.TimeStampFormatter
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
@@ -76,15 +70,12 @@ fun puzzleSelectionScreen(navigateToPuzzle: (Int, Boolean)->Unit){
     )
 
     val uiState by puzzleSelectViewModel.uiState.collectAsState()
-    val filesDir = LocalContext.current.applicationContext.filesDir
     val repository = (LocalContext.current.applicationContext as PuzzleApplication).repository
     val composableScope = rememberCoroutineScope()
 
     puzzleSelectionComposable(
         uiState = uiState,
         navigateToPuzzle = navigateToPuzzle,
-        searchPuzzle = {puzzleSelectViewModel.getPuzzle(filesDir)},
-        setSearchText = {puzzleSelectViewModel.updateSearch(it)},
         uploadNewPuzzle = {
                 puzzleSelectViewModel.uploadNewPuzzle(it,repository)},
         deletePuzzle = {
@@ -101,11 +92,10 @@ fun puzzleSelectionScreen(navigateToPuzzle: (Int, Boolean)->Unit){
 fun puzzleSelectionComposable(
     uiState : PuzzleSelectionUiState,
     navigateToPuzzle : (Int, Boolean) ->  Unit,
-    searchPuzzle : () -> Unit,
-    setSearchText : (String) -> Unit,
     uploadNewPuzzle: (PuzzleData) -> Unit,
     deletePuzzle: (PuzzleData) -> Unit
 ) {
+
 
     val puzzles = uiState.puzzles
     val clipboardManager = LocalClipboardManager.current
@@ -158,76 +148,48 @@ fun puzzleSelectionComposable(
             .padding(0.dp)
             .background(MaterialTheme.colorScheme.background)
     ) {
-        item {
-            SearchBar(uiState, setSearchText, searchPuzzle)
+        uiState.errorText?.also {
+            item{
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth(1f)
+                        .padding(5.dp)
+                ){
+                    Text(text=it, modifier=Modifier.padding(5.dp))
+                }
+            }
         }
+
         items(puzzles) { puzzleData ->
-
-            val UseOnlinePuzzle = !(uiState.isOffline && puzzleData.serverId != null)
-
             lateinit var color: CardColors
             lateinit var contents: @Composable() (ColumnScope.() -> Unit)
 
-            if (UseOnlinePuzzle) {
-                color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                contents = LocalCardContents(puzzleData, uploadNewPuzzle)
+            val offline = uiState.isOffline //&& puzzleData.serverId != null
+            val onlinePuzzle = puzzleData.serverId != null
 
-            } else {
-                color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
-                contents = RemoteCardContents(puzzleData, clipboardManager)
-            }
+            if ( !(onlinePuzzle && offline) ) {
+                if (onlinePuzzle) {
+                    color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    contents = RemoteCardContents(puzzleData, clipboardManager)
+                } else {
+                    color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                    contents = LocalCardContents(puzzleData, uploadNewPuzzle)
+                }
 
-            PuzzleCard(
-                puzzleData,
-                navigateToPuzzle,
-                UseOnlinePuzzle,
-                openDialog,
-                color,
-                contents
-            )
-        }
-    }
-}
-
-@Composable
-private fun SearchBar(
-    uiState: PuzzleSelectionUiState,
-    setSearchText: (String) -> Unit,
-    searchPuzzle: () -> Unit
-) {
-    OutlinedTextField(
-        value = uiState.searchGuid,
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth(1f),
-        onValueChange = { setSearchText(it) },
-        label = { Text(stringResource(id = R.string.label_puzzleSearch)) },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search,
-            autoCorrect = false
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = { searchPuzzle() }
-        ),
-        leadingIcon = {
-            IconButton(onClick = { searchPuzzle() }) {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_search_24),
-                    contentDescription = stringResource(id = R.string.contentDesc_search)
+                PuzzleCard(
+                    puzzleData,
+                    navigateToPuzzle,
+                    onlinePuzzle,
+                    openDialog,
+                    color,
+                    contents
                 )
             }
-        },
-        trailingIcon = {
-            if (uiState.isLoading) {
-                Spinner()
-            }
-        },
-        supportingText = {
-            uiState.errorText?.let { Text(it) }
-        },
-        isError = uiState.errorText != null,
-        singleLine = true
-    )
+        }
+    }
 }
 
 @Composable
@@ -248,12 +210,12 @@ private fun PuzzleCard(
             .fillMaxWidth(1f)
             .padding(5.dp)
             .combinedClickable(
-                onClick = { navigateToPuzzle(puzzleData.id, navigationRemote) },
+                onClick = { navigateToPuzzle(puzzleData.id, navigationRemote) }
+            ),
 //                onLongClick = {
 //                    puzzleToDelete.value = puzzleData
 //                    openDialog.value = true
-//                }
-            ),
+//                },
         content = contents
     )
 }
@@ -329,7 +291,6 @@ private fun RemoteCardContents(
     clipboardManager: ClipboardManager,
 ): @Composable() (ColumnScope.() -> Unit) =
     {
-        //Box(Modifier.fillMaxSize()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -370,19 +331,6 @@ private fun RemoteCardContents(
                         }
                     )
                 }
-            }
-
-            IconButton(
-                onClick = {
-                        clipboardManager.setText(AnnotatedString(text = "${puzzleData.serverId}"))
-                },
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Icon(
-                    painterResource(
-                        id = R.drawable.ic_baseline_content_copy_24),
-                        contentDescription = stringResource(id = R.string.contentDesc_copyGuid)
-                    )
             }
         }
     }

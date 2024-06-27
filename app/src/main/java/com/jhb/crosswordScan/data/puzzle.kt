@@ -74,8 +74,8 @@ fun defaultPuzzle() : Puzzle {
     return puzzleBuilder
         .addAcrossClue("1a", clue1a)
         .addAcrossClue("3a", clue3a)
-        .addAcrossClue("1d", clue1d)
-        .addAcrossClue("2d", clue2d)
+        .addDownClue("1d", clue1d)
+        .addDownClue("2d", clue2d)
         .build()
 }
 

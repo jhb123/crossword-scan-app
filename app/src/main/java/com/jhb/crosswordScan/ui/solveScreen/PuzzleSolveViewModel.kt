@@ -26,7 +26,7 @@ abstract class PuzzleSolveViewModel(private val repository: PuzzleRepository, pr
     val cells = mutableStateOf(listOf<Cell>())
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             puzzle.collect { p ->
                 Log.i(TAG,"collected new data to update ui")
 

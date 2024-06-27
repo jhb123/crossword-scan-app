@@ -25,8 +25,7 @@ private const val TAG = "PuzzleSelectViewModel"
 class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
 
     companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
-        private const val REQUEST_PERIOD = 30_000L
+        private const val REQUEST_PERIOD = 3_000L
     }
 
     private val _uiState = MutableStateFlow(PuzzleSelectionUiState())
@@ -74,10 +73,17 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                 val data = PuzzleData(id, null, null, it.name, it.id)
                 repository.insert(data)
             }
+            _uiState.update {
+                it.copy(
+                    errorText = null,
+                    isOffline = false
+                )
+            }
 
 
 
         } catch (e: IOException) {
+            Log.w(TAG, "not connected")
             _uiState.update {
                 it.copy(
                     errorText = "not connected",
@@ -118,8 +124,8 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                     val response = CrosswordApi.retrofitService.upload(requestBody)
                     val listType = object : TypeToken<ServerPuzzleListItem>() {}.type
                     val serverPuzzle: ServerPuzzleListItem = gson.fromJson(response.string(), listType)
-                    puzzleData.serverId = serverPuzzle.id
-                    repository.update(puzzleData)
+                    val newPuzzleData = puzzleData.copy(serverId = serverPuzzle.id)
+                    repository.update(newPuzzleData)
                 }
                 catch(e : IOException) {
                     errorMessage = Strings.unableToFindServer
@@ -136,14 +142,6 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                     }
                 }
             }
-        }
-    }
-
-    fun updateSearch(text: String) {
-        _uiState.update {
-            it.copy(
-                searchGuid = text
-            )
         }
     }
 

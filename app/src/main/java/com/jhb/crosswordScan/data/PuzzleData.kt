@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "puzzle_table",  indices = [Index(value = ["serverId"], unique = true)]   )
-class PuzzleData(
+data class PuzzleData(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     @ColumnInfo(name="timeCreated")
@@ -16,5 +16,5 @@ class PuzzleData(
     @ColumnInfo(name= "name")
     val name: String?,
     @ColumnInfo(name = "serverId", )
-    var serverId: Int? = null,
+    val serverId: Int? = null,
     )

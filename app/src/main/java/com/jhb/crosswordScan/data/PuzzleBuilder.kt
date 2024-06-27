@@ -55,7 +55,7 @@ class PuzzleBuilder {
                 across[name] = across[name]!!.copy(hint = newText)
             }
             in down -> {
-                across[name] = down[name]!!.copy(hint = newText)
+                down[name] = down[name]!!.copy(hint = newText)
             }
             else -> {
                 Log.w(TAG,"Clue $name not in puzzle, so $newText skipped ")
