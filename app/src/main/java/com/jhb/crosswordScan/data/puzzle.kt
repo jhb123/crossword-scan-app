@@ -2,41 +2,44 @@ package com.jhb.crosswordScan.data
 
 import android.util.Log
 
-private const val TAG = "puzzle"
-
-class Puzzle() {
-
-    var gridSize : Int = 0
-
-    //should be a way of stopping external object changing this?
-    private val _clues = mutableMapOf<String, Clue>()
-    val clues : Map<String, Clue> = _clues
-
-    fun updateClueTxt(name: String, newtxt : String){
-        if(name in _clues){
-            _clues[name]!!.clue = newtxt //hopefully this doesn't break because of the !!
+private const val TAG = "Puzzle"
+data class Puzzle(
+    val across: Map<String, Clue>,
+    val down: Map<String, Clue>,
+) {
+    val gridSize: Int
+        get() {
+            var xMax = 0
+            var yMax = 0
+            across.forEach{ (_, clue) ->
+                clue.cells.forEach { cell ->
+                    if (cell.x > xMax) xMax = cell.x
+                    if (cell.y > yMax) yMax = cell.y
+                }
+            }
+            return xMax + 1
         }
-        else{
-            Log.w(TAG,"Clue $name not in puzzle, so $newtxt skipped ")
+    val clues: Map<String, Clue>
+        get() {
+            return across + down
         }
-    }
-
-    //var image = Bitmap()
-
-    fun addClue(name:String, clue: Clue){
-        if(name in _clues){
-            throw Exception("A clue with this name already exists")
+    val cells: Set<Cell>
+        get() {
+            val cellSet = mutableSetOf<Cell>()
+            this.clues.forEach { (s, clue) ->
+                clue.cells.forEach {
+                    if (!cellSet.add(it)) {
+                        Log.d(TAG,"Found duplicate")
+                    }
+                }
+                Log.d(TAG, "Adding clue $s")
+            }
+            return cellSet.toSet()
         }
-        else{
-            _clues[name]= clue
-        }
-
-    }
-
 }
 
 fun getAcrossCluesAsPairs(puzzle: Puzzle) : List<Pair<String, String>>{
-    val clues = getCluesByPrefix('a', puzzle)
+    val clues = puzzle.across
     val cluePairs = getCluesAsPairs(clues)
     val cluePairsSorted = cluePairs.sortedBy {
         (it.first.dropLast(1)).toInt()
@@ -45,7 +48,7 @@ fun getAcrossCluesAsPairs(puzzle: Puzzle) : List<Pair<String, String>>{
 }
 
 fun getDownCluesAsPairs(puzzle: Puzzle) : List<Pair<String, String>>{
-    val clues = getCluesByPrefix('d', puzzle)
+    val clues = puzzle.down
     val cluePairs = getCluesAsPairs(clues)
     val cluePairsSorted = cluePairs.sortedBy {
         (it.first.dropLast(1)).toInt()
@@ -53,17 +56,37 @@ fun getDownCluesAsPairs(puzzle: Puzzle) : List<Pair<String, String>>{
     return cluePairsSorted
 }
 
-private fun getCluesByPrefix(prefix: Char, puzzle: Puzzle) : Map<String, Clue> {
-    val clues = puzzle.clues.filterKeys { it.last() == prefix }
-    return clues
-}
 
-private fun getCluesAsPairs(cluePairs : Map<String, Clue>) : List<Pair<String, String>> {
-    var cluePairs = cluePairs.map {
-        Pair(it.value.clueName ,it.value.clue)
+private fun getCluesAsPairs(clues : Map<String, Clue>) : List<Pair<String, String>> {
+    val cluePairs = clues.map {(name, clue) ->
+        Pair(name ,clue.hint)
     }
     return cluePairs
 }
 
+fun defaultPuzzle() : Puzzle {
+    val puzzleBuilder = PuzzleBuilder()
+    val clue1a = clueMaker(Direction.ACROSS, 0 , 0, 8, "For all the money that e'er I had" )
+    val clue3a = clueMaker(Direction.ACROSS,  0, 4, 8, "I spent it in good company" )
+    val clue1d = clueMaker(Direction.DOWN, 0 , 0, 8, "And for all the harm that ever I've done" )
+    val clue2d = clueMaker(Direction.DOWN, 4 , 0, 8, "I've done to none but me." )
 
+    return puzzleBuilder
+        .addAcrossClue("1a", clue1a)
+        .addAcrossClue("3a", clue3a)
+        .addDownClue("1d", clue1d)
+        .addDownClue("2d", clue2d)
+        .build()
+}
+
+
+fun modifyPuzzleWithCell(puzzle: Puzzle, cell: Cell): Puzzle {
+    val across = puzzle.across.mapValues { (_,clue) ->
+        updateClueWithCell(clue,cell)
+    }
+    val down = puzzle.down.mapValues { (_,clue) ->
+        updateClueWithCell(clue,cell)
+    }
+    return puzzle.copy(across=across, down=down)
+}
 

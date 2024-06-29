@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "PuzzleRoomDataBase"
 
-@Database(entities = arrayOf(PuzzleData::class), version = 5, exportSchema = false)
+@Database(entities = arrayOf(PuzzleData::class), version = 6, exportSchema = false)
 public abstract class PuzzleRoomDataBase : RoomDatabase() {
 
     // Annotates class to be a Room Database with a table (entity) of the Word class
@@ -37,7 +37,7 @@ public abstract class PuzzleRoomDataBase : RoomDatabase() {
                         "puzzle_database"
                     )
                         .fallbackToDestructiveMigration()
-                        .addCallback(PuzzleDatabaseCallback(scope))
+                        .addCallback(PuzzleDatabaseCallback(context = context, scope = scope))
                         .build()
                     INSTANCE = instance
                     // return instance
@@ -47,6 +47,7 @@ public abstract class PuzzleRoomDataBase : RoomDatabase() {
         }
 
     private class PuzzleDatabaseCallback(
+        private val context: Context,
         private val scope: CoroutineScope
     ) : RoomDatabase.Callback() {
 
@@ -54,23 +55,19 @@ public abstract class PuzzleRoomDataBase : RoomDatabase() {
             super.onCreate(db)
             INSTANCE?.let { database ->
                 scope.launch {
+
                     populateDatabase(database.puzzleDao())
                 }
             }
         }
 
         suspend fun populateDatabase(puzzleDao: PuzzleDao) {
-            // Delete all content here.
             Log.i(TAG,"Deleting all")
             puzzleDao.deleteAll()
 
-            // Add sample words.
-            //var puzzle = PuzzleData("123",Puzzle())
-            //puzzleDao.insert(puzzle)
-            //puzzle = PuzzleData("456",Puzzle())
-            //puzzleDao.insert(puzzle)
+            val puzzle = defaultPuzzle()
+            insertPuzzle(puzzle, context)
 
-            // TODO: Add your own words!
         }
     }
 

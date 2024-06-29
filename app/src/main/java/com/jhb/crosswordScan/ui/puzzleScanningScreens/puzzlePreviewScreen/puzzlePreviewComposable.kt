@@ -22,10 +22,10 @@ import com.jhb.crosswordScan.data.Puzzle
 import com.jhb.crosswordScan.data.insertPuzzle
 import com.jhb.crosswordScan.ui.common.ClickableClueTextBox
 import com.jhb.crosswordScan.ui.common.ScanUiState
-import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.GridScanUiState
-import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.OpenCVlogic
 import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModel
 import com.jhb.crosswordScan.ui.puzzleScanningScreens.CrosswordScanViewModelFactory
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.GridScanUiState
+import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.OpenCVlogic
 import kotlinx.coroutines.launch
 
 private const val TAG = "puzzlePreviewComposable"
@@ -40,7 +40,7 @@ fun puzzlePreviewScreen(
 
     val GridState by viewModel.uiGridState.collectAsState()
     val ClueState by viewModel.uiState.collectAsState()
-    val puzzle = viewModel.puzzle.value
+    val puzzle = viewModel.puzzle.collectAsState().value
 
     val openCVlogic = OpenCVlogic(viewModel)
     puzzlePreviewComposable(
@@ -224,7 +224,7 @@ fun puzzlePreviewComposable(
         }
         Button(onClick = {
             composableScope.launch{
-                insertPuzzle(puzzle,context,uiGridState.gridPicProcessed)
+                insertPuzzle(puzzle,context)
             }
             Toast.makeText(context,R.string.event_save,Toast.LENGTH_SHORT).show()
             //onSave()

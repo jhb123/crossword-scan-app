@@ -78,8 +78,11 @@ fun LoginComposable(
                 contentScale = ContentScale.FillBounds,
             )
         }
-
+        if (uiState.wip) {
+            Text(text = "work in progress", color = MaterialTheme.colorScheme.error)
+        }
         OutlinedTextField(
+            enabled = !uiState.wip,
             value = uiState.userName ?: "",
             modifier = Modifier.padding(5.dp),
             onValueChange = { userNameFieldCallback(it) },
@@ -101,6 +104,7 @@ fun LoginComposable(
             )
 
         OutlinedTextField(
+            enabled = !uiState.wip,
             value = uiState.userPassword ?: "",
             onValueChange = { passwordFieldCallback(it) },
             label = { Text(text = stringResource(id = R.string.label_password)) },
@@ -158,6 +162,7 @@ fun LoginComposable(
 
 
             FilledTonalButton(
+                enabled = !uiState.wip,
                 onClick = {
                     //composableScope.launch {
                         if (uiState.userName != null && uiState.userPassword != null) {
@@ -179,6 +184,7 @@ fun LoginComposable(
 
         }
         OutlinedButton(
+            enabled = !uiState.wip,
             onClick = { registerCallback() },
             modifier = Modifier
                 .width(250.dp)
@@ -188,6 +194,7 @@ fun LoginComposable(
         }
 
         OutlinedButton(
+            enabled = !uiState.wip,
             onClick = { forgotPasswordCallback() },
             modifier = Modifier
                 .width(250.dp)

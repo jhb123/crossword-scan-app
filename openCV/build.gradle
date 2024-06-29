@@ -95,14 +95,27 @@ def openCVersionName = "4.7.0-dev"
 def openCVersionCode = ((4 * 100 + 7) * 100 + 0) * 10 + 0
 
 println "OpenCV: " +openCVersionName + " " + project.buildscript.sourceFile
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+    jvmToolchain(17)
+}
 
 android {
+    namespace "org.opencv"
     compileSdkVersion 33
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 33
-
 
         externalNativeBuild {
             cmake {
@@ -141,6 +154,9 @@ android {
         cmake {
             path (project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
         }
+    }
+    buildFeatures {
+        aidl true
     }
 }
 

@@ -45,12 +45,14 @@ android {
 
     flavorDimensions "app_type"
     productFlavors {
-        local {
-            buildConfigField "String", "API_URL", "${project.property('PRIVATE_IP')}"
+        stage {
+            buildConfigField "String", "API_URL", "\"https://stage.live-crossword.net\""
+            buildConfigField "String", "WEBSOCKET_URL", "\"wss://stage.live-crossword.net\""
             dimension "app_type"
         }
         real {
-            buildConfigField "String", "API_URL", "\"https://t92g40mm52.execute-api.eu-north-1.amazonaws.com/dev-zappa/\""
+            buildConfigField "String", "API_URL", "\"https://www.live-crossword.net\""
+            buildConfigField "String", "WEBSOCKET_URL", "\"wss://live-crossword.net\""
             dimension "app_type"
         }
     }
@@ -59,14 +61,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     buildFeatures {
