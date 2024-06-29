@@ -2,7 +2,6 @@ package com.jhb.crosswordScan.ui.authScreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
 import com.jhb.crosswordScan.data.Session
 import com.jhb.crosswordScan.data.SessionData
 import com.jhb.crosswordScan.network.CrosswordApi
@@ -12,8 +11,7 @@ import com.jhb.crosswordScan.ui.Strings.unableToFindServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.FormBody
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -34,29 +32,21 @@ class AuthViewModel() : ViewModel() {
                 validLogin = true
             )
         }
-        //viewModelScope.launch {
-        //CrosswordAppRequest(status = 200,message="ok")
-        val gson = Gson()
-        val loginMessage = mapOf(
-            "username" to uiState.value.userName!!.trim(),
-            "password" to uiState.value.userPassword!!
-        )
-        val payload = gson.toJson(loginMessage)
-        val requestBody = RequestBody.create(MediaType.get("application/json"), payload)
+
+        val requestBody = FormBody.Builder()
+            .add("username", uiState.value.userName!!.trim())
+            .add("password", uiState.value.userPassword!!)
+            .build()
 
         Log.i(TAG, "request body made")
         var serverMessage : String? = null
         try {
             val response = CrosswordApi.retrofitService.login(requestBody)
-            val responseJson = gson.fromJson(response.string(), MutableMap::class.java)
-
-            val sessionData = SessionData(
-                username = username,
-                password = password,
-                token = responseJson["token"].toString()
-            )
-
+//            val responseJson = gson.fromJson(response.string(), MutableMap::class.java)
+//
+            val sessionData = SessionData(username = username)
             Session.updateSession(sessionData)
+
 
             Log.i(TAG, "Finished logging in")
         }

@@ -35,7 +35,9 @@ fun AuthScreen(
                 )
             }
         },
-        logoutCallback = { Session.logOut() },
+        logoutCallback = { composableScope.launch {
+                Session.logOut()
+            }},
         registerCallback = { navigateToRegistration() },
         forgotPasswordCallback = { navigateToReset() },
         sessionDataState = Session.sessionDataState,

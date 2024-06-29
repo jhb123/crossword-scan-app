@@ -117,11 +117,7 @@ class ResetPasswordViewModel(navigateOnSuccess : ()->Unit) : ViewModel() {
                 Log.i(TAG, "request body made")
                 val response = CrosswordApi.retrofitService.postResetPassword(requestBody)
 
-                val sessionData = SessionData(
-                    username = userName,
-                    password = password,
-                    token = response.string()
-                )
+                val sessionData = SessionData(username = userName)
 
                 Session.updateSession(sessionData)
 

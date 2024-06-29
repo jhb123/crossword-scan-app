@@ -15,6 +15,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.jhb.crosswordScan.data.Puzzle
+import com.jhb.crosswordScan.data.PuzzleBuilder
 import com.jhb.crosswordScan.data.getAcrossCluesAsPairs
 import com.jhb.crosswordScan.data.getDownCluesAsPairs
 import com.jhb.crosswordScan.ui.common.ClueDirection
@@ -60,8 +61,7 @@ class CrosswordScanViewModel : ViewModel(
     val cluePicDebug = mutableStateOf<Bitmap?>(null)
     private val cluePicDebugCropped = mutableStateOf<Bitmap?>(null)
 
-    //TODO make this a stateflow or something
-    private val _puzzle = MutableStateFlow(Puzzle())
+    private val _puzzle = MutableStateFlow(Puzzle( mapOf(), mapOf()))
     val puzzle : StateFlow<Puzzle> = _puzzle
 
     private val _takeSnapShot = mutableStateOf(false)
@@ -106,8 +106,10 @@ class CrosswordScanViewModel : ViewModel(
 
     private fun setPreprocessed() {
         val croppedCrossword = cropToCrossword(contours[cwContourIndex], viewFinderImg)
-        var binaryCrossword = makeBinaryCrosswordImg(croppedCrossword)
-
+        var binaryCrossword : Mat? = null
+        if (croppedCrossword != null) {
+            binaryCrossword = makeBinaryCrosswordImg(croppedCrossword)
+        }
         if (binaryCrossword != null) {
             val puzzle = assembleClues(binaryCrossword)
 
@@ -168,7 +170,7 @@ class CrosswordScanViewModel : ViewModel(
     private fun clearPuzzleData(){
         Log.i(TAG,"Deleting Puzzle data")
         _puzzle.update {
-            Puzzle()
+            Puzzle( mapOf(), mapOf())
         }
     }
 
@@ -282,6 +284,9 @@ class CrosswordScanViewModel : ViewModel(
 
     private fun ocrClues()  {
         Log.i(TAG,"performing OCR on clues")
+
+        val puzzleBuilder = PuzzleBuilder().fromPuzzle(this.puzzle.value)
+
         val imageForProcessing = cluePicDebugCropped.value //croppedCluePic.value
         if(imageForProcessing != null) {
             val image = InputImage.fromBitmap(imageForProcessing, 0)
@@ -291,7 +296,6 @@ class CrosswordScanViewModel : ViewModel(
                     //split around things that look like (4) or (4,3] etc.
                     val regex = Regex("(?<=[(\\[][^A-Za-z]{0,27}[)\\]])")
                     val matchResult = regex.split(text)
-                    val newClues = mutableListOf<Pair<String,String>>()
 
                     when(uiState.value.clueScanDirection){
                         ClueDirection.ACROSS -> {
@@ -299,35 +303,28 @@ class CrosswordScanViewModel : ViewModel(
                                 val clueText = extractClueText(it)
                                 val clueNum = extractClueNumber(it)
                                 if (clueText != null) {
-                                    val cluePair = Pair(clueNum + "a",clueText)
-                                    newClues.add(cluePair)
-                                    puzzle.value.updateClueTxt(clueNum + "a",clueText)
+                                    puzzleBuilder.setClueText(clueNum + "a",clueText)
                                 }
                             }
-                            _uiState.update {
-                                it.copy(
-                                    acrossClues = getAcrossCluesAsPairs(puzzle.value)
-                                )
-                            }
-
                         }
                         ClueDirection.DOWN -> {
                             matchResult.forEach {
                                 val clueText = extractClueText(it)
                                 val clueNum = extractClueNumber(it)
                                 if (clueText != null) {
-                                    val cluePair = Pair(clueNum + "d",clueText)
-                                    newClues.add(cluePair)
-                                    puzzle.value.updateClueTxt(clueNum + "d",clueText)
+                                    puzzleBuilder.setClueText(clueNum + "d",clueText)
                                 }
                             }
-
-                            _uiState.update {
-                                it.copy(
-                                    downClues = getDownCluesAsPairs(puzzle.value)
-                                )
-                            }
                         }
+                    }
+                    _puzzle.update {
+                        puzzleBuilder.build()
+                    }
+                    _uiState.update {
+                        it.copy(
+                            acrossClues = getAcrossCluesAsPairs(puzzle.value),
+                            downClues = getDownCluesAsPairs(puzzle.value)
+                        )
                     }
                 }
                 .addOnFailureListener { e ->
@@ -363,8 +360,8 @@ class CrosswordScanViewModel : ViewModel(
     }
 
     fun replaceClueText(old : Pair<String, String>, new : Pair<String, String>){
-        puzzle.value.updateClueTxt(old.first,new.second)
-
+        val puzzleBuilder = PuzzleBuilder().fromPuzzle(this.puzzle.value)
+        puzzleBuilder.setClueText(old.first,new.second).build()
         _uiState.update {
             it.copy(
                 acrossClues = getAcrossCluesAsPairs(puzzle.value),
