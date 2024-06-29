@@ -4,7 +4,6 @@
     <string name="logo">Logo</string>
     <string name="stringSeparator">": "</string>
 
-
     <!-- Screen Resources !-->
     <string name="screenTitle_gridScan">Scan grid</string>
     <string name="screenTitle_clueScan">Scan clues</string>
@@ -65,5 +64,6 @@
     <string name="invalid_credentials">Invalid Credentials</string>
     <string name="action_delete_scan">delete scan</string>
     <string name="action_rotate_right">rotate 90 degrees clockwise</string>
+    <string name="navigate_to_puzzles">Go back to puzzles</string>
 
 </resources>

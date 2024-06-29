@@ -29,17 +29,21 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -47,16 +51,21 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.PuzzleData
 import com.jhb.crosswordScan.data.deletePuzzleFiles
+import com.jhb.crosswordScan.network.isInternetAvailable
 import com.jhb.crosswordScan.util.TimeStampFormatter
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModel
 import com.jhb.crosswordScan.viewModels.PuzzleSelectViewModelFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 private val TAG = "puzzleSelectionScreen"
@@ -72,6 +81,33 @@ fun puzzleSelectionScreen(navigateToPuzzle: (Int, Boolean)->Unit){
     val uiState by puzzleSelectViewModel.uiState.collectAsState()
     val repository = (LocalContext.current.applicationContext as PuzzleApplication).repository
     val composableScope = rememberCoroutineScope()
+    MyEventListener {
+        when (it) {
+            Lifecycle.Event.ON_RESUME -> {
+                composableScope.launch {
+                    withContext(Dispatchers.IO) {
+                        puzzleSelectViewModel.fetch_puzzles()
+                    }
+                }
+            }
+            else -> {}
+        }
+    }
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit){
+        composableScope.launch {
+            while (true) {
+                // this is a temporary hack to prevent the case where
+                // you go offline while looking at the list of puzzles
+                // and you navigate to an online one.
+                delay(100)
+                if(!isInternetAvailable(context)) {
+                    puzzleSelectViewModel.setOffline()
+                }
+            }
+        }
+    }
 
     puzzleSelectionComposable(
         uiState = uiState,
@@ -95,7 +131,6 @@ fun puzzleSelectionComposable(
     uploadNewPuzzle: (PuzzleData) -> Unit,
     deletePuzzle: (PuzzleData) -> Unit
 ) {
-
 
     val puzzles = uiState.puzzles
     val clipboardManager = LocalClipboardManager.current
@@ -336,3 +371,22 @@ private fun RemoteCardContents(
     }
 
 
+@Composable
+fun MyEventListener(OnEvent : (event: Lifecycle.Event) -> Unit) {
+    // https://medium.com/@chiragthummar16/lifecycle-in-jetpack-compose-on-resume-on-pause-on-create-on-stop-on-destroy-3e4999f8132d
+    val eventHandler = rememberUpdatedState(newValue = OnEvent)
+    val lifecycleOwner = rememberUpdatedState(newValue = LocalLifecycleOwner.current)
+
+    DisposableEffect(lifecycleOwner.value ){
+        val lifecycle = lifecycleOwner.value.lifecycle
+        val observer = LifecycleEventObserver{source, event ->
+            eventHandler.value(event)
+        }
+
+        lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
+    }
+}

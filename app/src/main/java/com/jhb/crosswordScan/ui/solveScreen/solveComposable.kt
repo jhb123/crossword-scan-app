@@ -11,9 +11,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,12 +41,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jhb.crosswordScan.PuzzleApplication
 import com.jhb.crosswordScan.R
 import com.jhb.crosswordScan.data.Clue
+import com.jhb.crosswordScan.network.isInternetAvailable
 import com.jhb.crosswordScan.ui.common.dynamicClueTextBox
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "solveComposable"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SolveScreenWrapper(puzzleId: String, remote: Boolean) {
+fun SolveScreenWrapper(puzzleId: String, remote: Boolean, navigation: ()->Unit) {
 
     val viewModel: PuzzleSolveViewModel = viewModel(
         factory = PuzzleSolveViewModelFactory(
@@ -54,6 +63,8 @@ fun SolveScreenWrapper(puzzleId: String, remote: Boolean) {
 
     val keyboardCollapsed = uiState.value.keyboardCollapsed
     Log.i(TAG, "Composing solve composable")
+
+    OfflineAlertWrapper(puzzleId, remote, navigation)
 
     ConstraintLayout(
         modifier = Modifier
@@ -423,5 +434,67 @@ fun ClueTextArea(
         }
     }
 
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun OfflineAlertWrapper(puzzleId: String, remote: Boolean, navigation: () -> Unit){
+
+    if (!remote) {
+        return
+    }
+    val viewModel: RemotePuzzleSolveViewModel = viewModel(
+        factory = PuzzleSolveViewModelFactory(
+            (LocalContext.current.applicationContext as PuzzleApplication).repository,
+            puzzleId, remote
+        )
+    )
+
+    val uiState = viewModel.uiError.collectAsState()
+
+    val composableScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit){
+        composableScope.launch {
+            while (true) {
+                delay(500)
+                viewModel.setOnlineState(isInternetAvailable(context))
+            }
+        }
+    }
+
+    uiState.value.error?.let{
+        AlertDialog(
+            onDismissRequest = { }
+        ) {
+            Surface(
+                modifier = Modifier
+                    .width(200.dp),
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surface
+            ) {
+                Column(
+                    modifier = Modifier.padding(10.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(text = it.message)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Button(
+                            onClick = navigation, colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError
+                            )
+                        ) {
+                            Text(text = stringResource(id = R.string.navigate_to_puzzles))
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 

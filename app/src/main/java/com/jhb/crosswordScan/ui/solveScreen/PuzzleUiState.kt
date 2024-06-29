@@ -5,10 +5,13 @@ import com.jhb.crosswordScan.data.Cell
 import com.jhb.crosswordScan.data.Clue
 
 sealed class Error(val message: String) {
-    class WebsocketError : Error("Websocket Failure")
-    class NetworkError : Error("Network failure")
-    class UnknownError : Error("An unknown error has occurred")
+    class WebsocketError : Error("Connecting to puzzle...")
+    class NetworkError : Error("You are offline")
 }
+
+data class UiErrorState (
+    val error: Error? = null
+)
 
 data class PuzzleUiState (
     val name : String = "",
@@ -22,5 +25,6 @@ data class PuzzleUiState (
     val acrossClues: List<Pair<String, Clue>> = listOf(),
     val downClues: List<Pair<String, Clue>> = listOf(),
     val gridSize: Int = 0,
-    val error: Error? = null
     )
+
+

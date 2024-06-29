@@ -22,7 +22,6 @@ class LocalPuzzleSolveViewModel(private val repository: PuzzleRepository, privat
         Log.i(TAG,"initialising ui")
 
         viewModelScope.launch {
-            //delay(50)
             withContext(Dispatchers.IO) {
                 val puzzleData = repository.getPuzzle(puzzleId)
                 Log.i(TAG, "Collecting puzzle from database")
@@ -42,7 +41,6 @@ class LocalPuzzleSolveViewModel(private val repository: PuzzleRepository, privat
                 }
             }
         }
-        Log.i(TAG,"Finished initialising ui")
     }
 
     override fun setLetter(letter: String){

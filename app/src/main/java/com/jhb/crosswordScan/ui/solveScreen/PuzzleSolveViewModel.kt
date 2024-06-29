@@ -21,7 +21,11 @@ abstract class PuzzleSolveViewModel(private val repository: PuzzleRepository, pr
     }
 
     protected val _uiState = MutableStateFlow(PuzzleUiState())
+    protected val _uiErrors = MutableStateFlow(UiErrorState())
+
     val uiState : StateFlow<PuzzleUiState> = _uiState
+    val uiError : StateFlow<UiErrorState> = _uiErrors
+
     val puzzle = MutableStateFlow(Puzzle( mapOf(), mapOf()))
     val cells = mutableStateOf(listOf<Cell>())
 
@@ -68,7 +72,7 @@ abstract class PuzzleSolveViewModel(private val repository: PuzzleRepository, pr
                 Log.w(TAG,"Badly labelled clue: $s")
             }
         }
-        cellSetLabels.forEach({(k, v)-> Log.i(TAG, "special cells ${k.x},${k.y} with $v") })
+        cellSetLabels.forEach({(k, v)-> Log.d(TAG, "special cells ${k.x},${k.y} with $v") })
         return cellSetLabels
     }
 

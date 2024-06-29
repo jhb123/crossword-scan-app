@@ -8,6 +8,7 @@ import com.jhb.crosswordScan.data.Cell
 import com.jhb.crosswordScan.data.PuzzleFromJson
 import com.jhb.crosswordScan.data.PuzzleRepository
 import com.jhb.crosswordScan.data.modifyPuzzleWithCell
+import com.jhb.crosswordScan.network.ConnectionStatus
 import com.jhb.crosswordScan.network.CrosswordApi.retrofitService
 import com.jhb.crosswordScan.network.CrosswordWebSocketClient
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +23,12 @@ class RemotePuzzleSolveViewModel(private val repository: PuzzleRepository, priva
         private const val TAG = "RemotePuzzleSolveViewModel"
     }
 
-    lateinit var webSocketClient: CrosswordWebSocketClient
+    var webSocketClient: CrosswordWebSocketClient? = null
 
-    private var _cellUpates = MutableLiveData<Cell>()
+    private var cellUpates = MutableLiveData<Cell>()
+    private var websocketConnectionStatus = MutableLiveData<ConnectionStatus>()
+
+
     val cellObserver = Observer<Cell> { cell ->
         val newPuzzle = modifyPuzzleWithCell(puzzle=puzzle.value, cell)
         puzzle.update {
@@ -32,6 +36,17 @@ class RemotePuzzleSolveViewModel(private val repository: PuzzleRepository, priva
         }
         if (cell.x == uiState.value.currentCell.x && cell.y == uiState.value.currentCell.y) {
             _uiState.update { it.copy(currentCell = cell) }
+        }
+    }
+
+    val connectionStateObserver = Observer<ConnectionStatus> { status ->
+        when (status) {
+            ConnectionStatus.Connected -> _uiErrors.update {
+                it.copy(error = null)
+            }
+            ConnectionStatus.Disconnected -> _uiErrors.update {
+                it.copy(error = Error.WebsocketError())
+            }
         }
     }
 
@@ -49,15 +64,53 @@ class RemotePuzzleSolveViewModel(private val repository: PuzzleRepository, priva
                     puzzle.update { PuzzleFromJson(response.string()) }
 
                     webSocketClient = CrosswordWebSocketClient(it)
+                    SetUpObservers()
                 }
-            }
-            withContext(Dispatchers.Main) {
-                _cellUpates = webSocketClient.cellUpdates
-                _cellUpates.observeForever(cellObserver)
             }
         }
 
         Log.i(TAG,"Finished initialising ui")
+    }
+
+    fun SetUpObservers(){
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                 webSocketClient?.also {
+                     cellUpates = it.cellUpdates
+                     cellUpates.observeForever(cellObserver)
+
+                     websocketConnectionStatus = it.connectionStatus
+                     websocketConnectionStatus.observeForever(connectionStateObserver)
+
+                 }
+            }
+        }
+    }
+
+    fun setOnlineState(isOnline: Boolean){
+        if (isOnline) {
+            when (websocketConnectionStatus.value) {
+                ConnectionStatus.Connected -> {
+                    _uiErrors.update {
+                        it.copy(error = null)
+                    }
+                }
+                ConnectionStatus.Disconnected -> {
+                    _uiErrors.update {
+                        it.copy(error = Error.WebsocketError())
+                    }
+                }
+                null -> {
+                    _uiErrors.update {
+                        it.copy(error = Error.WebsocketError())
+                    }
+                }
+            }
+        } else {
+            _uiErrors.update {
+                it.copy(error = Error.NetworkError())
+            }
+        }
     }
 
     override fun setLetter(letter: String){
@@ -67,7 +120,8 @@ class RemotePuzzleSolveViewModel(private val repository: PuzzleRepository, priva
             _uiState.value.currentCell.y,
             letter
         )
-        webSocketClient.ws.send(newCell.toString())
+        sendWebsocketUpdate(newCell)
+
     }
 
     override fun delLetter(){
@@ -77,12 +131,23 @@ class RemotePuzzleSolveViewModel(private val repository: PuzzleRepository, priva
             _uiState.value.currentCell.y,
             " "
         )
-        webSocketClient.ws.send(newCell.toString())
+        sendWebsocketUpdate(newCell)
+
     }
 
+    private fun sendWebsocketUpdate(newCell: Cell) {
+        webSocketClient?.ws?.send(newCell.toString())?.also {
+            if (!it) {
+                _uiErrors.update {
+                    it.copy(error = Error.WebsocketError())
+                }
+            }
+        } ?: run {
+            // Action to perform when sent is null
+            _uiErrors.update { state ->
+                state.copy(error = Error.WebsocketError())
+            }
+        }
+    }
 
-
-//    override suspend fun updatePuzzleData() {
-//        webSocketClient.ws.send()
-//    }
 }

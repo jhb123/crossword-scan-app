@@ -13,6 +13,10 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import java.util.concurrent.TimeUnit
 
+enum class ConnectionStatus {
+    Connected, Disconnected
+}
+
 
 class CrosswordWebSocketClient(private val puzzleId: Int) : WebSocketListener() {
 
@@ -24,36 +28,30 @@ class CrosswordWebSocketClient(private val puzzleId: Int) : WebSocketListener() 
     private val typeToken = object : TypeToken<Cell>() {}.type
     private val gson = Gson()
 
-    val ws = createWebSocket(client)
-    val cellUpdates : MutableLiveData<Cell> by lazy {
-        MutableLiveData<Cell>()
+    var ws = createWebSocket(client)
+
+    var connectionStatus: MutableLiveData<ConnectionStatus>
+    lateinit var cellUpdates: MutableLiveData<Cell>
+
+    init {
+        connectionStatus = MutableLiveData(ConnectionStatus.Disconnected)
     }
 
     private fun createWebSocket(client: OkHttpClient): WebSocket {
-
         val request = Request.Builder()
             .url("${BuildConfig.WEBSOCKET_URL}/puzzle/$puzzleId/live")
             .build()
         return client.newWebSocket(request, this)
-
-        // Trigger shutdown of the dispatcher's executor so this process exits immediately.
-        // client.dispatcher().executorService().shutdown()
     }
 
     private fun createClient(): OkHttpClient {
+        cellUpdates = MutableLiveData<Cell>()
+
         val client = OkHttpClient.Builder()
-            .readTimeout(0, TimeUnit.MILLISECONDS)
+            .readTimeout(10000, TimeUnit.MILLISECONDS)
             .build()
         return client
     }
-
-
-//    override fun onOpen(webSocket: WebSocket, response: Response) {
-//        webSocket.send("Hello...")
-//        webSocket.send("...World!")
-//        webSocket.send(ByteString.decodeHex("deadbeef"))
-//        webSocket.close(1000, "Goodbye, World!")
-//    }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         Log.i(TAG, text)
@@ -61,14 +59,23 @@ class CrosswordWebSocketClient(private val puzzleId: Int) : WebSocketListener() 
         cellUpdates.postValue(cell)
     }
 
+    override fun onOpen(webSocket: WebSocket, response: Response) {
+        super.onOpen(webSocket, response)
+        connectionStatus.postValue(ConnectionStatus.Connected)
+    }
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+        connectionStatus.postValue(ConnectionStatus.Disconnected)
         webSocket.close(1000, null)
         Log.i(TAG, "closing websocket")
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         Log.w(TAG, "Failure of websocket")
-        super.onFailure(webSocket, t, response)
+        connectionStatus.postValue(ConnectionStatus.Disconnected)
+//        super.onFailure(webSocket, t, response)
+        webSocket.close(1000, null);
+        Thread.sleep(1000);
+        Log.w(TAG, "Reconnecting websocket...")
+        ws = createWebSocket(client)
     }
-
 }

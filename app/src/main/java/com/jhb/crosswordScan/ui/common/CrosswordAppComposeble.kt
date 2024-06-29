@@ -242,7 +242,8 @@ fun CrosswordApp(repository: PuzzleRepository) {
 
                     Log.i(TAG, "navigated to solve/$remote/$puzzleId")
                     if (puzzleId != null) {
-                        SolveScreenWrapper(puzzleId, remote)
+                        SolveScreenWrapper(puzzleId, remote
+                        ) { navController.navigate(Screen.SelectPuzzle.route) }
                     } else {
                         Log.e(TAG, "puzzle id in route is null")
                     }

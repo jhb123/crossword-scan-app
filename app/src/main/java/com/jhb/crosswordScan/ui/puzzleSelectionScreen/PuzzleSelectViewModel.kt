@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
 
@@ -25,7 +26,7 @@ private const val TAG = "PuzzleSelectViewModel"
 class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
 
     companion object {
-        private const val REQUEST_PERIOD = 3_000L
+        private const val REQUEST_PERIOD = 30_000L
     }
 
     private val _uiState = MutableStateFlow(PuzzleSelectionUiState())
@@ -53,7 +54,22 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
         }
     }
 
-    private suspend fun fetch_puzzles() {
+    fun setOffline() {
+        _uiState.update {
+            it.copy(
+                errorText = "Offline",
+                isOffline = true
+            )
+        }
+    }
+    suspend fun fetch_puzzles() {
+        _uiState.update {
+            it.copy(
+                errorText = "fetching puzzles",
+                isOffline = true
+            )
+        }
+
         val listType = object : TypeToken<List<ServerPuzzleListItem>>() {}.type
         val gson = Gson()
         try {
@@ -79,14 +95,19 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
                     isOffline = false
                 )
             }
-
-
-
         } catch (e: IOException) {
             Log.w(TAG, "not connected")
             _uiState.update {
                 it.copy(
                     errorText = "not connected",
+                    isOffline = true
+                )
+            }
+        } catch(e: HttpException) {
+            Log.w(TAG, "HTTP exception")
+            _uiState.update {
+                it.copy(
+                    errorText = e.message(),
                     isOffline = true
                 )
             }
