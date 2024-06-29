@@ -57,11 +57,22 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            keyAlias project.KEY_ALIAS
+            keyPassword project.KEY_PASSWORD
+            storeFile file(project.KEYSTORE_PATH)
+            storePassword project.STORE_PASSWORD
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            shrinkResources true
+
         }
     }
     compileOptions {

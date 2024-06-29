@@ -16,7 +16,6 @@ sealed class Screen(val route: String,
     object SelectPuzzle : Screen("puzzleSelect", R.string.screenTitle_puzzleSelect, R.drawable.ic_baseline_edit_24)
     object Authenticate : Screen("authenticate", R.string.screenTitle_authenticate, R.drawable.ic_baseline_person_24)
     object Registration : Screen("registration", R.string.screenTitle_registrationScreen, R.drawable.ic_baseline_person_24)
-    object ResetPassword : Screen("resetPassword", R.string.screenTitle_resetPassword, R.drawable.ic_baseline_person_24)
     object Solve : Screen("solve", R.string.screenTitle_solveTitle, R.drawable.ic_baseline_edit_24)
 
     //object SolvePuzzle : Screen("solve", R.string.clueScan, R.drawable.ic_baseline_camera_24)

@@ -11,7 +11,6 @@ import com.jhb.crosswordScan.ui.Strings.unableToFindServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import okhttp3.FormBody
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -24,7 +23,7 @@ class AuthViewModel() : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState : StateFlow<AuthUiState> = _uiState
 
-    suspend fun login(username: String, password: String){
+    suspend fun login(){
         Log.i(TAG,"Logging in")
         _uiState.update {
             it.copy(
@@ -33,20 +32,22 @@ class AuthViewModel() : ViewModel() {
             )
         }
 
-        val requestBody = FormBody.Builder()
-            .add("username", uiState.value.userName!!.trim())
-            .add("password", uiState.value.userPassword!!)
-            .build()
+        val username = uiState.value.userName?.let{ it.trim()}?: return
+        val password = uiState.value.userPassword ?: return
 
         Log.i(TAG, "request body made")
         var serverMessage : String? = null
         try {
-            val response = CrosswordApi.retrofitService.login(requestBody)
-//            val responseJson = gson.fromJson(response.string(), MutableMap::class.java)
-//
+            CrosswordApi.retrofitService.login(username, password)
             val sessionData = SessionData(username = username)
             Session.updateSession(sessionData)
-
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    serverErrorText = null,
+                    validLogin = true
+                )
+            }
 
             Log.i(TAG, "Finished logging in")
         }
@@ -58,25 +59,44 @@ class AuthViewModel() : ViewModel() {
                 else  -> genericServerError
             }
             serverMessage = "${e.code()} : $errorMessage"
-        }
-        catch (e : ConnectException){
-            Log.e(TAG, unableToFindServer)
-            serverMessage = unableToFindServer
-        }
-        catch (e: UnknownHostException){
-            Log.e(TAG, e.toString())
-            serverMessage = unableToFindServer
-        }
-        catch (e: Exception){
-            Log.e(TAG, e.toString())
-            serverMessage = genericServerError
-        }
-        finally {
             _uiState.update {
                 it.copy(
                     serverErrorText = serverMessage,
                     isLoading = false,
-                    validLogin = serverMessage.toBoolean()
+                    validLogin = false
+                )
+            }
+        }
+        catch (e : ConnectException){
+            Log.e(TAG, unableToFindServer)
+            serverMessage = unableToFindServer
+            _uiState.update {
+                it.copy(
+                    serverErrorText = serverMessage,
+                    isLoading = false,
+                    validLogin = false
+                )
+            }
+        }
+        catch (e: UnknownHostException){
+            Log.e(TAG, e.toString())
+            serverMessage = unableToFindServer
+            _uiState.update {
+                it.copy(
+                    serverErrorText = serverMessage,
+                    isLoading = false,
+                    validLogin = false
+                )
+            }
+        }
+        catch (e: Exception){
+            Log.e(TAG, e.toString())
+            serverMessage = genericServerError
+            _uiState.update {
+                it.copy(
+                    serverErrorText = serverMessage,
+                    isLoading = false,
+                    validLogin = false
                 )
             }
         }

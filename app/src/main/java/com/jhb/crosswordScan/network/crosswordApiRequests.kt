@@ -18,10 +18,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
 import java.io.IOException
 
-
-
-
-
 class MyCookieJar : CookieJar {
     private var cookies: List<Cookie>? = null
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
@@ -69,20 +65,22 @@ object CrosswordApi {
 
 interface CrosswordApiService {
 
-    @GET("auth/resetPassword")
-    suspend fun getResetPassword(@Query("email") apiKey: String): String
-
     @POST("puzzle/add")
     suspend fun upload(@Body request: RequestBody): ResponseBody
 
-    @POST("auth/resetPassword")
-    suspend fun postResetPassword(@Body request: RequestBody): ResponseBody
-
+    @FormUrlEncoded
     @POST("sign-up")
-    suspend fun register(@Body request: RequestBody): ResponseBody
+    suspend fun register(@Field("username") username: String,
+                         @Field("password") password: String,
+                         @Field("repeatPassword") repeatPassword: String,
+    ): ResponseBody
 
+    @FormUrlEncoded
     @POST("log-in")
-    suspend fun login(@Body requestBody: RequestBody): ResponseBody
+    suspend fun login(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        ): ResponseBody
 
     @POST("log-out")
     suspend fun logOut(): ResponseBody
