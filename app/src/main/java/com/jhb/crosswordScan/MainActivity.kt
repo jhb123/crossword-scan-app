@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.content.ContextCompat
-import com.jhb.crosswordScan.data.Session
 import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.LoaderCallbackInterface
 import org.opencv.android.OpenCVLoader
@@ -30,12 +29,6 @@ class MainActivity : ComponentActivity() {
         }
 
         startOpenCV()
-
-        Log.i(TAG, "Reading session")
-        Session.setContext(this.applicationContext)
-        Session.readSession()
-        //Log.i(TAG)
-
 
         Log.i(TAG, "Setting content")
         setContent {

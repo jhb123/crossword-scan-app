@@ -88,11 +88,7 @@ class RegistrationViewModel(navigateOnSuccess: ()-> Unit ) : ViewModel() {
                 val response = CrosswordApi.retrofitService.register(requestBody)
                 val responseJson = gson.fromJson(response.string(), MutableMap::class.java)
 
-                val sessionData = SessionData(
-                    username = username,
-                    password = password,
-                    token = responseJson["token"].toString()
-                )
+                val sessionData = SessionData(username = username)
 
                 Session.updateSession(sessionData)
 

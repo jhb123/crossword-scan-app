@@ -44,12 +44,7 @@ class AuthViewModel() : ViewModel() {
             val response = CrosswordApi.retrofitService.login(requestBody)
 //            val responseJson = gson.fromJson(response.string(), MutableMap::class.java)
 //
-            val sessionData = SessionData(
-                username = username,
-                password = password,
-                token = "blablabla"
-            )
-
+            val sessionData = SessionData(username = username)
             Session.updateSession(sessionData)
 
 
