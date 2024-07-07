@@ -50,26 +50,40 @@ class RemotePuzzleSolveViewModel(private val repository: PuzzleRepository, priva
         }
     }
 
-    init {
-        Log.i(TAG,"initialising ui")
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val puzzleData = repository.getPuzzle(puzzleId)
-                Log.i(TAG, "puzzleData id ${puzzleData.id}")
+//    init {
+//        Log.i(TAG,"initialising ui")
+//        viewModelScope.launch {
+//            withContext(Dispatchers.IO) {
+//                connectToPuzzle()
+//            }
+//        }
+//
+//        Log.i(TAG,"Finished initialising ui")
+//    }
 
-                puzzleData.serverId?.let {
-
-                    val response = retrofitService.getPuzzleData(it)
-
-                    puzzle.update { PuzzleFromJson(response.string()) }
-
-                    webSocketClient = CrosswordWebSocketClient(it)
-                    SetUpObservers()
-                }
-            }
+    override suspend fun setUpPuzzleData() {
+        withContext(Dispatchers.IO) {
+            connectToPuzzle()
         }
+    }
 
-        Log.i(TAG,"Finished initialising ui")
+    override fun dispose(){
+        webSocketClient?.ws?.close(1001,"Finished Puzzle")
+    }
+
+    private suspend fun connectToPuzzle() {
+        val puzzleData = repository.getPuzzle(puzzleId)
+        Log.i(TAG, "puzzleData id ${puzzleData.id}")
+
+        puzzleData.serverId?.let {
+
+            val response = retrofitService.getPuzzleData(it)
+
+            puzzle.update { PuzzleFromJson(response.string()) }
+
+            webSocketClient = CrosswordWebSocketClient(it)
+            SetUpObservers()
+        }
     }
 
     fun SetUpObservers(){

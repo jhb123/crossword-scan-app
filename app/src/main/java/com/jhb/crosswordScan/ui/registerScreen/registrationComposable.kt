@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -41,7 +40,6 @@ fun RegistrationScreen(
         uiState = uiState,
         registerCallback = {registrationViewModel.submit()},
         userNameFieldCallback = {registrationViewModel.setUserName(it)},
-        emailFieldCallback = {registrationViewModel.setEmail(it)},
         passwordFieldCallback = {registrationViewModel.setPassword(it)},
         passwordConfirmFieldCallback = {registrationViewModel.setConfirmPassword(it)},
     )
@@ -53,7 +51,6 @@ fun RegistrationScreen(
 fun RegistrationComposeable(
     uiState: RegistrationUiState,
     registerCallback: () -> Unit,
-    emailFieldCallback: (String) -> Unit,
     userNameFieldCallback: (String) -> Unit,
     passwordFieldCallback: (String) -> Unit,
     passwordConfirmFieldCallback: (String) -> Unit,
@@ -62,7 +59,6 @@ fun RegistrationComposeable(
     val userName = uiState.username
     val password = uiState.password
     val passwordConfirm = uiState.passwordConfirm
-    val email = uiState.email
 
     Column(
         modifier = Modifier
@@ -80,7 +76,6 @@ fun RegistrationComposeable(
             modifier = Modifier
                 .height(100.dp)
                 .width(100.dp)
-                //.background(color = Color.Red)
                 .padding(10.dp)
                 .clip(shape = RoundedCornerShape(25))
             //)
@@ -98,30 +93,6 @@ fun RegistrationComposeable(
                 contentScale = ContentScale.FillBounds,
             )
         }
-
-        OutlinedTextField(
-            value = email,
-            modifier = Modifier.padding(10.dp),
-            onValueChange = { emailFieldCallback(it) },
-            label = { Text(stringResource(R.string.label_email)) },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Email
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                },
-            ),
-            leadingIcon = {
-                Icon(
-                    painterResource(id = R.drawable.ic_baseline_email_24),
-                    contentDescription = stringResource(id = R.string.contentDesc_emailIcon)
-                )
-            },
-
-            )
-
 
         OutlinedTextField(
             value = userName,

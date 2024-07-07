@@ -63,13 +63,6 @@ class PuzzleSelectViewModel(val repository: PuzzleRepository): ViewModel() {
         }
     }
     suspend fun fetch_puzzles() {
-        _uiState.update {
-            it.copy(
-                errorText = "fetching puzzles",
-                isOffline = true
-            )
-        }
-
         val listType = object : TypeToken<List<ServerPuzzleListItem>>() {}.type
         val gson = Gson()
         try {

@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -199,7 +198,6 @@ fun puzzleSelectionComposable(
         }
 
         items(puzzles) { puzzleData ->
-            lateinit var color: CardColors
             lateinit var contents: @Composable() (ColumnScope.() -> Unit)
 
             val offline = uiState.isOffline //&& puzzleData.serverId != null
@@ -207,10 +205,8 @@ fun puzzleSelectionComposable(
 
             if ( !(onlinePuzzle && offline) ) {
                 if (onlinePuzzle) {
-                    color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     contents = RemoteCardContents(puzzleData, clipboardManager)
                 } else {
-                    color = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
                     contents = LocalCardContents(puzzleData, uploadNewPuzzle)
                 }
 
@@ -219,7 +215,6 @@ fun puzzleSelectionComposable(
                     navigateToPuzzle,
                     onlinePuzzle,
                     openDialog,
-                    color,
                     contents
                 )
             }
@@ -234,12 +229,11 @@ private fun PuzzleCard(
     navigateToPuzzle: (Int, Boolean) -> Unit,
     navigationRemote: Boolean,
     openDialog: MutableState<Boolean>,
-    colors: CardColors,
     contents: @Composable() (ColumnScope.() -> Unit)
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = colors,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(1f)

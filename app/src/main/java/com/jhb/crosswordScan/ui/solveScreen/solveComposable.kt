@@ -53,18 +53,32 @@ private const val TAG = "solveComposable"
 fun SolveScreenWrapper(puzzleId: String, remote: Boolean, navigation: ()->Unit) {
 
     val viewModel: PuzzleSolveViewModel = viewModel(
+        key = puzzleId,
         factory = PuzzleSolveViewModelFactory(
             (LocalContext.current.applicationContext as PuzzleApplication).repository,
             puzzleId, remote
         )
     )
-
     val uiState = viewModel.uiState.collectAsState()
+    val errorState = viewModel.uiError.collectAsState()
+
+    LaunchedEffect(key1 = puzzleId, block = {
+        viewModel.setUpPuzzleData()
+    })
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.dispose()
+        }
+    }
+
 
     val keyboardCollapsed = uiState.value.keyboardCollapsed
     Log.i(TAG, "Composing solve composable")
 
-    OfflineAlertWrapper(puzzleId, remote, navigation)
+    if(viewModel is RemotePuzzleSolveViewModel) {
+        OfflineAlertWrapper(errorState, { viewModel.setOnlineState(it) } , navigation)
+    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -163,9 +177,15 @@ fun SolveScreenWrapper(puzzleId: String, remote: Boolean, navigation: ()->Unit) 
                 height = Dimension.fillToConstraints
             }
         ) {
+            val acrossClues = uiState.value.acrossClues.sortedBy { it ->
+                it.first.slice(0..it.first.indexOf("a")-1).toInt()
+            }
+            val downClues = uiState.value.downClues.sortedBy { it ->
+                it.first.slice(0..it.first.indexOf("d")-1).toInt()
+            }
             ClueTextArea(
-                acrossClues = uiState.value.acrossClues,
-                downClues = uiState.value.downClues,
+                acrossClues = acrossClues,
+                downClues = downClues,
                 onClueSelect = { viewModel.updateActiveClueByName(it) },
                 activeClueName = uiState.value.currentClueName
             )
@@ -438,19 +458,7 @@ fun ClueTextArea(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun OfflineAlertWrapper(puzzleId: String, remote: Boolean, navigation: () -> Unit){
-
-    if (!remote) {
-        return
-    }
-    val viewModel: RemotePuzzleSolveViewModel = viewModel(
-        factory = PuzzleSolveViewModelFactory(
-            (LocalContext.current.applicationContext as PuzzleApplication).repository,
-            puzzleId, remote
-        )
-    )
-
-    val uiState = viewModel.uiError.collectAsState()
+private fun OfflineAlertWrapper(uiState: State<UiErrorState>, setOnlineState: (Boolean) -> Unit , navigation: () -> Unit){
 
     val composableScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -459,7 +467,7 @@ private fun OfflineAlertWrapper(puzzleId: String, remote: Boolean, navigation: (
         composableScope.launch {
             while (true) {
                 delay(500)
-                viewModel.setOnlineState(isInternetAvailable(context))
+                setOnlineState(isInternetAvailable(context))
             }
         }
     }

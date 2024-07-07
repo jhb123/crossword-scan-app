@@ -35,7 +35,6 @@ import com.jhb.crosswordScan.ui.puzzleScanningScreens.gridScanScreen.gridScanScr
 import com.jhb.crosswordScan.ui.puzzleScanningScreens.puzzlePreviewScreen.puzzlePreviewScreen
 import com.jhb.crosswordScan.ui.puzzleSelectionScreen.puzzleSelectionScreen
 import com.jhb.crosswordScan.ui.registerScreen.RegistrationScreen
-import com.jhb.crosswordScan.ui.resetPasswordScreen.resetPasswordScreen
 import com.jhb.crosswordScan.ui.solveScreen.SolveScreenWrapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -60,26 +59,6 @@ fun CrosswordApp(repository: PuzzleRepository) {
                 val pageTitle = uiState.collectAsState().value.pageTitle
 
                 TopAppBar(
-                    navigationIcon = {
-                        IconButton(
-                            onClick = { navController.navigate(Screen.SelectPuzzle.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
-                            } },
-                            content = {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_baseline_home_24),
-                                    contentDescription = stringResource(id = R.string.action_home)
-                                )
-                            }
-                        )
-                    },
                     title = {
                         Text(
                             text = pageTitle,
@@ -256,7 +235,6 @@ fun CrosswordApp(repository: PuzzleRepository) {
                     Log.i(TAG, "navigated to authentication")
                     AuthScreen(
                         navigateToRegistration = {navController.navigate(Screen.Registration.route)},
-                        navigateToReset = {navController.navigate(Screen.ResetPassword.route)}
                     )
                 }
 
@@ -278,28 +256,6 @@ fun CrosswordApp(repository: PuzzleRepository) {
                             restoreState = true
                         }
                     })
-
-                }
-
-                composable(
-                    route = Screen.ResetPassword.route
-                ){
-                    uiState.update { ui ->
-                        ui.copy(pageTitle = stringResource(id = Screen.ResetPassword.resourceId))
-                    }
-                    resetPasswordScreen(
-                        navigateOnSuccess = {
-                            Log.i(TAG, "Navigating to ${Screen.SelectPuzzle.route}")
-                            navController.popBackStack()
-                            navController.navigate(Screen.SelectPuzzle.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    )
                 }
             }
         }

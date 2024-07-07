@@ -38,7 +38,6 @@ fun LoginComposable(
     passwordFieldCallback: (String) -> Unit,
     loginCallback: (String, String) -> Unit,
     registerCallback: () -> Unit,
-    forgotPasswordCallback: () -> Unit,
 ) {
 
     Column(
@@ -192,21 +191,8 @@ fun LoginComposable(
         ) {
             Text(text = stringResource(R.string.action_register))
         }
-
-        OutlinedButton(
-            enabled = !uiState.wip,
-            onClick = { forgotPasswordCallback() },
-            modifier = Modifier
-                .width(250.dp)
-                .padding(10.dp),
-        ) {
-            Text(text = stringResource(R.string.question_forgotPassword))
-        }
-
     }
 
-//    if(uiState.isLoading) {
-////        Spinner()
     if(uiState.isLoading) {
         Box(
             contentAlignment = Alignment.Center, // you apply alignment to all children
@@ -247,7 +233,7 @@ fun Preview() {
         isLoading = true
 
     )
-    LoginComposable(fakeUi,{},{},{_,_->Unit},{},{})
+    LoginComposable(fakeUi,{},{},{_,_->Unit},{})
 }
 //        LazyColumn(contentPadding = PaddingValues(10.dp),
 //            modifier = Modifier

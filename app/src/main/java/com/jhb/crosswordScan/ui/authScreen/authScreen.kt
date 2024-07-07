@@ -12,11 +12,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun AuthScreen(
-    navigateToRegistration: () -> Unit,
-    navigateToReset: () -> Unit
-
-){
+fun AuthScreen(navigateToRegistration: () -> Unit){
     val authViewModel : AuthViewModel = viewModel()
     val composableScope = rememberCoroutineScope()
 
@@ -29,17 +25,13 @@ fun AuthScreen(
         passwordFieldCallback = { authViewModel.setPassword(it) },
         loginCallback = { username, password ->
             composableScope.launch {
-                authViewModel.login(
-                    username,
-                    password
-                )
+                authViewModel.login()
             }
         },
         logoutCallback = { composableScope.launch {
                 Session.logOut()
             }},
         registerCallback = { navigateToRegistration() },
-        forgotPasswordCallback = { navigateToReset() },
         sessionDataState = Session.sessionDataState,
     )
 
@@ -53,7 +45,6 @@ fun AuthScreenComposable(
     loginCallback: (String, String) -> Unit,
     logoutCallback: () -> Unit,
     registerCallback: () -> Unit,
-    forgotPasswordCallback: () -> Unit,
     sessionDataState : StateFlow<SessionData?>,
 ) {
 
@@ -69,9 +60,6 @@ fun AuthScreenComposable(
             passwordFieldCallback = { passwordFieldCallback(it) },
             loginCallback = { username, password -> loginCallback(username, password) },
             registerCallback = { registerCallback() },
-            forgotPasswordCallback = {forgotPasswordCallback()},
-            //userDataState = userFromFile,
-            //tokenState =
         )
     } else {
         LogoutComposable(

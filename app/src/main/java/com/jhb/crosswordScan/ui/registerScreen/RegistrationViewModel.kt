@@ -13,8 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -52,15 +50,6 @@ class RegistrationViewModel(navigateOnSuccess: ()-> Unit ) : ViewModel() {
         validFormInput()
     }
 
-    fun setEmail(email : String){
-        _uiState.update {
-            it.copy(
-                email = email
-            )
-        }
-        validFormInput()
-    }
-
     fun submit(){
 
         viewModelScope.launch {
@@ -73,20 +62,13 @@ class RegistrationViewModel(navigateOnSuccess: ()-> Unit ) : ViewModel() {
 
                 val username = uiState.value.username.trim()
                 val password = uiState.value.password
+                val repeatPassword = uiState.value.passwordConfirm
 
                 val gson = Gson()
-                val registrationData = mapOf(
-                    "email" to uiState.value.email,
-                    "username" to username,
-                    "password" to password
-                )
-                val payload = gson.toJson(registrationData)
-                val requestBody = RequestBody.create(MediaType.get("application/json"), payload)
 
                 Log.i(TAG, "request body made")
 
-                val response = CrosswordApi.retrofitService.register(requestBody)
-                val responseJson = gson.fromJson(response.string(), MutableMap::class.java)
+                val response = CrosswordApi.retrofitService.register(username,password,repeatPassword)
 
                 val sessionData = SessionData(username = username)
 
@@ -127,13 +109,11 @@ class RegistrationViewModel(navigateOnSuccess: ()-> Unit ) : ViewModel() {
     }
 
     private fun validFormInput(){
-        val emailFilled = uiState.value.email != ""
         val usernameFilled = uiState.value.username != ""
         val passwordFilled = uiState.value.password != ""
         val passwordConfirmFilled = uiState.value.passwordConfirm != ""
 
-        val isFilled = emailFilled
-                && usernameFilled
+        val isFilled = usernameFilled
                 && passwordFilled
                 && passwordConfirmFilled
 

@@ -50,6 +50,14 @@ abstract class PuzzleSolveViewModel(private val repository: PuzzleRepository, pr
         }
     }
 
+    open fun dispose(){
+
+    }
+
+    open suspend fun setUpPuzzleData(){
+
+    }
+
     fun toggleCollapseKeyboard(){
         _uiState.update { ui ->
             ui.copy(
