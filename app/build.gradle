@@ -55,6 +55,11 @@ android {
             buildConfigField "String", "WEBSOCKET_URL", "\"wss://live-crossword.net\""
             dimension "app_type"
         }
+        local {
+            buildConfigField "String", "API_URL", "\"http://10.0.2.2:5051\""
+            buildConfigField "String", "WEBSOCKET_URL", "\"ws://10.0.2.2:5051\""
+            dimension 'app_type'
+        }
     }
 
     signingConfigs {
@@ -68,11 +73,10 @@ android {
 
     buildTypes {
         release {
-//            minifyEnabled true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-//            shrinkResources true
-
+            shrinkResources true
         }
     }
     compileOptions {
