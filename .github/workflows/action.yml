@@ -19,6 +19,7 @@ jobs:
 
       - name: Restore gradle.properties
         env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
           GRADLE_PROPERTIES: ${{ secrets.GRADLE_PROPERTIES }}
         shell: bash
         run: |
