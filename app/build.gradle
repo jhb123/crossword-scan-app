@@ -62,23 +62,23 @@ android {
         }
     }
 
-    signingConfigs {
-        release {
-            keyAlias project.KEY_ALIAS
-            keyPassword project.KEY_PASSWORD
-            storeFile file(project.KEYSTORE_PATH)
-            storePassword project.STORE_PASSWORD
-        }
-    }
+    // signingConfigs {
+    //     release {
+    //         keyAlias project.KEY_ALIAS
+    //         keyPassword project.KEY_PASSWORD
+    //         storeFile file(project.KEYSTORE_PATH)
+    //         storePassword project.STORE_PASSWORD
+    //     }
+    // }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-            shrinkResources true
-        }
-    }
+    // buildTypes {
+    //     release {
+    //         minifyEnabled true
+    //         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    //         signingConfig signingConfigs.release
+    //         shrinkResources true
+    //     }
+    // }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
