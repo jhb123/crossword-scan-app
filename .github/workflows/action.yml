@@ -1,3 +1,9 @@
-- name: automated-build-android-app-with-github-action
-  uses: amirisback/automated-build-android-app-with-github-action@2.2.5
-  
+name: create apk
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: automated-build-android-app-with-github-action
+        uses: amirisback/automated-build-android-app-with-github-action@2.2.5
