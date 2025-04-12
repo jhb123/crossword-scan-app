@@ -18,13 +18,13 @@ jobs:
         run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Restore gradle.properties
-          env:
-            GRADLE_PROPERTIES: ${{ secrets.GRADLE_PROPERTIES }}
-          shell: bash
-          run: |
-            mkdir -p ~/.gradle/
-            echo "::set-env name=GRADLE_USER_HOME::$HOME/.gradle"
-            echo ${GRADLE_PROPERTIES} > ~/.gradle/gradle.properties
+        env:
+          GRADLE_PROPERTIES: ${{ secrets.GRADLE_PROPERTIES }}
+        shell: bash
+        run: |
+          mkdir -p ~/.gradle/
+          echo "::set-env name=GRADLE_USER_HOME::$HOME/.gradle"
+          echo ${GRADLE_PROPERTIES} > ~/.gradle/gradle.properties
 
       # Set Repository Name As Env Variable
       - name: Set repository name as env variable
